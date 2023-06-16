@@ -46,7 +46,16 @@ if (!$retval6) {
 
 <html>
 
-<script>
+<link rel="stylesheet" href="css/outpass.css">
+
+<html>
+
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+        <script>
     $(document).ready(function () {
         $(function () {
             $('#watchButton').click();
@@ -128,7 +137,7 @@ if (!$retval6) {
           <input name="product_bundle[]" required class="product_bundle">
       
           <label for="product">Product Desc.</label>
-          <textarea name="product_desc[]" class="product_description"></textarea>
+          <textarea name="product_desc[]" class="product_description"></textarea> <br> <br>
           
           <button type="button" class="remove_product_field">Remove</button>
         </div>
@@ -157,44 +166,40 @@ if (!$retval6) {
     });
 </script>
 
-<html>
-
-<head>
-
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-
 </head>
 
 <body>
     <div>
-        <h1>Outpass</h1>
-        <form name="op" method="post" action="">
-            <label for="date">Date</label>
-            <input type="date" required name="date" id="today_date"> <br>
-            <label for="dest_name">Dest. Company</label>
-            <input list="companylist" required type="text" id="dest_name" name="dest_name"> <br>
-            <datalist id="companylist">
-                <?php
-                while ($row = mysqli_fetch_assoc($retval2)) {
-                    echo "<option>{$row['name']}";
-                }
-                ?>
-            </datalist>
-            <label for="woc">A/C of WGD WO#</label>
-            <input type="text" required name="woc" id="company_code"> <br>
-            <label for="vehicle">Vehicle#</label>
-            <input list="vehiclelist" required type="text" name="vehicle">
-            <datalist id="vehiclelist">
-                <?php
-                while ($row = mysqli_fetch_assoc($retval6)) {
-                    echo "<option>{$row['number']}";
-                }
-                ?>
-            </datalist> <br>
-            <div id="product_fields">
-                <!-- Initial set of product fields -->
-                <!-- <div class="product_field">
+        <div class="formdiv">
+            <h1>Outpass</h1>
+            <form name="op" method="post" action="">
+                <label for="date">Date</label>
+                <input type="date" required name="date" id="today_date"> <br>
+                <label for="dest_name">Dest. Company</label>
+                <input list="companylist" required type="text" id="dest_name" name="dest_name"> <br>
+                <datalist id="companylist">
+                    <?php
+                    while ($row = mysqli_fetch_assoc($retval2)) {
+                        echo "<option>{$row['name']}";
+                    }
+                    ?>
+                </datalist>
+                <label for="woc">A/C of WGD WO#</label>
+                <input type="text" required name="woc" id="company_code"> <br>
+                <label for="vehicle">Vehicle#</label>
+                <input list="vehiclelist" required type="text" name="vehicle">
+                <datalist id="vehiclelist">
+                    <?php
+                    while ($row = mysqli_fetch_assoc($retval6)) {
+                        echo "<option>{$row['number']}";
+                    }
+                    ?>
+                </datalist> <br>
+                <label>Add Products</label>
+                <div class="divider1"></div>
+                <div id="product_fields">
+                    <!-- Initial set of product fields -->
+                    <!-- <div class="product_field">
                     <label>Product Name</label>
                     <input list="productlist" required name="products" id="product_name">
 
@@ -207,77 +212,78 @@ if (!$retval6) {
                     <label for="product">Product Desc.</label>
                     <textarea name="product_desc" id="product_description"></textarea>
                 </div> -->
-            </div>
+                </div>
 
-            <button type="button" id="add_product_field">Add Product</button> <br>
-            <label for="extras">Extras</label>
-            <textarea name="extras"></textarea> <br>
-            <button type="submit" name="op">Generate OutPass</button>
-        </form>
-    </div>
-    <br><br>
-    <?php
-    if (isset($_POST['op'])) {
-        $opno = "";
-        $date = "";
-        $dest = "";
-        $woc = "";
-        $vechicle = "";
-        $desc = "";
-        $extras = "";
-        $date = $_POST['date'];
-        $dest = $_POST['dest_name'];
-        $woc = $_POST['woc'];
-        $vehicle = $_POST['vehicle'];
-        $extras = $_POST['extras'];
-        $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
-        if (!$conn) {
-        }
-        $sql = "INSERT INTO outpass(date,dest,woc,vehicleno,extras) VALUES ('$date','$dest','$woc','$vehicle','$extras')";
-        $sql2 = "INSERT INTO company(name,code) VALUES ('$dest','$woc')";
-        $insert = mysqli_query($conn, $sql);
-        if (!$insert) {
-            echo mysqli_error($conn);
-        } else {
-            echo "sucess";
-        }
-        $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest'");
-        if ($result->num_rows == 0) {
-            $insert2 = mysqli_query($conn, $sql2);
-        }
-        $ino = "";
-        $products = $_POST['products'];
-        $productCodes = $_POST['product_code'];
-        $productBundles = $_POST['product_bundle'];
-        $productDescs = $_POST['product_desc'];
-        $sql5 = "SELECT no from outpass ORDER BY no DESC";
-        $retino = mysqli_query($conn, $sql5);
-        if (!$retino) {
-            echo "Error Occured";
-        }
-        $row = mysqli_fetch_array($retino);
-        $ono = $row[0];
-        for ($i = 0; $i < count($products); $i++) {
-            $productName = $products[$i];
-            $productCode = $productCodes[$i];
-            $productBundle = $productBundles[$i];
-            $productDesc = $productDescs[$i];
-
-            $sql4 = "INSERT INTO outpass_products(outpass_no,product_name,product_code,product_bundle,product_desc) VALUES ('$ono','$productName','$productCode','$productBundle','$productDesc')";
-            $insert = mysqli_query($conn, $sql4);
+                <button type="button" id="add_product_field">Add Product</button> <br>
+                <label for="extras">Extras</label>
+                <textarea name="extras"></textarea> <br>
+                <button type="submit" name="op">Generate OutPass</button>
+            </form>
+        </div>
+        <br><br>
+        <?php
+        if (isset($_POST['op'])) {
+            $opno = "";
+            $date = "";
+            $dest = "";
+            $woc = "";
+            $vechicle = "";
+            $desc = "";
+            $extras = "";
+            $date = $_POST['date'];
+            $dest = $_POST['dest_name'];
+            $woc = $_POST['woc'];
+            $vehicle = $_POST['vehicle'];
+            $extras = $_POST['extras'];
+            $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
+            if (!$conn) {
+            }
+            $sql = "INSERT INTO outpass(date,dest,woc,vehicleno,extras) VALUES ('$date','$dest','$woc','$vehicle','$extras')";
+            $sql2 = "INSERT INTO company(name,code) VALUES ('$dest','$woc')";
+            $insert = mysqli_query($conn, $sql);
             if (!$insert) {
                 echo mysqli_error($conn);
+            } else {
+                echo "sucess";
+            }
+            $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest'");
+            if ($result->num_rows == 0) {
+                $insert2 = mysqli_query($conn, $sql2);
+            }
+            $ino = "";
+            $products = $_POST['products'];
+            $productCodes = $_POST['product_code'];
+            $productBundles = $_POST['product_bundle'];
+            $productDescs = $_POST['product_desc'];
+            $sql5 = "SELECT no from outpass ORDER BY no DESC";
+            $retino = mysqli_query($conn, $sql5);
+            if (!$retino) {
                 echo "Error Occured";
             }
-            echo "<script type='text/javascript'>
+            $row = mysqli_fetch_array($retino);
+            $ono = $row[0];
+            for ($i = 0; $i < count($products); $i++) {
+                $productName = $products[$i];
+                $productCode = $productCodes[$i];
+                $productBundle = $productBundles[$i];
+                $productDesc = $productDescs[$i];
+
+                $sql4 = "INSERT INTO outpass_products(outpass_no,product_name,product_code,product_bundle,product_desc) VALUES ('$ono','$productName','$productCode','$productBundle','$productDesc')";
+                $insert = mysqli_query($conn, $sql4);
+                if (!$insert) {
+                    echo mysqli_error($conn);
+                    echo "Error Occured";
+                }
+                echo "<script type='text/javascript'>
             window.open('createpdfpass.php?no=$ono&io=outpass');
             </script>";
-            echo "<script type='text/javascript'>
+                echo "<script type='text/javascript'>
             window.location.href = 'outpass.php';
             </script>";
+            }
         }
-    }
-    ?>
+        ?>
+    </div>
     <div>
         <h1>Outpasses Generated</h1>
         <table style="border-spacing: 30px;">

@@ -45,12 +45,65 @@ if (!$retval) {
     tr {
         border: 1px solid black;
     }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="date"] {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        thead {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 </style>
 
 <body>
     <h2>Ledger</h2>
-    <br>
-    Filter &nbsp;
     <br>
     <br>
     <form name="filter-date" method="post">
@@ -79,6 +132,9 @@ if (!$retval) {
             </th>
             <th>
                 Product
+            </th>
+            <th>
+                Type
             </th>
         </thead>
         <tbody>

@@ -36,7 +36,18 @@ if (!$retval3) {
 }
 
 ?>
-<script>
+
+
+<html>
+
+<link rel="stylesheet" href="css/inpass.css">
+
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+        <script>
     $(document).ready(function () {
 
         $(function () {
@@ -117,7 +128,7 @@ if (!$retval3) {
           <input name="product_bundle[]"required class="product_bundle">
       
           <label for="product">Product Desc.</label>
-          <textarea name="product_desc[]" class="product_description"></textarea>
+          <textarea name="product_desc[]" class="product_description"></textarea> <br> <br>
           
           <button type="button" class="remove_product_field">Remove</button>
         </div>
@@ -146,22 +157,16 @@ if (!$retval3) {
     });
 </script>
 
-<html>
-
-<head>
-
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-
 </head>
 
 <body>
     <div>
+        <div class="formdiv">
         <h1>Inpass</h1>
         <form name="ip" method="post" action="">
 
             <label for="date">Date</label>
-            <input type="date"required name="date" id="today_date"> <br>
+            <input type="date"required name="date" id="today_date">
             <label>Source Name</label>
             <input list="companylist" required name="source" id="source_name">
             <datalist id="companylist">
@@ -176,7 +181,9 @@ if (!$retval3) {
             <label for="opno">OP#</label>
             <input type="text" required name="opno"> <br>
             <label for="vechicle">Vehicle#</label>
-            <input type="text" required name="vehicle"> <br>
+            <input type="text" required name="vehicle"> <br> <br>
+            <label>Add Products</label>
+            <div class="divider1"></div>
             <div id="product_fields">
                 <!-- Initial set of product fields -->
                 <!-- <div class="product_field">
@@ -197,7 +204,7 @@ if (!$retval3) {
             <button type="button" id="add_product_field">Add Product</button>
             <br>
             <label for="extras">Extras</label>
-            <textarea name="extras"></textarea> <br>
+            <textarea id="extras" name="extras"></textarea> <br> <br>
             <button type="submit" name="ip">Generate InPass</button>
         </form>
         <br><br>
@@ -279,6 +286,7 @@ if (!$retval3) {
             </script>";
         }
         ?>
+        </div>
     </div>
     <div>
 
