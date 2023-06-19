@@ -48,7 +48,7 @@
             <li id="navli"><a href="outpass.php">Outpass</a></li>
             <li id="navli"><a href="products.php">Products</a></li>
             <li id="navli"><a href="ledger.php?f=0">Ledger</a></li>
-            <li id="navli"><a href="stock.php">Stock</a></li>
+            <li id="navli"><a href="stock.php?f=0">Stock</a></li>
             <li id="navli"><a href="profile.php">Profile</a></li>
         </ul>
     </div>

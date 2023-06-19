@@ -36,6 +36,9 @@ if (!$retval2) {
                 <th>No.</th>
                 <th>Name</th>
                 <th>Code</th>
+                <th>Design</th>
+                <th>Size</th>
+                <th></th>
             </thead>
             <tbody>
                 <?php
@@ -53,6 +56,18 @@ if (!$retval2) {
                     <td>
                     {$row['code']}
                     </td>
+                    <td>
+                    {$row['design']}
+                    </td>
+                    <td>
+                    {$row['size']}
+                    </td>
+                    <td>
+                    <form method='post' id='delete_product' name='delete_product'>
+                    <input type='hidden' name='id' value='{$row['code']}'>
+                    <input type='submit' id='delete_product' name='delete_product' value='Delete'>
+                    </form>
+                    </td>
                     </tr>
                     </form>
                     ";
@@ -66,6 +81,8 @@ if (!$retval2) {
                         </td>
                         <td><input type="text" required name="name"></td>
                         <td><input type="text" required name="code"></td>
+                        <td><input type="text" required name="design"></td>
+                        <td><input type="text" required name="size"></td>
                         <td><button name="add">Add Product</button></td>
                     </form>
                 </tr>
@@ -84,26 +101,12 @@ if (!$retval2) {
             <button type="submit" name="add">Add Product</button>
         </form> -->
         <br>
-
-        <form method='post' name="delete_product" id="delete_product">
-                <select name="productlist" id="productlist">
-                    <option default>Choose Product to Delete</option>
-                    <?php
-                    while ($row = mysqli_fetch_assoc($retval2)) {
-                        echo "
-                        <option>{$row['name']}</option>
-                        ";
-                    }
-                    ?>
-                </select> <br> <br>
-                <input type="submit" name="delete_product" value="Delete">
-        </form>
     </div>
 </body>
 <?php
 if(isset($_POST['delete_product'])) {
-    $name = $_POST['productlist'];
-    $sql = "DELETE from products where name = '$name'";
+    $delete_code = $_POST['id'];
+    $sql = "DELETE from products where code = '$delete_code'";
     $retval4 = mysqli_query($conn,$sql);
     if(!$retval4) {
         echo "Error Occured";
@@ -119,9 +122,13 @@ if (isset($_POST['add'])) {
     }
     $product_name = '';
     $product_code = '';
+    $product_size = '';
+    $product_design = '';
     $product_name = $_POST['name'];
     $product_code = $_POST['code'];
-    $sql = "INSERT into products(name,code) VALUES ('$product_name','$product_code')";
+    $product_size = $_POST['size'];
+    $product_design = $_POST['design'];
+    $sql = "INSERT into products(name,code,design,size) VALUES ('$product_name','$product_code','$product_design','$product_size')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";

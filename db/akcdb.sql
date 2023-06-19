@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 15, 2023 at 01:46 PM
+-- Generation Time: Jun 19, 2023 at 06:19 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `name` varchar(50) NOT NULL,
   `code` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company`
@@ -45,9 +45,7 @@ INSERT INTO `company` (`id`, `name`, `code`) VALUES
 (3, 'Company 3', 'C3'),
 (4, 'Company 4', 'C4'),
 (5, 'Company 5', 'C5'),
-(8, 'Company 7', 'C7'),
-(7, 'Company 6', 'C6'),
-(9, 'Company 8', 'C8');
+(7, 'Company 6', 'C6');
 
 -- --------------------------------------------------------
 
@@ -66,14 +64,15 @@ CREATE TABLE IF NOT EXISTS `inpass` (
   `extras` varchar(125) NOT NULL,
   `type` varchar(10) NOT NULL DEFAULT 'inpass',
   PRIMARY KEY (`no`)
-) ENGINE=MyISAM AUTO_INCREMENT=1059 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1061 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `inpass`
 --
 
 INSERT INTO `inpass` (`no`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`, `type`) VALUES
-(1058, '2023-06-15', 'Company 1', 'C1', 284, 'KL 23 BC 2982', '', 'inpass');
+(900, '2023-06-18', 'Company 1', 'C1', 100, 'KL 23 BC 2982', '', 'inpass'),
+(901, '2023-06-18', 'Company 1', 'C1', 101, 'KL 23 BC 2982', '', 'inpass');
 
 -- --------------------------------------------------------
 
@@ -86,17 +85,19 @@ CREATE TABLE IF NOT EXISTS `inpass_products` (
   `inpass_no` int NOT NULL,
   `product_name` varchar(50) NOT NULL,
   `product_code` varchar(25) NOT NULL,
-  `product_bundle` int NOT NULL,
-  `product_desc` varchar(100) NOT NULL
+  `product_design` varchar(50) NOT NULL,
+  `product_size` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `product_qty` int NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `inpass_products`
 --
 
-INSERT INTO `inpass_products` (`inpass_no`, `product_name`, `product_code`, `product_bundle`, `product_desc`) VALUES
-(1058, 'WoodWall', 'WW1', 100, '23 X 48cm'),
-(1058, 'Wood', 'W2', 10, '42cm');
+INSERT INTO `inpass_products` (`inpass_no`, `product_name`, `product_code`, `product_design`, `product_size`, `product_qty`) VALUES
+(900, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 100),
+(901, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 10),
+(901, 'Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 400);
 
 -- --------------------------------------------------------
 
@@ -114,17 +115,14 @@ CREATE TABLE IF NOT EXISTS `outpass` (
   `extras` varchar(125) NOT NULL,
   `type` varchar(10) NOT NULL DEFAULT 'outpass',
   PRIMARY KEY (`no`)
-) ENGINE=MyISAM AUTO_INCREMENT=1005 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `outpass`
 --
 
 INSERT INTO `outpass` (`no`, `date`, `dest`, `woc`, `vehicleno`, `extras`, `type`) VALUES
-(1000, '2023-06-14', 'Company 6', 'C6', 'KL 23 BC 2982', 'Tranfser', 'outpass'),
-(1001, '2023-06-14', 'Company 1', 'C1', 'KL 23 BC 2982', '', 'outpass'),
-(1002, '2023-06-15', 'Company 1', 'C1', 'KL 33 BC 1921', 'Handle', 'outpass'),
-(1004, '2023-06-15', 'Company 1', 'C1', 'KL 33 BC 1920', '', 'outpass');
+(9000, '2023-06-18', 'Company 3', 'C3', 'KL 33 BC 1920', '', 'outpass');
 
 -- --------------------------------------------------------
 
@@ -135,21 +133,21 @@ INSERT INTO `outpass` (`no`, `date`, `dest`, `woc`, `vehicleno`, `extras`, `type
 DROP TABLE IF EXISTS `outpass_products`;
 CREATE TABLE IF NOT EXISTS `outpass_products` (
   `outpass_no` int NOT NULL,
+  `product_type` varchar(15) NOT NULL DEFAULT 'finished',
   `product_name` varchar(50) NOT NULL,
-  `product_code` varchar(25) NOT NULL,
-  `product_bundle` int NOT NULL,
-  `product_desc` varchar(100) NOT NULL
+  `work_order` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `product_code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'AAC(code)',
+  `product_design` varchar(50) NOT NULL,
+  `product_size` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `product_qty` int NOT NULL
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `outpass_products`
 --
 
-INSERT INTO `outpass_products` (`outpass_no`, `product_name`, `product_code`, `product_bundle`, `product_desc`) VALUES
-(1000, 'B', 'B2', 123, 'X4'),
-(1000, 'A', 'A1', 1, 'A3'),
-(1002, 'A', 'A1', 12, 'Dx4'),
-(1002, 'A', 'A1', 123, 'D3X4');
+INSERT INTO `outpass_products` (`outpass_no`, `product_type`, `product_name`, `work_order`, `product_code`, `product_design`, `product_size`, `product_qty`) VALUES
+(9000, 'Finished', 'Vinyl back 15mm natural', 'AAC001', '', 'REACH', '45 X 75 Cm', 10);
 
 -- --------------------------------------------------------
 
@@ -160,18 +158,19 @@ INSERT INTO `outpass_products` (`outpass_no`, `product_name`, `product_code`, `p
 DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
   `name` varchar(125) NOT NULL,
-  `code` varchar(125) NOT NULL
+  `code` varchar(125) NOT NULL,
+  `design` varchar(25) NOT NULL,
+  `size` varchar(25) NOT NULL,
+  `type` varchar(10) NOT NULL DEFAULT 'finished'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`name`, `code`) VALUES
-('E', 'E3'),
-('F', 'F1'),
-('WoodWall', 'WW1'),
-('Wood', 'W2');
+INSERT INTO `products` (`name`, `code`, `design`, `size`, `type`) VALUES
+('Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 'finished'),
+('Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 'finished');
 
 -- --------------------------------------------------------
 
@@ -195,6 +194,33 @@ INSERT INTO `profile` (`name`, `wo`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stock`
+--
+
+DROP TABLE IF EXISTS `stock`;
+CREATE TABLE IF NOT EXISTS `stock` (
+  `index` int NOT NULL AUTO_INCREMENT,
+  `grade` varchar(25) NOT NULL,
+  `code` varchar(25) NOT NULL,
+  `item` varchar(50) NOT NULL,
+  `design` varchar(50) NOT NULL,
+  `size` varchar(25) NOT NULL,
+  `qty` int NOT NULL,
+  `default` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`index`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `stock`
+--
+
+INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, `default`) VALUES
+(9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 90, 1),
+(11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 100, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `vehicles`
 --
 
@@ -213,10 +239,6 @@ INSERT INTO `vehicles` (`type`, `number`, `owner`) VALUES
 ('Pick-Up', 'KL 33 BC 1920', 'Company'),
 ('Pick-Up', 'KL 33 BC 1921', 'Others'),
 ('Pick-Up', 'KL 33 BC 1923', 'Others'),
-('Pick-Up', 'KL 33 BC 1924', 'Company'),
-('Pick-Up', 'KL 33 BC 1925', 'Company'),
-('Pick-Up', 'KL 33 BC 1926', 'Company'),
-('Pick-up', 'KL 05 B 2834', 'Others'),
 ('Pick-up', 'KL 05 B 2834', 'Others');
 COMMIT;
 
