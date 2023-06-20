@@ -76,6 +76,47 @@ if (!$retval8) {
                 // $('#watchButton').click();
                 // $('#add_product_field').click();
             });
+
+            
+        //for Product Data
+        $(document).on("change", ".product_code", function () {
+            var productCode = $(this).val();
+            var productNameField = $(this).closest(".product_field").find(".product_name");
+            var productDesignField = $(this).closest(".product_field").find(".product_design");
+            var productSizeField = $(this).closest(".product_field").find(".product_size");
+            var productFeatureField = $(this).closest(".product_field").find(".product_feature");
+
+
+            $.ajax({
+                method: "POST",
+                url: "getcompanyproductdata.php",
+                data: {
+                    product_code: productCode
+                },
+                success: function (response) {
+                    if (response === "FALSE") {
+                        var message = "ERROR: something went wrong on the MYSQL side";
+                        alert(message);
+                    } else {
+                        var productData = JSON.parse(response);
+
+                        if (productData) {
+                            product = productData[0]
+                            productNameField.val(product.name)
+                            productDesignField.val(product.design)
+                            productSizeField.val(product.size)
+                            productFeatureField.val(product.features)
+                            $(productNameField).trigger("change");
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                    alert(message);
+                }
+            });
+        });
+
             //for Company Code
             $("#dest_name").on("change", function () { //use an appropriate event handler here
                 $.ajax({

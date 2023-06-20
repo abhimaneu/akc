@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 20, 2023 at 03:36 PM
+-- Generation Time: Jun 20, 2023 at 07:32 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `name` varchar(50) NOT NULL,
   `code` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company`
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `company_products` (
   `size` varchar(25) NOT NULL,
   `features` varchar(25) NOT NULL DEFAULT 'none',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company_products`
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `inpass` (
   `extras` varchar(125) NOT NULL,
   `type` varchar(10) NOT NULL DEFAULT 'inpass',
   PRIMARY KEY (`no`)
-) ENGINE=MyISAM AUTO_INCREMENT=1061 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1061 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `inpass`
@@ -100,7 +100,13 @@ INSERT INTO `inpass` (`no`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`
 (901, '2023-06-18', 'Company 1', 'C1', 101, 'KL 23 BC 2982', '', 'inpass'),
 (902, '2023-06-20', 'Company 5', 'C5', 809, 'KL 23 BC 2982', '', 'inpass'),
 (903, '2023-06-20', 'Company 2', 'C2', 809, 'KL 23 BC 2982', '', 'inpass'),
-(904, '2023-06-20', 'Company 2', 'C2', 9000, 'KL 33 BC 1920', '', 'inpass');
+(904, '2023-06-20', 'Company 2', 'C2', 9000, 'KL 33 BC 1920', '', 'inpass'),
+(905, '2023-06-20', 'Company 2', 'C2', 123, 'KL 23 BC 2982', '', 'inpass'),
+(906, '2023-06-20', 'Company 4', 'C4', 123, 'KL 33 BC 1920', '', 'inpass'),
+(907, '2023-06-20', 'Company 2', 'C2', 123, 'KL 23 BC 2982', '', 'inpass'),
+(908, '2023-06-20', 'Company 4', 'C4', 123, 'KL 33 BC 1920', '', 'inpass'),
+(910, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2982', '', 'inpass'),
+(911, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2983', '', 'inpass');
 
 -- --------------------------------------------------------
 
@@ -116,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `inpass_products` (
   `product_design` varchar(50) NOT NULL,
   `product_size` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `product_qty` int NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `inpass_products`
@@ -128,7 +134,13 @@ INSERT INTO `inpass_products` (`inpass_no`, `product_name`, `product_code`, `pro
 (901, 'Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 400),
 (902, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 500),
 (903, 'Black Rubber 15mm', 'COD900', 'Plain', '40 X 120cm', 20),
-(904, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 100);
+(904, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 100),
+(906, 'Black Rubber 15mm', 'COD900', 'Plain', '40 X 120cm', 10),
+(905, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 1000),
+(907, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
+(908, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
+(910, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
+(911, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 100);
 
 -- --------------------------------------------------------
 
@@ -225,7 +237,8 @@ CREATE TABLE IF NOT EXISTS `products` (
 INSERT INTO `products` (`name`, `code`, `design`, `size`, `type`) VALUES
 ('Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 'finished'),
 ('Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 'finished'),
-('Black Rubber 15mm', 'COD900', 'Plain', '40 X 120cm', 'finished');
+('Black Rubber 15mm', 'COD900', 'Plain', '40 X 120cm', 'finished'),
+('Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 'finished');
 
 -- --------------------------------------------------------
 
@@ -237,7 +250,7 @@ DROP TABLE IF EXISTS `profile`;
 CREATE TABLE IF NOT EXISTS `profile` (
   `name` varchar(50) NOT NULL,
   `wo` varchar(25) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `profile`
@@ -263,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `stock` (
   `qty` int NOT NULL,
   `default` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `stock`
@@ -271,8 +284,9 @@ CREATE TABLE IF NOT EXISTS `stock` (
 
 INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, `default`) VALUES
 (9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 505, 1),
-(11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 50, 1),
-(12, '', 'COD900', 'Black Rubber 15mm', 'Plain', '40 X 120cm', 20, 1);
+(11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 640, 1),
+(12, '', 'COD900', 'Black Rubber 15mm', 'Plain', '40 X 120cm', 820, 1),
+(15, '', 'COD901', 'Black Rubber 20mm', 'Plain', '40 X 120cm', 110, 1);
 
 -- --------------------------------------------------------
 
@@ -285,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
   `type` varchar(50) NOT NULL,
   `number` varchar(50) NOT NULL,
   `owner` varchar(50) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `vehicles`

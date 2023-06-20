@@ -33,7 +33,7 @@ if (!$retval3) {
 }
 
 //fetch inpass data for table
-$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no order by date desc";
+$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no order by date DESC";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -102,7 +102,7 @@ if (!$retval3) {
                         } else {
                             var productData = JSON.parse(response);
 
-                            if(productData) {
+                            if (productData) {
                                 product = productData[0]
                                 productNameField.val(product.name)
                                 productDesignField.val(product.design)
@@ -248,7 +248,6 @@ if (!$retval3) {
                 $p_name = "";
                 $p_code = "";
                 $p_bundle = "";
-                $desc = "";
                 $extras = "";
                 $ipno = $_POST['ipno'];
                 $date = $_POST['date'];
@@ -259,16 +258,23 @@ if (!$retval3) {
                 $p_name = $_POST['products'];
                 $p_code = $_POST['product_code'];
                 $p_design = $_POST['product_design'];
-                $desc = $_POST['product_desc'];
                 $extras = $_POST['extras'];
                 $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                 if (!$conn) {
+                }
+                $tran = 'START TRANSACTION';
+                $transtart = mysqli_query($conn, $tran);
+                if (!$transtart) {
+                    echo mysqli_error($conn);
                 }
                 $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras')";
                 $sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
                 $insert = mysqli_query($conn, $sql);
                 if (!$insert) {
                     echo mysqli_error($conn);
+                    mysqli_rollback($conn);
+                    echo "<script>alert('Some Error Occured')</script>";
+                    exit;
                 } else {
                     echo "sucess";
                 }
@@ -282,7 +288,6 @@ if (!$retval3) {
                 $productDeisgns = $_POST['product_design'];
                 $productSizes = $_POST['product_size'];
                 $productQtys = $_POST['product_qty'];
-                $productDescs = $_POST['product_desc'];
                 //old code
                 // $sql5 = "SELECT no from inpass ORDER BY no DESC";
                 // $retino = mysqli_query($conn, $sql5);
@@ -298,18 +303,25 @@ if (!$retval3) {
                     $productDesign = $productDeisgns[$i];
                     $productSize = $productSizes[$i];
                     $productQty = $productQtys[$i];
-                    $productDesc = $productDescs[$i];
 
                     $sql7 = "INSERT INTO stock(code,item,design,size,qty) VALUES ('$productCode','$productName','$productDesign','$productSize','$productQty')";
                     $result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
                     if ($result2->num_rows == 0) {
                         $insert2 = mysqli_query($conn, $sql7);
-                    }
-                    else{
+                        if (!$insert2) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+                    } else {
                         $sql8 = "Select qty from stock where code = '$productCode'";
-                        $retval4 = mysqli_query($conn,$sql8);
-                        if(!$retval4) {
+                        $retval4 = mysqli_query($conn, $sql8);
+                        if (!$retval4) {
                             echo "Error Occured";
+                            mysqli_rollback($conn);
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
                         }
                         $row8 = mysqli_fetch_array($retval4);
                         $oldqty = $row8[0];
@@ -317,9 +329,12 @@ if (!$retval3) {
                         echo $oldqty;
                         echo $newqty;
                         $sql9 = "UPDATE stock SET qty = '$newqty' where code='$productCode'";
-                        $update = mysqli_query($conn,$sql9);
-                        if(!$update){
+                        $update = mysqli_query($conn, $sql9);
+                        if (!$update) {
                             echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
                         }
                     }
                     $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty')";
@@ -327,22 +342,31 @@ if (!$retval3) {
                     if (!$insert) {
                         echo mysqli_error($conn);
                         echo "Error Occured";
+                        mysqli_rollback($conn);
+                        echo "<script>alert('Some Error Occured')</script>";
+                        exit;
                     }
 
                     $sql3 = "INSERT INTO products(name,code,design,size) VALUES ('$productName','$productCode','$productDesign','$productSize')";
                     $result = mysqli_query($conn, "SELECT name FROM products WHERE name = '$productName'");
                     if ($result->num_rows == 0) {
-                        $insert2 = mysqli_query($conn, $sql3);
+                        $insert3 = mysqli_query($conn, $sql3);
+                        if (!$insert3) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
                     }
+                    mysqli_commit($conn);
 
-                   
                 }
-            //     echo "<script type='text/javascript'>
-            // window.open('createpdfpass.php?no=$ipno&io=inpass');
-            // </script>";
-            //     echo "<script type='text/javascript'>
-            // window.location.href = 'inpass.php';
-            // </script>";
+                //     echo "<script type='text/javascript'>
+                // window.open('createpdfpass.php?no=$ipno&io=inpass');
+                // </script>";
+                // echo "<script type='text/javascript'>
+                // window.location.href = 'inpass.php';
+                // </script>";
             }
             ?>
         </div>
@@ -429,7 +453,7 @@ if (!$retval3) {
             </tbody>
         </table>
     </div>
-    
+
 </body>
 
 </html>
