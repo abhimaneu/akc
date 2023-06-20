@@ -42,6 +42,21 @@ if (!$retval6) {
     echo mysqli_error($conn);
     die($conn);
 }
+
+//only for dropdown menu
+$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' GROUP BY work_order_no";
+$retval7 = mysqli_query($conn, $sql7);
+if (!$retval7) {
+    echo mysqli_error($conn);
+    die($conn);
+}
+
+$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open'";
+$retval8 = mysqli_query($conn, $sql8);
+if (!$retval8) {
+    echo mysqli_error($conn);
+    die($conn);
+}
 ?>
 
 <html>
@@ -58,8 +73,8 @@ if (!$retval6) {
     <script>
         $(document).ready(function () {
             $(function () {
-                $('#watchButton').click();
-                $('#add_product_field').click();
+                // $('#watchButton').click();
+                // $('#add_product_field').click();
             });
             //for Company Code
             $("#dest_name").on("change", function () { //use an appropriate event handler here
@@ -90,19 +105,19 @@ if (!$retval6) {
                 var productQtyField = $(this).closest(".product_field").find(".product_qty");
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
                 productQtyField.val('');
-                product_code_final =productStockField.val();
+                product_code_final = productStockField.val();
             });
 
             //product quantity
             $(document).on("change", ".product_qty", function () {
                 var productQtyField = $(this).val();
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
-                if(productStockField.val()==null){
+                if (productStockField.val() == null) {
                     alert("The Product is not in Stock")
                     $(this).val('');
                 }
                 var selectedTextqty = productStockField.find("option:selected").data('qty');
-                if(productQtyField > selectedTextqty) {
+                if (productQtyField > selectedTextqty) {
                     alert("Available Amount of Selected Product in Stock is " + selectedTextqty);
                     $(this).val('');
                 }
@@ -126,14 +141,14 @@ if (!$retval6) {
                             alert(message);
                         } else {
                             productData = JSON.parse(response)
-                            var l =productData.length
+                            var l = productData.length
                             var i
-                            var options=''
-                            if(l>0)
-                            for(i=0;i<l;i++){
-                                // product_qty = {code:productData[i].code, qty:productData[i].qty}
-                                options += '<option value="' + productData[i].code + '" data-qty="'+ productData[i].qty +'">' + productData[i].code + '&nbsp;' + productData[i].name + '&nbsp;' + productData[i].design +  '&nbsp;' +productData[i].size + '</option>';
-                            }
+                            var options = ''
+                            if (l > 0)
+                                for (i = 0; i < l; i++) {
+                                    // product_qty = {code:productData[i].code, qty:productData[i].qty}
+                                    options += '<option value="' + productData[i].code + '" data-qty="' + productData[i].qty + '">' + productData[i].code + '&nbsp;' + productData[i].name + '&nbsp;' + productData[i].design + '&nbsp;' + productData[i].size + '</option>';
+                                }
                             productStockField.html(options);
                             // var productData = JSON.parse(response);
                             // productStockField.val(response);
@@ -146,7 +161,49 @@ if (!$retval6) {
                 });
             });
 
+            //for Product Data from work order no
+            $(document).on("change", ".work_order", function () {
+                var workorderNo = $(this).val();
 
+                $.ajax({
+                    method: "POST",
+                    url: "getproductdatafromwno.php",
+                    data: {
+                        workorder_no: workorderNo
+                    },
+                    success: function (response) {
+                        if (response === "FALSE") {
+                            var message = "ERROR: something went wrong on the MYSQL side";
+                            alert(message);
+                        } else {
+                            productData = JSON.parse(response)
+                            var l = productData.length;
+                            for (var i = 0; i < l; i++) {
+                                $('#add_product_field').click();
+                                var productCodeField = $(".product_field:eq(" + i + ")").find(".product_code");
+                                var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
+                                var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
+                                var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
+                                var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
+                                var productReqQtyField = $(".product_field:eq(" + i + ")").find(".req_qty");
+                                var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
+                                productCodeField.val(productData[i].code);
+                                productNameField.val(productData[i].name);
+                                $(productNameField).trigger("change");
+                                productDesignField.val(productData[i].design);
+                                productSizeField.val(productData[i].size);
+                                productFeatureField.val(productData[i].feature);
+                                productReqQtyField.text(productData[i].qty)
+
+                            }
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                        alert(message);
+                    }
+                });
+            });
 
 
         });
@@ -156,16 +213,6 @@ if (!$retval6) {
             $("#add_product_field").click(function () {
                 var productField = `
         <div class="product_field">
-        
-        <label for="work_order">Wo No.</label>
-          <input type="text" list="supplynolist" required name="work_order[]" class="word_order">
-           <datalist id="supplynolist">
-                 <?php
-                 //         while ($row = mysqli_fetch_assoc($retval)) {
-                 //             echo "<option>{$row['code']}";
-                 //         }
-                 //         ?>
-             </datalist> <br>
 
              <label>Product Type</label>
              <select name='product_type[] class='product_type'>
@@ -175,6 +222,9 @@ if (!$retval6) {
              <option>Transfer</option>
              </select> <br> <br>
           
+             <label for="product_code">Product Code</label>
+          <input name="product_code[]"required class="product_code">
+
 
           <label>Product Name</label>
           <input list="productlist" required name="products[]" class="product_name">
@@ -192,6 +242,12 @@ if (!$retval6) {
 
           <label for="product_size">Size</label>
           <input name="product_size[]"required class="product_size">
+
+          <label for="product_feature">Features</label>
+          <input name="product_feature[]"required class="product_feature"> <br> <br>
+
+          <label>Req. Quantity</label>
+          <span class='req_qty'><caption></caption></span> <br> <br>
 
           <label for="product_qty">Desp. Qty</label>
           <input name="product_qty[]"required class="product_qty"> <br> <br>
@@ -248,7 +304,7 @@ if (!$retval6) {
                 <datalist id="companylist">
                     <?php
                     while ($row = mysqli_fetch_assoc($retval2)) {
-                        echo "<option>{$row['name']}";
+                        echo "<option>{$row['name']}</option>";
                     }
                     ?>
                 </datalist>
@@ -259,7 +315,16 @@ if (!$retval6) {
                 <datalist id="vehiclelist">
                     <?php
                     while ($row = mysqli_fetch_assoc($retval6)) {
-                        echo "<option>{$row['number']}";
+                        echo "<option>{$row['number']}</option>";
+                    }
+                    ?>
+                </datalist> <br>
+                <label for="work_order">Work Order No.</label>
+                <input type="text" list="wnolist" required name="work_order" class="work_order">
+                <datalist id="wnolist">
+                    <?php
+                    while ($row = mysqli_fetch_assoc($retval7)) {
+                        echo "<option>{$row['work_order_no']}</option>";
                     }
                     ?>
                 </datalist> <br>
@@ -296,18 +361,19 @@ if (!$retval6) {
             $dest = "";
             $woc = "";
             $vechicle = "";
-            $desc = "";
+            $wno = "";
             $extras = "";
             $opno = $_POST['opno'];
             $date = $_POST['date'];
             $dest = $_POST['dest_name'];
             $woc = $_POST['woc'];
             $vehicle = $_POST['vehicle'];
+            $wno = $_POST['work_order'];
             $extras = $_POST['extras'];
             $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
             if (!$conn) {
             }
-            $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,extras) VALUES ('$opno','$date','$dest','$woc','$vehicle','$extras')";
+            $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras')";
             $sql2 = "INSERT INTO company(name,code) VALUES ('$dest','$woc')";
             $insert = mysqli_query($conn, $sql);
             if (!$insert) {
@@ -322,9 +388,10 @@ if (!$retval6) {
             $ino = "";
             $products = $_POST['products'];
             $productTypes = $_POST['product_type'];
-            $workOrders = $_POST['work_order'];
+            $productCodes = $_POST['product_code'];
             $productDesigns = $_POST['product_design'];
             $productSizes = $_POST['product_size'];
+            $productFeatures = $_POST['product_feature'];
             $productQtys = $_POST['product_qty'];
             $productCodes_stock = $_POST['product_stock'];
             // $sql5 = "SELECT no from outpass ORDER BY no DESC";
@@ -336,14 +403,16 @@ if (!$retval6) {
             // $ono = $row[0];
             for ($i = 0; $i < count($products); $i++) {
                 $productName = $products[$i];
+                $productCode = $productCodes[$i];
                 $productType = $productTypes[$i];
-                $workOrder = $workOrders[$i];
                 $productDesign = $productDesigns[$i];
                 $productSize = $productSizes[$i];
+                $productFeature = $productFeatures[$i];
                 $productQty = $productQtys[$i];
                 $productCode_stock = $productCodes_stock[$i];
+                $productName_bill = $productName . ' ' . $productFeature;
 
-                $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,work_order,product_design,product_size,product_qty) VALUES ('$opno','$productType','$productName','$workOrder','$productDesign','$productSize','$productQty')";
+                $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty) VALUES ('$opno','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty')";
                 $insert = mysqli_query($conn, $sql4);
                 if (!$insert) {
                     echo mysqli_error($conn);
@@ -353,28 +422,35 @@ if (!$retval6) {
                 //updating quantity in stock
                 echo $productCode_stock;
                 $sql8 = "Select qty from stock where code = '$productCode_stock'";
-                        $retval4 = mysqli_query($conn,$sql8);
-                        if(!$retval4) {
-                            echo "Error Occured";
-                        }
-                        $row8 = mysqli_fetch_array($retval4);
-                        $oldqty = $row8[0];
-                        $newqty = $oldqty - $productQty;
-                        echo $oldqty;
-                        echo $newqty;
-                        $sql9 = "UPDATE stock SET qty = '$newqty' where code = '$productCode_stock'";
-                        $update = mysqli_query($conn,$sql9);
-                        if(!$update){
-                            echo mysqli_error($conn);
-                        }
-        
-                //     echo "<script type='text/javascript'>
-                // window.open('createpdfpass.php?no=$ono&io=outpass');
-                // </script>";
-                //     echo "<script type='text/javascript'>
-                // window.location.href = 'outpass.php';
-                // </script>";
+                $retval4 = mysqli_query($conn, $sql8);
+                if (!$retval4) {
+                    echo "Error Occured";
+                }
+                $row8 = mysqli_fetch_array($retval4);
+                $oldqty = $row8[0];
+                $newqty = $oldqty - $productQty;
+                echo $oldqty;
+                echo $newqty;
+                $sql9 = "UPDATE stock SET qty = '$newqty' where code = '$productCode_stock'";
+                $update = mysqli_query($conn, $sql9);
+                if (!$update) {
+                    echo mysqli_error($conn);
+                }
+
+
             }
+            $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
+            $update2 = mysqli_query($conn,$sql8);
+            if(!$update2) {
+                echo mysqli_error($conn);
+            }
+
+            //     echo "<script type='text/javascript'>
+            // window.open('createpdfpass.php?no=$ono&io=outpass');
+            // </script>";
+                echo "<script type='text/javascript'>
+            window.location.href = 'outpass.php';
+            </script>";
         }
         ?>
     </div>
@@ -392,7 +468,7 @@ if (!$retval6) {
                     Destination Company
                 </th>
                 <th>
-                    WO No.
+                    Work Order No.
                 </th>
                 <th>
                     Product Desc.
@@ -433,6 +509,8 @@ if (!$retval6) {
                     </td>
                     <td>
                     {$row['product_name']}
+                    &nbsp;
+                    {$row['product_code']}
                     &nbsp;
                     {$row['product_design']}
                     &nbsp;

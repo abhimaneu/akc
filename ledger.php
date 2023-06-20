@@ -22,13 +22,13 @@ FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
 WHERE date BETWEEN '$start' AND '$end'";
 
-if($company!='All'){
+if ($company != 'All') {
     $sql .= " AND dest = '$company'";
 }
-if($product!='All'){
+if ($product != 'All') {
     $sql .= " AND product_name = '$product'";
 }
-if($size!='All'){
+if ($size != 'All') {
     $sql .= " AND product_size = '$size'";
 }
 
@@ -38,13 +38,13 @@ FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
 WHERE date BETWEEN '$start' AND '$end'";
 
-if($company!='All'){
+if ($company != 'All') {
     $sql .= " AND source = '$company'";
 }
-if($product!='All'){
+if ($product != 'All') {
     $sql .= " AND product_name = '$product'";
 }
-if($size!='All'){
+if ($size != 'All') {
     $sql .= " AND product_size = '$size'";
 }
 
@@ -52,7 +52,7 @@ $sql .= " ORDER BY date DESC;";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
-    
+
 }
 
 $sql2 = "select * from company";
@@ -136,6 +136,42 @@ $retval3 = mysqli_query($conn, $sql3);
     }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#start').click(function () {
+            // Get the current date
+            var currentDate = new Date();
+
+            // Get the current year and month
+            var year = currentDate.getFullYear();
+            var month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Add leading zero if needed
+
+            // Set the default value to the current month
+            var defaultValue = year + '-' + month;
+            document.getElementById('start').value = defaultValue;
+
+        });
+
+        $('#end').click(function () {
+            // Get the current date
+            var currentDate = new Date();
+
+            // Get the current year and month
+            var year = currentDate.getFullYear();
+            var month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Add leading zero if needed
+
+            // Set the default value to the current month
+            var defaultValue = year + '-' + month;
+            document.getElementById('end').value = defaultValue;
+
+        });
+    });
+
+</script>
+
 <body>
     <h2>Ledger</h2>
     <br>
@@ -145,8 +181,8 @@ $retval3 = mysqli_query($conn, $sql3);
         <select name='company'>
             <option selected>All</option>
             <?php
-            while($row = mysqli_fetch_assoc($retval2)){
-            echo "
+            while ($row = mysqli_fetch_assoc($retval2)) {
+                echo "
             <option>{$row['name']}</option>
             ";
             }
@@ -157,8 +193,8 @@ $retval3 = mysqli_query($conn, $sql3);
             <option selected>All</option>
             <?php
             mysqli_data_seek($retval3, 0);
-            while($row = mysqli_fetch_assoc($retval3)){
-            echo "
+            while ($row = mysqli_fetch_assoc($retval3)) {
+                echo "
             <option>{$row['name']}</option>
             ";
             }
@@ -169,8 +205,8 @@ $retval3 = mysqli_query($conn, $sql3);
             <option selected>All</option>
             <?php
             mysqli_data_seek($retval3, 0);
-            while($row = mysqli_fetch_assoc($retval3)){
-            echo "
+            while ($row = mysqli_fetch_assoc($retval3)) {
+                echo "
             <option>{$row['size']}</option>
             ";
             }
@@ -178,10 +214,10 @@ $retval3 = mysqli_query($conn, $sql3);
         </select> <br>
         <br>
         <label for="start">Start</label>
-        <input type="date" required name="start">
+        <input type="date" value="1990-01-01" id='start' required name="start">
         &nbsp;
         <label for="end">End</label>
-        <input name="end" required type="date">
+        <input name="end" value="2099-12-31" id='end' required type="date">
 
         &nbsp;
         <input type="submit" name="filter-date" value="Search">

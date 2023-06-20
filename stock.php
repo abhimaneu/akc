@@ -4,11 +4,6 @@ include 'nav.php';
 ?>
 
 <?php
-$sql = "SELECT * from stock";
-$retval = mysqli_query($conn, $sql);
-if (!$retval) {
-    echo "Error Occred";
-}
 
 $item = 'All';
 $design = 'All';
@@ -19,6 +14,8 @@ if ($f != 0) {
     $design = $_GET['d'];
     $size = $_GET['s'];
 }
+
+//for item filter
 $sql2 = "SELECT item from stock where 1=1";
 
 if($item!='All'){
@@ -31,6 +28,7 @@ if (!$retval2) {
     echo mysqli_error($conn);
 }
 
+//for design filter
 $sql3 = "SELECT design from stock where 1=1";
 
 if($design!='All'){
@@ -43,6 +41,7 @@ if (!$retval3) {
     echo mysqli_error($conn);
 }
 
+//for size filter
 $sql4 = "SELECT size from stock where 1=1";
 
 if($size!='All'){
@@ -53,6 +52,26 @@ $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
+}
+
+//for table
+$sql = "SELECT * from stock where 1=1";
+
+if($item!='All'){
+    $sql .= " AND item = '$item'";
+}
+
+if($design!='All'){
+    $sql .= " AND design = '$design'";
+}
+
+if($size!='All'){
+    $sql .= " AND size = '$size'";
+}
+
+$retval = mysqli_query($conn, $sql);
+if (!$retval) {
+    echo "Error Occred";
 }
 
 ?>

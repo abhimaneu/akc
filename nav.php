@@ -46,6 +46,7 @@
         <ul id="navul">
             <li id="navli"><a href="inpass.php">Inpass</a></li>
             <li id="navli"><a href="outpass.php">Outpass</a></li>
+            <li id="navli"><a href="workorder.php">Work Order</a></li>
             <li id="navli"><a href="products.php">Products</a></li>
             <li id="navli"><a href="ledger.php?f=0">Ledger</a></li>
             <li id="navli"><a href="stock.php?f=0">Stock</a></li>
