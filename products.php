@@ -104,13 +104,28 @@ if (!$retval2) {
     </div>
 </body>
 <?php
-if(isset($_POST['delete_product'])) {
+if (isset($_POST['delete_product'])) {
+    //transaction
+    $tran = 'START TRANSACTION';
+    $transtart = mysqli_query($conn, $tran);
+    if (!$transtart) {
+        echo mysqli_error($conn);
+    }
+    // $tran = 'SET AUTOCOMMIT = OFF';
+    // $transtart = mysqli_query($conn, $tran);
+    // if (!$transtart) {
+    //     echo mysqli_error($conn);
+    // }
+
     $delete_code = $_POST['id'];
     $sql = "DELETE from products where code = '$delete_code'";
-    $retval4 = mysqli_query($conn,$sql);
-    if(!$retval4) {
+    $retval4 = mysqli_query($conn, $sql);
+    if (!$retval4) {
         echo "Error Occured";
     }
+    //transaction
+    mysqli_commit($conn);
+
     echo "<script type='text/javascript'>
     window.location.href = 'products.php';
     </script>";

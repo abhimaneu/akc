@@ -26,7 +26,7 @@ if ($company != 'All') {
     $sql .= " AND dest = '$company'";
 }
 if ($product != 'All') {
-    $sql .= " AND product_name = '$product'";
+    $sql .= " AND product_name  LIKE '%$product%'";
 }
 if ($size != 'All') {
     $sql .= " AND product_size = '$size'";
@@ -235,7 +235,7 @@ $retval3 = mysqli_query($conn, $sql3);
                 Source/Destination
             </th>
             <th>
-                WO / SO
+                Pro.#(Inpass)/WO#(Outpass)
             </th>
             <th>
                 Product
@@ -267,9 +267,9 @@ $retval3 = mysqli_query($conn, $sql3);
                 </td>
                 <td>
                 {$row['product_name']}
-                &nbsp; &nbsp;
+                &nbsp;
                 {$row['product_design']}
-                &nbsp; &nbsp;
+                &nbsp;
                 {$row['product_size']}
                 </td>
                 <td>

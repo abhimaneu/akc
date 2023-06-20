@@ -156,8 +156,7 @@ if (!$retval3) {
           <label for="product_qty">Accp. Qty</label>
           <input name="product_qty[]"required class="product_qty">
       
-          <label for="product">Product Desc.</label>
-          <textarea name="product_desc[]" class="product_description"></textarea> <br> <br>
+         <br><br>
           
           <button type="button" class="remove_product_field">Remove</button>
         </div>
@@ -430,6 +429,7 @@ if (!$retval3) {
             </tbody>
         </table>
     </div>
+    
 </body>
 
 </html>

@@ -249,9 +249,6 @@ if (!$retval8) {
           <label>Req. Quantity</label>
           <span class='req_qty'><caption></caption></span> <br> <br>
 
-          <label for="product_qty">Desp. Qty</label>
-          <input name="product_qty[]"required class="product_qty"> <br> <br>
-
           <caption>The product will be taken from the following stock</caption> <br> <br>
           <select name='product_stock[]' class='product_stock'>
           <option></option>
@@ -259,6 +256,11 @@ if (!$retval8) {
            <br>
            <caption name='product_cap' class='product_cap'></caption>
            <br>
+
+          <label for="product_qty">Desp. Qty</label>
+          <input name="product_qty[]"required class="product_qty"> <br> <br>
+
+          
            <br>
           
           <button type="button" class="remove_product_field">Remove</button>
@@ -356,6 +358,7 @@ if (!$retval8) {
         <br><br>
         <?php
         if (isset($_POST['op'])) {
+            $flag=0;
             $opno = "";
             $date = "";
             $dest = "";
@@ -372,6 +375,11 @@ if (!$retval8) {
             $extras = $_POST['extras'];
             $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
             if (!$conn) {
+            }
+            $tran = 'START TRANSACTION';
+            $transtart = mysqli_query($conn, $tran);
+            if (!$transtart) {
+                echo mysqli_error($conn);
             }
             $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras')";
             $sql2 = "INSERT INTO company(name,code) VALUES ('$dest','$woc')";
@@ -429,25 +437,33 @@ if (!$retval8) {
                 $row8 = mysqli_fetch_array($retval4);
                 $oldqty = $row8[0];
                 $newqty = $oldqty - $productQty;
-                echo $oldqty;
-                echo $newqty;
-                $sql9 = "UPDATE stock SET qty = '$newqty' where code = '$productCode_stock'";
-                $update = mysqli_query($conn, $sql9);
-                if (!$update) {
-                    echo mysqli_error($conn);
+                if (!($newqty < 0)) {
+                    echo $oldqty;
+                    echo $newqty;
+                    $sql9 = "UPDATE stock SET qty = '$newqty' where code = '$productCode_stock'";
+                    $update = mysqli_query($conn, $sql9);
+                    if (!$update) {
+                        echo mysqli_error($conn);
+                    }
+                } else {
+                    mysqli_rollback($conn);
+                    $flag=1;
+                    echo "<script>alert('Not Enough Stock Avalible for Selected Products')</script>";
                 }
 
-
             }
+            if($flag==0){
             $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
-            $update2 = mysqli_query($conn,$sql8);
-            if(!$update2) {
+            $update2 = mysqli_query($conn, $sql8);
+            if (!$update2) {
                 echo mysqli_error($conn);
             }
+        }
 
             //     echo "<script type='text/javascript'>
             // window.open('createpdfpass.php?no=$ono&io=outpass');
             // </script>";
+            mysqli_commit($conn);
                 echo "<script type='text/javascript'>
             window.location.href = 'outpass.php';
             </script>";

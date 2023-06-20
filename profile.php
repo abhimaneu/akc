@@ -33,6 +33,12 @@ if (!$retval3) {
     echo mysqli_query($conn, $sql);
 }
 
+$sql4 = "SELECT * from company_products";
+$retval4 = mysqli_query($conn, $sql4);
+if (!$retval4) {
+    echo mysqli_query($conn, $sql);
+}
+
 ?>
 
 <html>
@@ -42,8 +48,72 @@ if (!$retval3) {
     <?php echo $name ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
     Company Code:
     <?php echo $wo ?> <br> <br>
-    Vehicle List <br> <br>
-    <table>
+    <h1>Company Products</h1>
+    <table style="border-spacing: 30px;">
+            <thead>
+                <th>No.</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Design</th>
+                <th>Size</th>
+                <th>Feature</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <?php
+                $i = 1;
+                while ($row = mysqli_fetch_assoc($retval4)) {
+                    echo "
+                    <form method='POST'>
+                    <tr>
+                    <td>
+                    $i
+                    </td>
+                    <td>
+                    {$row['code']}
+                    </td>
+                    <td>
+                    {$row['name']}
+                    </td>
+                    <td>
+                    {$row['design']}
+                    </td>
+                    <td>
+                    {$row['size']}
+                    </td>
+                    <td>
+                    {$row['features']}
+                    </td>
+                    <td>
+                    <form method='post' id='delete_company_product' name='delete_company_product'>
+                    <input type='hidden' name='id' value='{$row['code']}'>
+                    <input type='submit' id='delete_company_product' name='delete_company_product' value='Delete'>
+                    </form>
+                    </td>
+                    </tr>
+                    </form>
+                    ";
+                    $i = $i + 1;
+                }
+                ?>
+                <tr>
+                    <form method="post">
+                        <td>
+                            <?php echo $i ?>
+                        </td>
+                        <td><input type="text" required name="code"></td>
+                        <td><input type="text" required name="name"></td>
+                        <td><input type="text" required name="design"></td>
+                        <td><input type="text" required name="size"></td>
+                        <td><input type="text" name="features"></td>
+                        <td><button name="add_company_product">Add Product</button></td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+        <br> <br>
+    <h1>Vehicle List</h1> <br> <br>
+    <table style="border-spacing: 30px;">
         <thead>
             <th>No.</th>
             <th>Vehicle No.</th>
@@ -95,7 +165,7 @@ if (!$retval3) {
     </table>
     <br>
     <h1>Saved Companies</h1>
-    <table>
+    <table style="border-spacing: 30px;">
         <thead>
             <th>No.</th>
             <th>Company Name</th>
@@ -228,6 +298,61 @@ if (isset($_POST['add_vehicle'])) {
         echo "<script type='text/javascript'>
         window.location.href = 'profile.php';
         </script>";
+    }
+}
+
+if (isset($_POST['delete_company_product'])) {
+    // //transaction
+    // $tran = 'START TRANSACTION';
+    // $transtart = mysqli_query($conn, $tran);
+    // if (!$transtart) {
+    //     echo mysqli_error($conn);
+    // }
+    // $tran = 'SET AUTOCOMMIT = OFF';
+    // $transtart = mysqli_query($conn, $tran);
+    // if (!$transtart) {
+    //     echo mysqli_error($conn);
+    // }
+
+    $delete_code = $_POST['id'];
+    $sql = "DELETE from company_products where code = '$delete_code'";
+    $retval7 = mysqli_query($conn, $sql);
+    if (!$retval7) {
+        echo "Error Occured";
+    }
+    // //transaction
+    // mysqli_commit($conn);
+
+    echo "<script type='text/javascript'>
+    window.location.href = 'profile.php';
+    </script>";
+}
+if (isset($_POST['add_company_product'])) {
+    if (!$conn) {
+        echo "Error Occured";
+        die($conn);
+    }
+    $product_name = '';
+    $product_code = '';
+    $product_size = '';
+    $product_design = '';
+    $product_features = '';
+    $product_name = $_POST['name'];
+    $product_code = $_POST['code'];
+    $product_size = $_POST['size'];
+    $product_design = $_POST['design'];
+    $product_features = $_POST['features'];
+    $sql = "INSERT into company_products(code,name,design,size,features) VALUES ('$product_code','$product_name','$product_design','$product_size','$product_features')";
+    $insert = mysqli_query($conn, $sql);
+    if (!$insert) {
+        echo "Error";
+        echo mysqli_error($conn);
+        die($conn);
+    }
+    if ($insert) {
+        echo "<script type='text/javascript'>
+    window.location.href = 'profile.php';
+    </script>";
     }
 }
 ?>
