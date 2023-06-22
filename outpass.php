@@ -118,6 +118,8 @@ if (!$retval8) {
                 });
             });
 
+           
+
             //for Company Code
             $("#dest_name").on("change", function () { //use an appropriate event handler here
                 $.ajax({
@@ -146,6 +148,15 @@ if (!$retval8) {
             $(document).on("change", ".product_stock", function () {
                 var productQtyField = $(this).closest(".product_field").find(".product_qty");
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
+                var productCustomField = $(this).closest(".product_field").find(".custom_field");
+                if(productStockField.val() == 'custom'){
+                    productCustomField.removeAttr('hidden',true);
+                    productCustomField.attr("required", true);
+                }
+                else{
+                    productCustomField.attr("hidden", true);
+                    productCustomField.removeAttr('required',true);
+                }
                 productQtyField.val('');
                 product_code_final = productStockField.val();
             });
@@ -185,15 +196,15 @@ if (!$retval8) {
                             productData = JSON.parse(response)
                             var l = productData.length
                             var i
-                            var options = ''
+                            var options='';
                             if (l > 0)
                                 for (i = 0; i < l; i++) {
-                                    // product_qty = {code:productData[i].code, qty:productData[i].qty}
-                                    options += '<option value="' + productData[i].code + '" data-qty="' + productData[i].qty + '">' + productData[i].code + '&nbsp;' + productData[i].name + '&nbsp;' + productData[i].design + '&nbsp;' + productData[i].size + '</option>';
+                                    
+                                    options += '<option selected value="' + productData[i].code + '" data-qty="' + productData[i].qty + '">' + productData[i].code + '&nbsp;' + productData[i].name + '&nbsp;' + productData[i].design + '&nbsp;' + productData[i].size + '</option>';
                                 }
+                                options += "<option value='custom'>Custom</option>";
                             productStockField.html(options);
-                            // var productData = JSON.parse(response);
-                            // productStockField.val(response);
+                            
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -219,7 +230,7 @@ if (!$retval8) {
                             alert("This work Order has already been Completed");
                             stopExecution = true;
                         }
-                        if(response != 'Open'){
+                        if (response != 'Open') {
                             alert("A Work Order with this No. has not been generated yet")
                         }
                     },
@@ -236,68 +247,143 @@ if (!$retval8) {
 
                 function continueExecution() {
 
-                $.ajax({
-                    method: "POST",
-                    url: "getproductdatafromwno.php",
-                    data: {
-                        workorder_no: workorderNo
-                    },
-                    success: function (response) {
-                        if (response === "FALSE") {
-                            var message = "ERROR: something went wrong on the MYSQL side";
-                            alert(message);
-                        } else {
-                            productData = JSON.parse(response)
-                            var l = productData.length;
-                            for (var i = 0; i < l; i++) {
-                                $('#add_product_field').click();
-                                var productCodeField = $(".product_field:eq(" + i + ")").find(".product_code");
-                                var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
-                                var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
-                                var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
-                                var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
-                                var productReqQtyField = $(".product_field:eq(" + i + ")").find(".req_qty");
-                                var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
-                                productCodeField.val(productData[i].code);
-                                productNameField.val(productData[i].name);
-                                $(productNameField).trigger("change");
-                                productDesignField.val(productData[i].design);
-                                productSizeField.val(productData[i].size);
-                                productFeatureField.val(productData[i].feature);
-                                productReqQtyField.text(productData[i].qty)
+                    $.ajax({
+                        method: "POST",
+                        url: "getproductdatafromwno.php",
+                        data: {
+                            workorder_no: workorderNo
+                        },
+                        success: function (response) {
+                            if (response === "FALSE") {
+                                var message = "ERROR: something went wrong on the MYSQL side";
+                                alert(message);
+                            } else {
+                                productData = JSON.parse(response)
+                                var l = productData.length;
+                                for (var i = 0; i < l; i++) {
+                                    $('#add_product_field').click();
+                                    var productCodeField = $(".product_field:eq(" + i + ")").find(".product_code");
+                                    var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
+                                    var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
+                                    var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
+                                    var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
+                                    var productReqQtyField = $(".product_field:eq(" + i + ")").find(".req_qty");
+                                    var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
+                                    productCodeField.val(productData[i].code);
+                                    productNameField.val(productData[i].name);
+                                    $(productNameField).trigger("change");
+                                    productDesignField.val(productData[i].design);
+                                    productSizeField.val(productData[i].size);
+                                    productFeatureField.val(productData[i].feature);
+                                    productReqQtyField.text(productData[i].qty)
 
+                                }
                             }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                            alert(message);
                         }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
-                        alert(message);
-                    }
-                });
+                    });
 
-                $.ajax({
-                    method: "POST",
-                    url: "getcompanynamefromwno.php",
-                    data: {
-                        workorder_no: workorderNo
-                    },
-                    success: function (response) {
-                        $("#dest_name").val(response);
-                        $("#dest_name").trigger("change");
-                    },
-                    error: function (xhr, status, error) {
-                        var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
-                        alert(message);
-                    }
-                });
-            }
+                    $.ajax({
+                        method: "POST",
+                        url: "getcompanynamefromwno.php",
+                        data: {
+                            workorder_no: workorderNo
+                        },
+                        success: function (response) {
+                            $("#dest_name").val(response);
+                            $("#dest_name").trigger("change");
+                        },
+                        error: function (xhr, status, error) {
+                            var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                            alert(message);
+                        }
+                    });
+                }
             });
 
         });
 
         $(document).ready(function () {
+            var flag_forstockdata = 0;
+            $("#add_product_field").click(function () {
+                if (flag_forstockdata == 0) {
+                    var stockdata = document.getElementById('stockdata');
+                    stockdata.style.display = 'block';
+                    
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'fetchstockdata.php', true);
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // Update the content of the hidden div with the received data
+                            
+                            flag_forstockdata = 1;
+                            var response = JSON.parse(xhr.responseText);
+                            var tableBody = document.getElementById('stockbody');
+                            tableBody.innerHTML = '';
+                            
+                            for (var i = 0; i < response.length; i++) {
+                                var row = document.createElement('tr');
+                                var cell1 = document.createElement('td');
+                                cell1.textContent = response[i].code;
+                                var cell2 = document.createElement('td');
+                                cell2.textContent = response[i].name;
+                                var cell3 = document.createElement('td');
+                                cell3.textContent = response[i].design;
+                                var cell4 = document.createElement('td');
+                                cell4.textContent = response[i].size;
+                                var cell5 = document.createElement('td');
+                                cell5.textContent = response[i].qty;
+
+                                row.appendChild(cell1);
+                                row.appendChild(cell2);
+                                row.appendChild(cell3);
+                                row.appendChild(cell4);
+                                row.appendChild(cell5);
+
+                                tableBody.appendChild(row);
+                            }
+                        } else {
+                            // Handle errors if necessary
+                            hiddenDiv.innerHTML = 'Error fetching data.';
+                        }
+                    };
+                    xhr.send();
+                }
+            });
+            
+            //search stock data
+                var searchInput = document.getElementById("search_input");
+                var table = document.getElementById("stockbody");
+                var rows = table.getElementsByTagName("tr");
+
+                searchInput.addEventListener("keyup", function () {
+                    var input = searchInput.value.toLowerCase();
+
+                    for (var i = 0; i < rows.length; i++) {
+                        var rowData = rows[i].getElementsByTagName("td");
+                        var found = false;
+
+                        for (var j = 0; j < rowData.length; j++) {
+                            if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) {
+                            rows[i].style.display = "";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                });
+
             // Add product field
             $("#add_product_field").click(function () {
+
                 var productField = `
         <div class="product_field">
 
@@ -338,9 +424,12 @@ if (!$retval8) {
 
           <caption>The product will be taken from the following stock</caption> <br> <br>
           <select name='product_stock[]' class='product_stock'>
-          <option></option>
+          <option selected></option>
+          <option value='custom'>Custom</option>
           </select>
-          <button type="button" class="add_custom_option">Add Custom Option</button> <br> <br>
+          <br> <br>
+          <input type='text' hidden class='custom_field' name='custom_field[]' placeholder='Enter Product Code Here (Refer to Stock Data)' >
+          <br> <br>
            <br> <br>
            <caption name='product_cap' class='product_cap'></caption>
            <br>
@@ -421,20 +510,7 @@ if (!$retval8) {
                 <label>Add Products</label>
                 <div class="divider1"></div>
                 <div id="product_fields">
-                    <!-- Initial set of product fields -->
-                    <!-- <div class="product_field">
-                    <label>Product Name</label>
-                    <input list="productlist" required name="products" id="product_name">
-
-                    <label for="productcode">Product Code</label>
-                    <input type="text" required name="product_code" id="product_code">
-
-                    <label for="product_bundle">Product Bundle</label>
-                    <input name="product_bundle" required id="product_bundle">
-
-                    <label for="product">Product Desc.</label>
-                    <textarea name="product_desc" id="product_description"></textarea>
-                </div> -->
+                   
                 </div>
 
                 <button type="button" id="add_product_field">Add Product</button> <br>
@@ -490,13 +566,8 @@ if (!$retval8) {
             $productFeatures = $_POST['product_feature'];
             $productQtys = $_POST['product_qty'];
             $productCodes_stock = $_POST['product_stock'];
-            // $sql5 = "SELECT no from outpass ORDER BY no DESC";
-            // $retino = mysqli_query($conn, $sql5);
-            // if (!$retino) {
-            //     echo "Error Occured";
-            // }
-            // $row = mysqli_fetch_array($retino);
-            // $ono = $row[0];
+            $productCodes_customstock = $_POST['custom_field'];
+            
             for ($i = 0; $i < count($products); $i++) {
                 $productName = $products[$i];
                 $productCode = $productCodes[$i];
@@ -506,7 +577,11 @@ if (!$retval8) {
                 $productFeature = $productFeatures[$i];
                 $productQty = $productQtys[$i];
                 $productCode_stock = $productCodes_stock[$i];
+                $productCode_customstock = $productCodes_customstock[$i];
                 $productName_bill = $productName . ' ' . $productFeature;
+                if($productCode_stock == 'custom'){
+                    $productCode_stock = $productCode_customstock;
+                }
 
                 $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty) VALUES ('$opno','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty')";
                 $insert = mysqli_query($conn, $sql4);
@@ -516,7 +591,6 @@ if (!$retval8) {
                 }
 
                 //updating quantity in stock
-                echo $productCode_stock;
                 $sql8 = "Select qty from stock where code = '$productCode_stock'";
                 $retval4 = mysqli_query($conn, $sql8);
                 if (!$retval4) {
@@ -548,15 +622,40 @@ if (!$retval8) {
                 }
             }
 
-                echo "<script type='text/javascript'>
+            if($flag == 0) {
+            echo "<script type='text/javascript'>
             window.open('createpdfpass.php?no=$opno&io=outpass');
             </script>";
+            }
             mysqli_commit($conn);
             echo "<script type='text/javascript'>
             window.location.href = 'outpass.php';
             </script>";
         }
         ?>
+    </div>
+    <div id="stockdata" style="
+    display: none;
+    max-height: 200px;
+    max-width:800px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 5px;">
+        <table>
+            <label>Seach For any specific product</label>
+            <input type="text" id="search_input" required placeholder="Enter Code/Name">
+            <thead>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Design</th>
+                <th>Size</th>
+                <th>Available. Qty</th>
+            </thead>
+            <tbody id='stockbody'>
+
+            </tbody>
+        </table>
+        <!-- Add HTML structure for AJAX content, e.g., loading indicator or placeholder text -->
     </div>
     <div>
         <h1>Outpasses Generated</h1>

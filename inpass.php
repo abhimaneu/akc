@@ -214,20 +214,7 @@ if (!$retval3) {
                 <label>Add Products</label>
                 <div class="divider1"></div>
                 <div id="product_fields">
-                    <!-- Initial set of product fields -->
-                    <!-- <div class="product_field">
-                    <label>Product Name</label>
-                    <input list="productlist" required name="products" id="product_name">
-
-                    <label for="productcode">Product Code</label>
-                    <input type="text" required name="product_code" id="product_code">
-
-                    <label for="product_bundle">Product Bundle</label>
-                    <input name="product_bundle" required id="product_bundle">
-
-                    <label for="product">Product Desc.</label>
-                    <textarea name="product_desc" id="product_description"></textarea>
-                </div> -->
+                  
                 </div>
 
                 <button type="button" id="add_product_field">Add Product</button>
@@ -288,15 +275,7 @@ if (!$retval3) {
                 $productDeisgns = $_POST['product_design'];
                 $productSizes = $_POST['product_size'];
                 $productQtys = $_POST['product_qty'];
-                //old code
-                // $sql5 = "SELECT no from inpass ORDER BY no DESC";
-                // $retino = mysqli_query($conn, $sql5);
-                // if (!$retino) {
-                //     echo "Error Occured";
-                // }
-                // $row = mysqli_fetch_array($retino);
-                // $ino = $row[0];
-                //
+
                 for ($i = 0; $i < count($products); $i++) {
                     $productName = $products[$i];
                     $productCode = $productCodes[$i];
@@ -364,9 +343,9 @@ if (!$retval3) {
                     echo "<script type='text/javascript'>
                 window.open('createpdfpass.php?no=$ipno&io=inpass');
                 </script>";
-                // echo "<script type='text/javascript'>
-                // window.location.href = 'inpass.php';
-                // </script>";
+                echo "<script type='text/javascript'>
+                window.location.href = 'inpass.php';
+                </script>";
             }
             ?>
         </div>

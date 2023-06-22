@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 22, 2023 at 05:07 PM
+-- Generation Time: Jun 22, 2023 at 08:56 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `name` varchar(50) NOT NULL,
   `code` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company`
@@ -45,7 +45,7 @@ INSERT INTO `company` (`id`, `name`, `code`) VALUES
 (3, 'Company 3', 'C3'),
 (4, 'Company 4', 'C4'),
 (5, 'Company 5', 'C5'),
-(7, 'Company 6', 'C6');
+(17, 'Company 6', 'C6');
 
 -- --------------------------------------------------------
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `company_products` (
   `size` varchar(25) NOT NULL,
   `features` varchar(25) NOT NULL DEFAULT 'none',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company_products`
@@ -107,7 +107,8 @@ INSERT INTO `inpass` (`no`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`
 (908, '2023-06-20', 'Company 4', 'C4', 123, 'KL 33 BC 1920', '', 'inpass'),
 (910, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2982', '', 'inpass'),
 (911, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2983', '', 'inpass'),
-(912, '2023-06-22', 'Company 2', 'C2', 200, 'KL 23 BC 2982', 'Goods', 'inpass');
+(912, '2023-06-22', 'Company 2', 'C2', 200, 'KL 23 BC 2982', 'Goods', 'inpass'),
+(915, '2023-06-23', 'Company 2', 'C2', 920, 'KL 33 BC 1921', '', 'inpass');
 
 -- --------------------------------------------------------
 
@@ -142,7 +143,9 @@ INSERT INTO `inpass_products` (`inpass_no`, `product_name`, `product_code`, `pro
 (908, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
 (910, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
 (911, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 100),
-(912, 'Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 100);
+(912, 'Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 100),
+(915, 'Black Rubber 15mm', 'COD900', 'Plain', '40 X 120cm', 5),
+(915, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10);
 
 -- --------------------------------------------------------
 
@@ -161,13 +164,14 @@ CREATE TABLE IF NOT EXISTS `outpass` (
   `extras` varchar(125) NOT NULL,
   `type` varchar(10) NOT NULL DEFAULT 'outpass',
   PRIMARY KEY (`no`)
-) ENGINE=InnoDB AUTO_INCREMENT=900013 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=90000001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `outpass`
 --
 
 INSERT INTO `outpass` (`no`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`, `extras`, `type`) VALUES
+(6000, '2023-06-23', 'AAC002', 'Company 4', 'C4', 'KL 33 BC 1920', '', 'outpass'),
 (7000, '2023-06-22', 'AAC003', 'Company 2', 'C2', 'KL 33 BC 1921', '', 'outpass'),
 (9000, '2023-06-18', '', 'Company 3', 'C3', 'KL 33 BC 1920', '', 'outpass'),
 (9001, '2023-06-20', 'AAC001', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'outpass'),
@@ -220,7 +224,8 @@ INSERT INTO `outpass_products` (`outpass_no`, `product_type`, `product_name`, `w
 (90011, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC001', 'ACP051', 'REACH', '18\" X 30\"', 50),
 (900001, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC001', 'ACP050', 'REACH', '17.75\" X 38.75\"', 10),
 (900001, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC001', 'ACP051', 'REACH', '18\" X 30\"', 50),
-(7000, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC003', 'ACP051', 'REACH', '18\" X 30\"', 5);
+(7000, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC003', 'ACP051', 'REACH', '18\" X 30\"', 5),
+(6000, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC002', 'ACP050', 'REACH', '17.75\" X 38.75\"', 5);
 
 -- --------------------------------------------------------
 
@@ -243,7 +248,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 INSERT INTO `products` (`name`, `code`, `design`, `size`, `type`) VALUES
 ('Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 'finished'),
-('Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 'finished'),
+('Vinyl back 15mm natural', 'TUF060', 'Plain', '40 X 120cm', 'finished'),
 ('Black Rubber 15mm', 'COD900', 'Plain', '40 X 120cm', 'finished'),
 ('Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 'finished');
 
@@ -293,7 +298,7 @@ INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, 
 (9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 440, 1),
 (11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 740, 1),
 (12, '', 'COD900', 'Black Rubber 15mm', 'Plain', '40 X 120cm', 820, 1),
-(15, '', 'COD901', 'Black Rubber 20mm', 'Plain', '40 X 120cm', 110, 1);
+(15, '', 'COD901', 'Black Rubber 20mm', 'Plain', '40 X 120cm', 120, 1);
 
 -- --------------------------------------------------------
 
@@ -333,7 +338,7 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
   `extras` varchar(50) NOT NULL,
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Open',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `work_orders`
@@ -341,7 +346,8 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
 
 INSERT INTO `work_orders` (`id`, `date`, `work_order_no`, `company`, `extras`, `status`) VALUES
 (5, '2023-06-19', 'AAC001', 'Company 2', '', 'Closed'),
-(6, '2023-06-20', 'AAC002', 'Company 4', '', 'Open');
+(6, '2023-06-20', 'AAC002', 'Company 4', '', 'Closed'),
+(7, '2023-06-23', 'AAC004', 'Company 3', '', 'Open');
 
 -- --------------------------------------------------------
 
@@ -367,7 +373,8 @@ CREATE TABLE IF NOT EXISTS `work_order_products` (
 INSERT INTO `work_order_products` (`work_order_no`, `code`, `name`, `design`, `size`, `features`, `qty`) VALUES
 ('AAC001', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 100),
 ('AAC001', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 50),
-('AAC002', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 5);
+('AAC002', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 5),
+('AAC004', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 10);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

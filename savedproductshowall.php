@@ -7,12 +7,11 @@ include 'conn.php';
 $p_name = 'All';
 $design = 'All';
 $size = 'All';
-$feature = 'All';
 $search = '';
 $code = '';
 $f = $_GET['f'];
 if ($f != 0) {
-    $item = $_GET['i'];
+    $p_name = $_GET['i'];
     $design = $_GET['d'];
     $size = $_GET['s'];
 
@@ -21,7 +20,7 @@ if ($f != 0) {
 }
 
 //for item filter
-$sql2 = "SELECT name from company_products where 1=1";
+$sql2 = "SELECT name from products where 1=1";
 $sql2 .= " GROUP BY name";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
@@ -29,7 +28,7 @@ if (!$retval2) {
 }
 
 //for design filter
-$sql3 = "SELECT design from company_products where 1=1";
+$sql3 = "SELECT design from products where 1=1";
 $sql3 .= " GROUP BY design";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
@@ -37,7 +36,7 @@ if (!$retval3) {
 }
 
 //for size filter
-$sql4 = "SELECT size from company_products where 1=1";
+$sql4 = "SELECT size from products where 1=1";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
@@ -45,7 +44,7 @@ if (!$retval4) {
 }
 
 //for table
-$sql = "SELECT * from company_products where 1=1";
+$sql = "SELECT * from products where 1=1";
 
 if ($p_name != 'All') {
     $sql .= " AND name = '$p_name'";
@@ -60,7 +59,7 @@ if ($size != 'All') {
 }
 
 if (!empty($search)) {
-    $sql .= " AND (name LIKE '%$search%' OR design LIKE '%$search%' OR size LIKE '%$search%' OR features LIKE '%$search%')";
+    $sql .= " AND (name LIKE '%$search%' OR design LIKE '%$search%' OR size LIKE '%$search%')";
 }
 if (!empty($code)) {
     $sql .= " AND (code LIKE '%$code%')";
@@ -76,7 +75,7 @@ if (!$retval) {
 <html>
 
 <body>
-    <h2>Company Products</h2>
+    <h2>Saved Products</h2>
     <br>
     <br>
     <form name="filter" method="post">
@@ -140,9 +139,6 @@ if (!$retval) {
             <th>
                 Size
             </th>
-            <th>
-                Feature
-            </th>
         </thead>
         <tbody>
             <?php
@@ -166,12 +162,9 @@ if (!$retval) {
                     {$row['size']}
                 </td>
                 <td>
-                    {$row['features']}
-                </td>
-                <td>
-                    <form method='post' id='delete_company_product' name='delete_company_product'>
+                    <form method='post' id='delete_product' name='delete_product'>
                     <input type='hidden' name='id' value='{$row['code']}'>
-                    <input type='submit' id='delete_company_product' name='delete_company_product' value='Delete'>
+                    <input type='submit' id='delete_product' name='delete_product' value='Delete'>
                     </form>
                     </td>
                 </tr>";
@@ -183,12 +176,11 @@ if (!$retval) {
                     <td>
                         <?php echo $i ?>
                     </td>
-                    <td><input type="text" required name="code"></td>
                     <td><input type="text" required name="name"></td>
+                    <td><input type="text" required name="code"></td>
                     <td><input type="text" required name="design"></td>
                     <td><input type="text" required name="size"></td>
-                    <td><input type="text" name="features"></td>
-                    <td><button name="add_company_product">Add Product</button></td>
+                    <td><button name="add">Add Product</button></td>
                 </form>
             </tr>
         </tbody>
@@ -198,20 +190,28 @@ if (!$retval) {
 </html>
 
 <?php
-if (isset($_POST['delete_company_product'])) {
-
-    $delete_code = $_POST['id'];
-    $sql = "DELETE from company_products where code = '$delete_code'";
-    $retval7 = mysqli_query($conn, $sql);
-    if (!$retval7) {
-        echo "Error Occured";
+if (isset($_POST['delete_product'])) {
+    //transaction
+    $tran = 'START TRANSACTION';
+    $transtart = mysqli_query($conn, $tran);
+    if (!$transtart) {
+        echo mysqli_error($conn);
     }
 
+    $delete_code = $_POST['id'];
+    $sql = "DELETE from products where code = '$delete_code'";
+    $retval6 = mysqli_query($conn, $sql);
+    if (!$retval6) {
+        echo "Error Occured";
+    }
+    //transaction
+    mysqli_commit($conn);
+
     echo "<script type='text/javascript'>
-    window.location.href = 'compproductshowall.php?f=0';
+    window.location.href = 'savedproductshowall.php?f=0';
     </script>";
 }
-if (isset($_POST['add_company_product'])) {
+if (isset($_POST['add'])) {
     if (!$conn) {
         echo "Error Occured";
         die($conn);
@@ -220,13 +220,11 @@ if (isset($_POST['add_company_product'])) {
     $product_code = '';
     $product_size = '';
     $product_design = '';
-    $product_features = '';
     $product_name = $_POST['name'];
     $product_code = $_POST['code'];
     $product_size = $_POST['size'];
     $product_design = $_POST['design'];
-    $product_features = $_POST['features'];
-    $sql = "INSERT into company_products(code,name,design,size,features) VALUES ('$product_code','$product_name','$product_design','$product_size','$product_features')";
+    $sql = "INSERT into products(name,code,design,size) VALUES ('$product_name','$product_code','$product_design','$product_size')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";
@@ -235,7 +233,7 @@ if (isset($_POST['add_company_product'])) {
     }
     if ($insert) {
         echo "<script type='text/javascript'>
-    window.location.href = 'compproductshowall.php?f=0';
+    window.location.href = 'savedproductshowall.php?f=0';
     </script>";
     }
 }
@@ -248,7 +246,7 @@ if (isset($_POST['filter'])) {
     $search = $_POST['search'];
     $code = $_POST['code'];
     echo "<script type='text/javascript'>
-            window.location.href = 'compproductshowall.php?f=1&i=$pro_fil&d=$design_fil&s=$size_fil&pns=$search&pc=$code';
+            window.location.href = 'savedproductshowall.php?f=1&i=$pro_fil&d=$design_fil&s=$size_fil&pns=$search&pc=$code';
             </script>";
 }
 ?>

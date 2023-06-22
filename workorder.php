@@ -199,15 +199,7 @@ if (!$retval3) {
         $productSizes = $_POST['product_size'];
         $productFeatures = $_POST['product_feature'];
         $productQtys = $_POST['product_qty'];
-        //old code
-        // $sql5 = "SELECT no from inpass ORDER BY no DESC";
-        // $retino = mysqli_query($conn, $sql5);
-        // if (!$retino) {
-        //     echo "Error Occured";
-        // }
-        // $row = mysqli_fetch_array($retino);
-        // $ino = $row[0];
-        //
+
         for ($i = 0; $i < count($products); $i++) {
             $productName = $products[$i];
             $productCode = $productCodes[$i];
@@ -222,9 +214,7 @@ if (!$retval3) {
                 echo mysqli_error($conn);
             }
         }
-        //     echo "<script type='text/javascript'>
-        // window.open('createpdfpass.php?no=$ipno&io=inpass');
-        // </script>";
+        
             echo "<script type='text/javascript'>
         window.location.href = 'workorder.php';
         </script>";

@@ -24,19 +24,25 @@ while ($row = $retval->fetch_assoc()) {
 $sql = "SELECT * from vehicles";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
-    echo mysqli_query($conn, $sql);
+    echo mysqli_error($conn);
 }
 
-$sql2 = "SELECT * from company Order by name";
+$sql2 = "SELECT * from company Order by name LIMIT 10";
 $retval3 = mysqli_query($conn, $sql2);
 if (!$retval3) {
-    echo mysqli_query($conn, $sql);
+    echo mysqli_error($conn);
 }
 
-$sql4 = "SELECT * from company_products";
+$sql4 = "SELECT * from company_products LIMIT 10";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
-    echo mysqli_query($conn, $sql);
+    echo mysqli_error($conn);
+}
+
+$sql5 = "SELECT * from products LIMIT 10";
+$retval5 = mysqli_query($conn, $sql5);
+if (!$retval5) {
+    echo mysqli_error($conn);
 }
 
 ?>
@@ -165,7 +171,119 @@ if (!$retval4) {
         </tbody>
     </table>
     <br>
+    
+    <h1>Saved Products</h1>
+    <a href='savedproductshowall.php?f=0' target="_blank">Show All</a> <br> <br>
+        <table>
+            <thead>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Design</th>
+                <th>Size</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <?php
+                $i = 1;
+                while ($row = mysqli_fetch_assoc($retval5)) {
+                    echo "
+                    <form method='POST'>
+                    <tr>
+                    <td>
+                    $i
+                    </td>
+                    <td>
+                    {$row['name']}
+                    </td>
+                    <td>
+                    {$row['code']}
+                    </td>
+                    <td>
+                    {$row['design']}
+                    </td>
+                    <td>
+                    {$row['size']}
+                    </td>
+                    <td>
+                    <form method='post' id='delete_product' name='delete_product'>
+                    <input type='hidden' name='id' value='{$row['code']}'>
+                    <input type='submit' id='delete_product' name='delete_product' value='Delete'>
+                    </form>
+                    </td>
+                    </tr>
+                    </form>
+                    ";
+                    $i = $i + 1;
+                }
+                ?>
+                <tr>
+                    <form method="post">
+                        <td>
+                            <?php echo $i ?>
+                        </td>
+                        <td><input type="text" required name="name"></td>
+                        <td><input type="text" required name="code"></td>
+                        <td><input type="text" required name="design"></td>
+                        <td><input type="text" required name="size"></td>
+                        <td><button name="add">Add Product</button></td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+<br>
+<?php
+if (isset($_POST['delete_product'])) {
+    //transaction
+    $tran = 'START TRANSACTION';
+    $transtart = mysqli_query($conn, $tran);
+    if (!$transtart) {
+        echo mysqli_error($conn);
+    }
+
+    $delete_code = $_POST['id'];
+    $sql = "DELETE from products where code = '$delete_code'";
+    $retval6 = mysqli_query($conn, $sql);
+    if (!$retval6) {
+        echo "Error Occured";
+    }
+    //transaction
+    mysqli_commit($conn);
+
+    echo "<script type='text/javascript'>
+    window.location.href = 'profile.php';
+    </script>";
+}
+if (isset($_POST['add'])) {
+    if (!$conn) {
+        echo "Error Occured";
+        die($conn);
+    }
+    $product_name = '';
+    $product_code = '';
+    $product_size = '';
+    $product_design = '';
+    $product_name = $_POST['name'];
+    $product_code = $_POST['code'];
+    $product_size = $_POST['size'];
+    $product_design = $_POST['design'];
+    $sql = "INSERT into products(name,code,design,size) VALUES ('$product_name','$product_code','$product_design','$product_size')";
+    $insert = mysqli_query($conn, $sql);
+    if (!$insert) {
+        echo "Error";
+        echo mysqli_error($conn);
+        die($conn);
+    }
+    if ($insert) {
+        echo "<script type='text/javascript'>
+    window.location.href = 'profile.php';
+    </script>";
+    }
+}
+?>
+
     <h1>Saved Companies</h1>
+    <a href="savedcompshowall.php?f=0" target="_blank">Show All</a> <br> <br>
     <table style="border-spacing: 30px;">
         <thead>
             <th>No.</th>
@@ -303,17 +421,6 @@ if (isset($_POST['add_vehicle'])) {
 }
 
 if (isset($_POST['delete_company_product'])) {
-    // //transaction
-    // $tran = 'START TRANSACTION';
-    // $transtart = mysqli_query($conn, $tran);
-    // if (!$transtart) {
-    //     echo mysqli_error($conn);
-    // }
-    // $tran = 'SET AUTOCOMMIT = OFF';
-    // $transtart = mysqli_query($conn, $tran);
-    // if (!$transtart) {
-    //     echo mysqli_error($conn);
-    // }
 
     $delete_code = $_POST['id'];
     $sql = "DELETE from company_products where code = '$delete_code'";
@@ -321,8 +428,6 @@ if (isset($_POST['delete_company_product'])) {
     if (!$retval7) {
         echo "Error Occured";
     }
-    // //transaction
-    // mysqli_commit($conn);
 
     echo "<script type='text/javascript'>
     window.location.href = 'profile.php';
