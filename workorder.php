@@ -20,7 +20,7 @@ if (!$retval) {
     die($conn);
 }
 //fetch workorder data for table
-$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no order by date desc";
+$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no order by date desc LIMIT 10";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -234,6 +234,7 @@ if (!$retval3) {
 <div>
 
 <h1>Work Orders Generated</h1>
+<a href="workordershowall.php?f=0" target="_blank">Show All</a>
 <table style="border-spacing: 30px;">
     <thead>
         <th>

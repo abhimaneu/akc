@@ -361,9 +361,9 @@ if (!$retval3) {
                     mysqli_commit($conn);
 
                 }
-                //     echo "<script type='text/javascript'>
-                // window.open('createpdfpass.php?no=$ipno&io=inpass');
-                // </script>";
+                    echo "<script type='text/javascript'>
+                window.open('createpdfpass.php?no=$ipno&io=inpass');
+                </script>";
                 // echo "<script type='text/javascript'>
                 // window.location.href = 'inpass.php';
                 // </script>";
@@ -374,6 +374,7 @@ if (!$retval3) {
     <div>
 
         <h1>Inpasses Generated</h1>
+        <a href="inpassshowall.php?f=0" target="_blank">Show All</a>
         <table style="border-spacing: 30px;">
             <thead>
                 <th>

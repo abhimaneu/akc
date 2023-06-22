@@ -29,7 +29,8 @@ if (!$retval3) {
     die($conn);
 }
 
-$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no ORDER BY date DESC";
+//for table
+$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no ORDER BY date DESC LIMIT 10";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
@@ -77,45 +78,45 @@ if (!$retval8) {
                 // $('#add_product_field').click();
             });
 
-            
-        //for Product Data
-        $(document).on("change", ".product_code", function () {
-            var productCode = $(this).val();
-            var productNameField = $(this).closest(".product_field").find(".product_name");
-            var productDesignField = $(this).closest(".product_field").find(".product_design");
-            var productSizeField = $(this).closest(".product_field").find(".product_size");
-            var productFeatureField = $(this).closest(".product_field").find(".product_feature");
+
+            //for Product Data
+            $(document).on("change", ".product_code", function () {
+                var productCode = $(this).val();
+                var productNameField = $(this).closest(".product_field").find(".product_name");
+                var productDesignField = $(this).closest(".product_field").find(".product_design");
+                var productSizeField = $(this).closest(".product_field").find(".product_size");
+                var productFeatureField = $(this).closest(".product_field").find(".product_feature");
 
 
-            $.ajax({
-                method: "POST",
-                url: "getcompanyproductdata.php",
-                data: {
-                    product_code: productCode
-                },
-                success: function (response) {
-                    if (response === "FALSE") {
-                        var message = "ERROR: something went wrong on the MYSQL side";
-                        alert(message);
-                    } else {
-                        var productData = JSON.parse(response);
+                $.ajax({
+                    method: "POST",
+                    url: "getcompanyproductdata.php",
+                    data: {
+                        product_code: productCode
+                    },
+                    success: function (response) {
+                        if (response === "FALSE") {
+                            var message = "ERROR: something went wrong on the MYSQL side";
+                            alert(message);
+                        } else {
+                            var productData = JSON.parse(response);
 
-                        if (productData) {
-                            product = productData[0]
-                            productNameField.val(product.name)
-                            productDesignField.val(product.design)
-                            productSizeField.val(product.size)
-                            productFeatureField.val(product.features)
-                            $(productNameField).trigger("change");
+                            if (productData) {
+                                product = productData[0]
+                                productNameField.val(product.name)
+                                productDesignField.val(product.design)
+                                productSizeField.val(product.size)
+                                productFeatureField.val(product.features)
+                                $(productNameField).trigger("change");
+                            }
                         }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                        alert(message);
                     }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
-                    alert(message);
-                }
+                });
             });
-        });
 
             //for Company Code
             $("#dest_name").on("change", function () { //use an appropriate event handler here
@@ -205,6 +206,35 @@ if (!$retval8) {
             //for Product Data from work order no
             $(document).on("change", ".work_order", function () {
                 var workorderNo = $(this).val();
+                var stopExecution = false;
+
+                $.ajax({
+                    method: "POST",
+                    url: "checkworkorderopen.php",
+                    data: {
+                        workorder_no: workorderNo
+                    },
+                    success: function (response) {
+                        if (response == 'Closed') {
+                            alert("This work Order has already been Completed");
+                            stopExecution = true;
+                        }
+                        if(response != 'Open'){
+                            alert("A Work Order with this No. has not been generated yet")
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.log(error);
+                    },
+                    complete: function () {
+                        if (!stopExecution) {
+                            continueExecution();
+                        }
+                    }
+                });
+
+                function continueExecution() {
 
                 $.ajax({
                     method: "POST",
@@ -244,8 +274,24 @@ if (!$retval8) {
                         alert(message);
                     }
                 });
-            });
 
+                $.ajax({
+                    method: "POST",
+                    url: "getcompanynamefromwno.php",
+                    data: {
+                        workorder_no: workorderNo
+                    },
+                    success: function (response) {
+                        $("#dest_name").val(response);
+                        $("#dest_name").trigger("change");
+                    },
+                    error: function (xhr, status, error) {
+                        var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                        alert(message);
+                    }
+                });
+            }
+            });
 
         });
 
@@ -293,8 +339,9 @@ if (!$retval8) {
           <caption>The product will be taken from the following stock</caption> <br> <br>
           <select name='product_stock[]' class='product_stock'>
           <option></option>
-          </select> <br>
-           <br>
+          </select>
+          <button type="button" class="add_custom_option">Add Custom Option</button> <br> <br>
+           <br> <br>
            <caption name='product_cap' class='product_cap'></caption>
            <br>
 
@@ -399,7 +446,7 @@ if (!$retval8) {
         <br><br>
         <?php
         if (isset($_POST['op'])) {
-            $flag=0;
+            $flag = 0;
             $opno = "";
             $date = "";
             $dest = "";
@@ -488,24 +535,24 @@ if (!$retval8) {
                     }
                 } else {
                     mysqli_rollback($conn);
-                    $flag=1;
+                    $flag = 1;
                     echo "<script>alert('Not Enough Stock Avalible for Selected Products')</script>";
                 }
 
             }
-            if($flag==0){
-            $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
-            $update2 = mysqli_query($conn, $sql8);
-            if (!$update2) {
-                echo mysqli_error($conn);
+            if ($flag == 0) {
+                $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
+                $update2 = mysqli_query($conn, $sql8);
+                if (!$update2) {
+                    echo mysqli_error($conn);
+                }
             }
-        }
 
-            //     echo "<script type='text/javascript'>
-            // window.open('createpdfpass.php?no=$ono&io=outpass');
-            // </script>";
-            mysqli_commit($conn);
                 echo "<script type='text/javascript'>
+            window.open('createpdfpass.php?no=$opno&io=outpass');
+            </script>";
+            mysqli_commit($conn);
+            echo "<script type='text/javascript'>
             window.location.href = 'outpass.php';
             </script>";
         }
@@ -513,6 +560,7 @@ if (!$retval8) {
     </div>
     <div>
         <h1>Outpasses Generated</h1>
+        <a href="outpassshowall.php?f=0" target="_blank">Show All</a>
         <table style="border-spacing: 30px;">
             <thead>
                 <th>

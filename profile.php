@@ -49,6 +49,7 @@ if (!$retval4) {
     Company Code:
     <?php echo $wo ?> <br> <br>
     <h1>Company Products</h1>
+    <a href="compproductshowall.php?f=0" target="_blank">Show All</a>
     <table style="border-spacing: 30px;">
             <thead>
                 <th>No.</th>

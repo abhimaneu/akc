@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 20, 2023 at 07:32 PM
+-- Generation Time: Jun 22, 2023 at 05:07 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -106,7 +106,8 @@ INSERT INTO `inpass` (`no`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`
 (907, '2023-06-20', 'Company 2', 'C2', 123, 'KL 23 BC 2982', '', 'inpass'),
 (908, '2023-06-20', 'Company 4', 'C4', 123, 'KL 33 BC 1920', '', 'inpass'),
 (910, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2982', '', 'inpass'),
-(911, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2983', '', 'inpass');
+(911, '2023-06-20', 'Company 2', 'C2', 878, 'KL 23 BC 2983', '', 'inpass'),
+(912, '2023-06-22', 'Company 2', 'C2', 200, 'KL 23 BC 2982', 'Goods', 'inpass');
 
 -- --------------------------------------------------------
 
@@ -140,7 +141,8 @@ INSERT INTO `inpass_products` (`inpass_no`, `product_name`, `product_code`, `pro
 (907, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
 (908, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
 (910, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 10),
-(911, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 100);
+(911, 'Black Rubber 20mm', 'COD901', 'Plain', '40 X 120cm', 100),
+(912, 'Vinyl back 15mm natural	', 'TUF060', 'Plain', '40 X 120cm', 100);
 
 -- --------------------------------------------------------
 
@@ -166,13 +168,15 @@ CREATE TABLE IF NOT EXISTS `outpass` (
 --
 
 INSERT INTO `outpass` (`no`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`, `extras`, `type`) VALUES
+(7000, '2023-06-22', 'AAC003', 'Company 2', 'C2', 'KL 33 BC 1921', '', 'outpass'),
 (9000, '2023-06-18', '', 'Company 3', 'C3', 'KL 33 BC 1920', '', 'outpass'),
 (9001, '2023-06-20', 'AAC001', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'outpass'),
-(9003, '2023-06-20', 'AAC001', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'outpass'),
+(9003, '2023-06-20', 'AAC001', 'Company 2', 'C2', 'KL 33 BC 1920', 'Transfer', 'outpass'),
 (9004, '2023-06-20', 'AAC002', 'Company 4', 'C4', 'KL 33 BC 1920', '', 'outpass'),
 (90005, '2023-06-20', 'AAC001', 'Company 3', 'C3', 'KL 33 BC 1920', '', 'outpass'),
 (90006, '2023-06-20', 'AAC001', 'Company 1', 'C1', 'KL 33 BC 1920', '', 'outpass'),
 (90011, '2023-06-20', 'AAC001', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'outpass'),
+(900001, '2023-06-21', 'AAC001', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'outpass'),
 (900010, '2023-06-20', 'AAC001', 'Company 1', 'C1', 'KL 33 BC 1920', '', 'outpass');
 
 -- --------------------------------------------------------
@@ -213,7 +217,10 @@ INSERT INTO `outpass_products` (`outpass_no`, `product_type`, `product_name`, `w
 (900010, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC001', 'ACP050', 'REACH', '17.75\" X 38.75\"', 50),
 (900010, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC001', 'ACP051', 'REACH', '18\" X 30\"', 50),
 (90011, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC001', 'ACP050', 'REACH', '17.75\" X 38.75\"', 50),
-(90011, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC001', 'ACP051', 'REACH', '18\" X 30\"', 50);
+(90011, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC001', 'ACP051', 'REACH', '18\" X 30\"', 50),
+(900001, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC001', 'ACP050', 'REACH', '17.75\" X 38.75\"', 10),
+(900001, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC001', 'ACP051', 'REACH', '18\" X 30\"', 50),
+(7000, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC003', 'ACP051', 'REACH', '18\" X 30\"', 5);
 
 -- --------------------------------------------------------
 
@@ -283,8 +290,8 @@ CREATE TABLE IF NOT EXISTS `stock` (
 --
 
 INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, `default`) VALUES
-(9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 505, 1),
-(11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 640, 1),
+(9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 440, 1),
+(11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 740, 1),
 (12, '', 'COD900', 'Black Rubber 15mm', 'Plain', '40 X 120cm', 820, 1),
 (15, '', 'COD901', 'Black Rubber 20mm', 'Plain', '40 X 120cm', 110, 1);
 
@@ -333,7 +340,7 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
 --
 
 INSERT INTO `work_orders` (`id`, `date`, `work_order_no`, `company`, `extras`, `status`) VALUES
-(5, '2023-06-19', 'AAC001', 'Company 2', '', 'Open'),
+(5, '2023-06-19', 'AAC001', 'Company 2', '', 'Closed'),
 (6, '2023-06-20', 'AAC002', 'Company 4', '', 'Open');
 
 -- --------------------------------------------------------

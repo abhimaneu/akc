@@ -1,13 +1,13 @@
 <?php
 include 'conn.php';
-include 'nav.php';
 ?>
 
 <?php
 
-$item = 'All';
+$p_name = 'All';
 $design = 'All';
 $size = 'All';
+$feature = 'All';
 $search = '';
 $code = '';
 $f = $_GET['f'];
@@ -21,15 +21,15 @@ if ($f != 0) {
 }
 
 //for item filter
-$sql2 = "SELECT item from stock where 1=1";
-$sql2 .= " GROUP BY item";
+$sql2 = "SELECT name from company_products where 1=1";
+$sql2 .= " GROUP BY name";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
 
 //for design filter
-$sql3 = "SELECT design from stock where 1=1";
+$sql3 = "SELECT design from company_products where 1=1";
 $sql3 .= " GROUP BY design";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
@@ -37,7 +37,7 @@ if (!$retval3) {
 }
 
 //for size filter
-$sql4 = "SELECT size from stock where 1=1";
+$sql4 = "SELECT size from company_products where 1=1";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
@@ -45,10 +45,10 @@ if (!$retval4) {
 }
 
 //for table
-$sql = "SELECT * from stock where 1=1";
+$sql = "SELECT * from company_products where 1=1";
 
-if($item!='All'){
-    $sql .= " AND item = '$item'";
+if($p_name!='All'){
+    $sql .= " AND item = '$p_name'";
 }
 
 if($design!='All'){
@@ -60,7 +60,7 @@ if($size!='All'){
 }
 
 if (!empty($search)) {
-    $sql .= " AND (item LIKE '%$search%' OR design LIKE '%$search%' OR size LIKE '%$search%')";
+    $sql .= " AND (name LIKE '%$search%' OR design LIKE '%$search%' OR size LIKE '%$search%' OR features LIKE '%$search%')";
 }
 if (!empty($code)) {
     $sql .= " AND (code LIKE '%$code%')";
@@ -80,13 +80,13 @@ if (!$retval) {
     <br>
     <br>
     <form name="filter" method="post">
-        <label>Item</label>
-        <select name='item'>
+        <label>Name</label>
+        <select name='name'>
             <option selected>All</option>
             <?php
             while($row = mysqli_fetch_assoc($retval2)){
             echo "
-            <option>{$row['item']}</option>
+            <option>{$row['name']}</option>
             ";
             }
             ?>
@@ -118,7 +118,7 @@ if (!$retval) {
         <input type="submit" name="filter" value="Search"> <br> <br>
         Search by Keywords <br> <br>
             <input type="text" name="code" placeholder="Enter Product Code No.">
-            <input type="text" name="search" placeholder="Search Item Name/Code">
+            <input type="text" name="search" placeholder="Search Product Name/Code...">
             <input type="submit" name="filter" value="Search">
         
     </form>
@@ -132,7 +132,7 @@ if (!$retval) {
                 Code
             </th>
             <th>
-                Item
+                Name
             </th>
             <th>
                 Design
@@ -141,7 +141,7 @@ if (!$retval) {
                 Size
             </th>
             <th>
-                Quantity Available
+                Feature
             </th>
         </thead>
         <tbody>
@@ -157,7 +157,7 @@ if (!$retval) {
                     {$row['code']}
                 </td>
                 <td>
-                    {$row['item']}
+                    {$row['name']}
                 </td>
                 <td>
                     {$row['design']}
@@ -166,7 +166,7 @@ if (!$retval) {
                     {$row['size']}
                 </td>
                 <td>
-                    {$row['qty']}
+                    {$row['features']}
                 </td>
                 </tr>";
                 $i = $i + 1;
@@ -180,14 +180,14 @@ if (!$retval) {
 
 <?php
 if (isset($_POST['filter'])) {
-    $item_fil = $_POST['item'];
+    $pro_fil = $_POST['name'];
     $design_fil = $_POST['design'];
     $size_fil = $_POST['size'];
 
     $search = $_POST['search'];
     $code = $_POST['code'];
     echo "<script type='text/javascript'>
-            window.location.href = 'stock.php?f=1&i=$item_fil&d=$design_fil&s=$size_fil&pns=$search&pc=$code';
+            window.location.href = 'compproductshowall.php?f=1&i=$pro_fil&d=$design_fil&s=$size_fil&pns=$search&pc=$code';
             </script>";
 }
 ?>
