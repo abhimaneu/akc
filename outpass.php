@@ -118,7 +118,7 @@ if (!$retval8) {
                 });
             });
 
-           
+
 
             //for Company Code
             $("#dest_name").on("change", function () { //use an appropriate event handler here
@@ -149,13 +149,13 @@ if (!$retval8) {
                 var productQtyField = $(this).closest(".product_field").find(".product_qty");
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
                 var productCustomField = $(this).closest(".product_field").find(".custom_field");
-                if(productStockField.val() == 'custom'){
-                    productCustomField.removeAttr('hidden',true);
+                if (productStockField.val() == 'custom') {
+                    productCustomField.removeAttr('hidden', true);
                     productCustomField.attr("required", true);
                 }
-                else{
+                else {
                     productCustomField.attr("hidden", true);
-                    productCustomField.removeAttr('required',true);
+                    productCustomField.removeAttr('required', true);
                 }
                 productQtyField.val('');
                 product_code_final = productStockField.val();
@@ -192,18 +192,19 @@ if (!$retval8) {
                         if (response === "FALSE") {
                             var message = "ERROR: something went wrong on the MYSQL side";
                             alert(message);
+                            var options;
                         } else {
                             productData = JSON.parse(response)
                             var l = productData.length
                             var i
                             if (l > 0)
                                 for (i = 0; i < l; i++) {
-                                    
+
                                     options += '<option selected value="' + productData[i].code + '" data-qty="' + productData[i].qty + '">' + productData[i].code + '&nbsp;' + productData[i].name + '&nbsp;' + productData[i].design + '&nbsp;' + productData[i].size + '</option>';
                                 }
-                                options += "<option value='custom'>Custom</option>";
+                            options += "<option value='custom'>Custom</option>";
                             productStockField.html(options);
-                            
+
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -274,7 +275,7 @@ if (!$retval8) {
                                     productDesignField.val(productData[i].design);
                                     productSizeField.val(productData[i].size);
                                     productFeatureField.val(productData[i].feature);
-                                    productReqQtyField.text(productData[i].qty)
+                                    productReqQtyField.val(productData[i].qty)
 
                                 }
                             }
@@ -311,18 +312,18 @@ if (!$retval8) {
                 if (flag_forstockdata == 0) {
                     var stockdata = document.getElementById('stockdata');
                     stockdata.style.display = 'block';
-                    
+
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', 'fetchstockdata.php', true);
                     xhr.onload = function () {
                         if (xhr.status === 200) {
                             // Update the content of the hidden div with the received data
-                            
+
                             flag_forstockdata = 1;
                             var response = JSON.parse(xhr.responseText);
                             var tableBody = document.getElementById('stockbody');
                             tableBody.innerHTML = '';
-                            
+
                             for (var i = 0; i < response.length; i++) {
                                 var row = document.createElement('tr');
                                 var cell1 = document.createElement('td');
@@ -352,33 +353,33 @@ if (!$retval8) {
                     xhr.send();
                 }
             });
-            
+
             //search stock data
-                var searchInput = document.getElementById("search_input");
-                var table = document.getElementById("stockbody");
-                var rows = table.getElementsByTagName("tr");
+            var searchInput = document.getElementById("search_input");
+            var table = document.getElementById("stockbody");
+            var rows = table.getElementsByTagName("tr");
 
-                searchInput.addEventListener("keyup", function () {
-                    var input = searchInput.value.toLowerCase();
+            searchInput.addEventListener("keyup", function () {
+                var input = searchInput.value.toLowerCase();
 
-                    for (var i = 0; i < rows.length; i++) {
-                        var rowData = rows[i].getElementsByTagName("td");
-                        var found = false;
+                for (var i = 0; i < rows.length; i++) {
+                    var rowData = rows[i].getElementsByTagName("td");
+                    var found = false;
 
-                        for (var j = 0; j < rowData.length; j++) {
-                            if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if (found) {
-                            rows[i].style.display = "";
-                        } else {
-                            rows[i].style.display = "none";
+                    for (var j = 0; j < rowData.length; j++) {
+                        if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
+                            found = true;
+                            break;
                         }
                     }
-                });
+
+                    if (found) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            });
 
             // Add product field
             $("#add_product_field").click(function () {
@@ -419,7 +420,8 @@ if (!$retval8) {
           <input name="product_feature[]"required class="product_feature"> <br> <br>
 
           <label>Req. Quantity</label>
-          <span class='req_qty'><caption></caption></span> <br> <br>
+          <input type='text' readonly name='req_qty[]' class='req_qty'>
+          <br> <br>
 
           <caption>The product will be taken from the following stock</caption> <br> <br>
           <select name='product_stock[]' class='product_stock'>
@@ -509,7 +511,7 @@ if (!$retval8) {
                 <label>Add Products</label>
                 <div class="divider1"></div>
                 <div id="product_fields">
-                   
+
                 </div>
 
                 <button type="button" id="add_product_field">Add Product</button> <br>
@@ -566,7 +568,8 @@ if (!$retval8) {
             $productQtys = $_POST['product_qty'];
             $productCodes_stock = $_POST['product_stock'];
             $productCodes_customstock = $_POST['custom_field'];
-            
+            $reqQtys = $_POST['req_qty'];
+
             for ($i = 0; $i < count($products); $i++) {
                 $productName = $products[$i];
                 $productCode = $productCodes[$i];
@@ -578,9 +581,10 @@ if (!$retval8) {
                 $productCode_stock = $productCodes_stock[$i];
                 $productCode_customstock = $productCodes_customstock[$i];
                 $productName_bill = $productName . ' ' . $productFeature;
-                if($productCode_stock == 'custom'){
+                if ($productCode_stock == 'custom') {
                     $productCode_stock = $productCode_customstock;
                 }
+                $reqQty = $reqQtys[$i];
 
                 $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty) VALUES ('$opno','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty')";
                 $insert = mysqli_query($conn, $sql4);
@@ -614,15 +618,28 @@ if (!$retval8) {
 
             }
             if ($flag == 0) {
-                $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
-                $update2 = mysqli_query($conn, $sql8);
-                if (!$update2) {
-                    echo mysqli_error($conn);
+                if ($reqQty - $productQty > 0) {
+                    $newqtywo = $reqQty - $productQty;
+                    $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode'";
+                    $update2 = mysqli_query($conn, $sql8);
+                    if (!$update2) {
+                        echo mysqli_error($conn);
+                        mysqli_rollback($conn);
+                        $flag=1;
+                    }
+                } else {
+                    $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
+                    $update2 = mysqli_query($conn, $sql8);
+                    if (!$update2) {
+                        echo mysqli_error($conn);
+                        mysqli_rollback($conn);
+                        $flag=1;
+                    }
                 }
             }
 
-            if($flag == 0) {
-            echo "<script type='text/javascript'>
+            if ($flag == 0) {
+                echo "<script type='text/javascript'>
             window.open('createpdfpass.php?no=$opno&io=outpass');
             </script>";
             }

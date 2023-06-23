@@ -110,6 +110,50 @@ if (!$retval) {
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
 <script>
+    //editing
+    $(document).ready(function () {
+        // Handle click event on the edit button
+        $('.edit-btn').click(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Get the values of the row associated with the clicked edit button
+            var workOrderNo = $(this).closest('tr').find('td:eq(0)').text().trim();
+            var date = $(this).closest('tr').find('td:eq(1)').text().trim();
+            var company = $(this).closest('tr').find('td:eq(2)').text().trim();
+            var productCode = $(this).closest('tr').find('td:eq(3)').text().trim();
+            var productName = $(this).closest('tr').find('td:eq(4)').text().trim();
+            var productDesign = $(this).closest('tr').find('td:eq(5)').text().trim();
+            var productSize = $(this).closest('tr').find('td:eq(6)').text().trim();
+            var productFeatures = $(this).closest('tr').find('td:eq(7)').text().trim();
+            var productQty = $(this).closest('tr').find('td:eq(8)').text().trim();
+            var productStatus = $(this).closest('tr').find('td:eq(9)').text().trim();
+            var extras = $(this).closest('tr').find('td:eq(10)').text().trim();
+
+            // Populate the popup window with the current values
+            $('#workOrderNo').val(workOrderNo);
+            $('#date').text(date);
+            $('#company').val(company);
+            $('#productCode').val(productCode);
+            $('#productName').val(productName);
+            $('#productDesign').val(productDesign);
+            $('#productSize').val(productSize);
+            $('#productFeatures').val(productFeatures);
+            $('#productQty').val(productQty);
+            $('#productStatus').val(productStatus);
+            $('#extras').val(extras);
+
+            // Show the popup window
+            $('#editPopup').show();
+        });
+
+        // Handle click event on the cancel button in the popup window
+        $('#cancelBtn').click(function () {
+            // Hide the popup window
+            $('#editPopup').hide();
+        });
+    });
+
+
     $(document).ready(function () {
         $('#start').click(function () {
             // Get the current date
@@ -219,7 +263,49 @@ if (!$retval) {
             <input type="text" name="search" placeholder="Search Item Name/Code">
             <input type="submit" name="filter" value="Search">
 
-        </form>
+        </form> <br>
+
+        <div id="editPopup" style="display: none;">
+            <h2>Edit Values</h2>
+            <form id="editForm" method="post">
+                <label for="workOrderNo">Work Order No.</label>
+                <input type="text" id="workOrderNo" name="workOrderNo" readonly><br>
+
+                <label for="date">Date : </label>
+                <span id="date" name="date"><caption></caption></span><br>
+
+                <label for="company">Company</label>
+                <input type="text" id="company" required name="company"><br>
+
+                <label for="productCode">Product Code</label>
+                <input type="text" id="productCode" required name="productCode"><br>
+
+                <label for="productName">Product Name</label>
+                <input type="text" id="productName" required name="productName"><br>
+                <label for="productDesign">Product Design</label>
+                <input type="text" id="productDesign" name="productDesign"><br>
+                <label for="productSize">Product Size</label>
+                <input type="text" id="productSize" required name="productSize"><br>
+                <label for="productFeatures">Product Features</label>
+                <input type="text" id="productFeatures" name="productFeatures"><br>
+
+                <label for="productQty">Product Quantity</label>
+                <input type="text" id="productQty" required name="productQty"><br>
+
+                <label for="productStatus">Product Status (Open/Closed)</label>
+                <input type="text" id="productStatus" required pattern="^(Open|Closed)$" name="productStatus"><br>
+
+                <label for="extras">Extras</label>
+                <input type="text" id="extras" name="extras"><br>
+
+                <input type="submit" name="save" value="Save">
+                <input type="button" id="cancelBtn" value="Cancel">
+                <input type="submit" name='delete' id="delete" value="Delete">
+            </form>
+        </div>
+
+
+        <br>
         <table style="border-spacing: 30px;">
             <thead>
                 <th>
@@ -238,6 +324,15 @@ if (!$retval) {
                     Product Desc.
                 </th>
                 <th>
+
+                </th>
+                <th>
+
+                </th>
+                <th>
+
+                </th>
+                <th>
                     Product Desp. Quantity
                 </th>
                 <th>
@@ -245,6 +340,9 @@ if (!$retval) {
                 </th>
                 <th>
                     Extras
+                </th>
+                <th>
+
                 </th>
             </thead>
             <tbody>
@@ -268,10 +366,15 @@ if (!$retval) {
                     </td>
                     <td>
                     {$row['name']}
-                    &nbsp;
+                    </td>
+                    <td>
                     {$row['design']}
-                    &nbsp;
+                    </td>
+                    <td>
                     {$row['size']}
+                    </td>
+                    <td>
+                    {$row['features']}
                     </td>
                     <td>
                     {$row['qty']}
@@ -282,6 +385,9 @@ if (!$retval) {
                     <td>
                     {$row['extras']}
                     </td>
+                     <td>
+                     <input type='submit' class='edit-btn' name='edit' value='Edit'>
+            </td>
                     </tr>
                     ";
                         }
@@ -296,6 +402,57 @@ if (!$retval) {
 </html>
 
 <?php
+if (isset($_POST['save'])) {
+    $workOrderNo = $_POST['workOrderNo'];
+    $company = $_POST['company'];
+    $productCode = $_POST['productCode'];
+    $productName = $_POST['productName'];
+    $productDesign = $_POST['productDesign'];
+    $productSize = $_POST['productSize'];
+    $productFeatures = $_POST['productFeatures'];
+    $productQty = $_POST['productQty'];
+    $productStatus = $_POST['productStatus'];
+    $extras = $_POST['extras'];
+
+    $sql = "UPDATE `work_orders` SET `company`='$company',`extras`='$extras',`status`='$productStatus' WHERE work_order_no = '$workOrderNo'";
+    $update1 = mysqli_query($conn,$sql);
+    if(!$update1){
+        echo mysqli_error($conn);
+    }
+    $sql2 = "UPDATE `work_order_products` SET `code`='$productCode',`name`='$productName',`design`='$productDesign',`size`='$productSize',`features`='$productFeatures',`qty`='$productQty' WHERE work_order_no = '$workOrderNo'";
+    $update2 = mysqli_query($conn,$sql2);
+    if(!$update2){
+        echo mysqli_error($conn);
+    }
+
+    echo "<script type='text/javascript'>
+                window.location.href = 'workordershowall.php?f=0';
+                </script>";
+}
+
+if (isset($_POST['delete'])) {
+    $workOrderNo = $_POST['workOrderNo'];
+
+    $sql = "DELETE FROM `work_orders` WHERE work_order_no = '$workOrderNo'";
+    $update1 = mysqli_query($conn,$sql);
+    if(!$update1){
+        echo mysqli_error($conn);
+    }
+    $sql2 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
+    $update2 = mysqli_query($conn,$sql2);
+    if(!$update2){
+        echo mysqli_error($conn);
+    }
+
+    echo "<script type='text/javascript'>
+               alert('Work Order " . $workOrderNo . "has been deleted')
+                </script>";
+    echo "<script type='text/javascript'>
+                window.location.href = 'workordershowall.php?f=0';
+                </script>";
+}
+
+
 if (isset($_POST['filter'])) {
     $start_date = $_POST['start'];
     $end_date = $_POST['end'];

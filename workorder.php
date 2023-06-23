@@ -146,11 +146,11 @@ if (!$retval3) {
     <h1>Work Order</h1>
     <form name='work_orders' method="POST">
         <label>Date</label>
-        <input type="date" id='date' name='date'> <br>
+        <input type="date" id='date' required name='date'> <br>
         <label>Work Order No.</label>
-        <input type="text" name='work_order_no'> <br>
+        <input type="text" required name='work_order_no'> <br>
         <label>Dest. Company</label>
-        <input list='companylist' type="text" name='company_name'>
+        <input list='companylist' required type="text" name='company_name'>
         <datalist id="companylist">
             <?php
             while ($row = mysqli_fetch_assoc($retval2)) {
