@@ -181,6 +181,7 @@ if (!$retval8) {
             $(document).on("change", ".product_name", function () {
                 var productName = $(this).val();
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
+                var options = "<option selected value=''>None</option>";
 
                 $.ajax({
                     method: "POST",
@@ -192,7 +193,6 @@ if (!$retval8) {
                         if (response === "FALSE") {
                             var message = "ERROR: something went wrong on the MYSQL side";
                             alert(message);
-                            var options;
                         } else {
                             productData = JSON.parse(response)
                             var l = productData.length
