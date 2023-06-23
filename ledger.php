@@ -17,7 +17,7 @@ if ($f != 0) {
     $product = $_GET['p'];
     $size = $_GET['s'];
 }
-$sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type
+$sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type,timestamp
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
 WHERE date BETWEEN '$start' AND '$end'";
@@ -33,7 +33,7 @@ if ($size != 'All') {
 }
 
 $sql .= " UNION
-SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type
+SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type,timestamp
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
 WHERE date BETWEEN '$start' AND '$end'";
@@ -48,7 +48,7 @@ if ($size != 'All') {
     $sql .= " AND product_size = '$size'";
 }
 
-$sql .= " ORDER BY date DESC;";
+$sql .= " ORDER BY timestamp DESC;";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);

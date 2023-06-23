@@ -30,7 +30,7 @@ if (!$retval3) {
 }
 
 //for table
-$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no ORDER BY date DESC LIMIT 10";
+$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no ORDER BY timestamp DESC LIMIT 5";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
@@ -628,7 +628,7 @@ if (!$retval8) {
                         $flag=1;
                     }
                 } else {
-                    $sql8 = "UPDATE `work_orders` SET `status`='Closed' WHERE work_order_no='$wno'";
+                    $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno'";
                     $update2 = mysqli_query($conn, $sql8);
                     if (!$update2) {
                         echo mysqli_error($conn);

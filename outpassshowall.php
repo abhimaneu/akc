@@ -100,7 +100,7 @@ if (!empty($opno)) {
 }
 
 
-$sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY date DESC";
+$sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
