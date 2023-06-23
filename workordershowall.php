@@ -116,33 +116,70 @@ if (!$retval) {
         $('.edit-btn').click(function (e) {
             e.preventDefault(); // Prevent the default form submission
 
-            // Get the values of the row associated with the clicked edit button
+            $("#product_fields").empty();
             var workOrderNo = $(this).closest('tr').find('td:eq(0)').text().trim();
             var date = $(this).closest('tr').find('td:eq(1)').text().trim();
             var company = $(this).closest('tr').find('td:eq(2)').text().trim();
-            var productCode = $(this).closest('tr').find('td:eq(3)').text().trim();
-            var productName = $(this).closest('tr').find('td:eq(4)').text().trim();
-            var productDesign = $(this).closest('tr').find('td:eq(5)').text().trim();
-            var productSize = $(this).closest('tr').find('td:eq(6)').text().trim();
-            var productFeatures = $(this).closest('tr').find('td:eq(7)').text().trim();
-            var productQty = $(this).closest('tr').find('td:eq(8)').text().trim();
             var productStatus = $(this).closest('tr').find('td:eq(9)').text().trim();
             var extras = $(this).closest('tr').find('td:eq(10)').text().trim();
+            $.ajax({
+                method: "POST",
+                url: "getproductdatafromwno.php",
+                data: {
+                    workorder_no: workOrderNo
+                },
+                success: function (response) {
+                    if (response === "FALSE") {
+                        var message = "ERROR: something went wrong on the MYSQL side";
+                        alert(message);
+                    } else {
+                        productData = JSON.parse(response)
+                        var l = productData.length;
+                        $('#workOrderNo').val(workOrderNo);
+                        $('#date').text(date);
+                        $('#company').val(company);
+                        $('#productStatus').val(productStatus);
+                        $('#extras').val(extras);
+                        for (var i = 0; i < l; i++) {
+                            $('#add_product_field').click();
+                            var productCodeField = $(".product_field:eq(" + i + ")").find(".product_code");
+                            var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
+                            var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
+                            var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
+                            var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
+                            var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
+                            productCodeField.val(productData[i].code);
+                            productNameField.val(productData[i].name);
+                            productDesignField.val(productData[i].design);
+                            productSizeField.val(productData[i].size);
+                            productFeatureField.val(productData[i].feature);
+                            productQtyField.val(productData[i].qty)
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                    alert(message);
+                }
+            });
 
-            // Populate the popup window with the current values
-            $('#workOrderNo').val(workOrderNo);
-            $('#date').text(date);
-            $('#company').val(company);
-            $('#productCode').val(productCode);
-            $('#productName').val(productName);
-            $('#productDesign').val(productDesign);
-            $('#productSize').val(productSize);
-            $('#productFeatures').val(productFeatures);
-            $('#productQty').val(productQty);
-            $('#productStatus').val(productStatus);
-            $('#extras').val(extras);
+            $.ajax({
+                method: "POST",
+                url: "getcompanynamefromwno.php",
+                data: {
+                    workorder_no: workOrderNo
+                },
+                success: function (response) {
+                    $("#dest_name").val(response);
+                    $("#dest_name").trigger("change");
+                },
+                error: function (xhr, status, error) {
+                    var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                    alert(message);
+                }
+            });
 
-            // Show the popup window
+            // // Show the popup window
             $('#editPopup').show();
         });
 
@@ -151,8 +188,53 @@ if (!$retval) {
             // Hide the popup window
             $('#editPopup').hide();
         });
-    });
 
+
+        //add product field
+        $("#add_product_field").click(function () {
+
+            var productField = `
+<div class="product_field">
+
+<label for="product_code">Product Code</label>
+<input name="product_code[]" required class="product_code">
+
+
+<label>Product Name</label>
+<input list="productlist" required name="products[]" class="product_name">
+<datalist id="productlist">
+<?php
+// while ($row = mysqli_fetch_assoc($retval)) {
+//     echo "<option>{$row['name']}";
+// }
+?>
+</datalist>
+
+
+<label for="product_design">Design</label>
+<input name="product_design[]" required class="product_design">
+
+<label for="product_size">Size</label>
+<input name="product_size[]" required class="product_size">
+
+<label for="product_feature">Features</label>
+<input name="product_feature[]" required class="product_feature">
+
+<label for="product_qty">Req. Qty</label>
+<input name="product_qty[]" required class="product_qty">
+
+<button type="button" class="remove_product_field">Remove</button>  &nbsp;
+</div>
+`;
+
+            $("#product_fields").append(productField);
+        });
+
+        // Remove product field
+        $(document).on("click", ".remove_product_field", function () {
+            $(this).parent(".product_field").remove();
+        });
+    });
 
     $(document).ready(function () {
         $('#start').click(function () {
@@ -270,33 +352,22 @@ if (!$retval) {
             <form id="editForm" method="post">
                 <label for="workOrderNo">Work Order No.</label>
                 <input type="text" id="workOrderNo" name="workOrderNo" readonly><br>
-
                 <label for="date">Date : </label>
-                <span id="date" name="date"><caption></caption></span><br>
-
+                <span id="date" name="date">
+                    <caption></caption>
+                </span><br>
                 <label for="company">Company</label>
                 <input type="text" id="company" required name="company"><br>
 
-                <label for="productCode">Product Code</label>
-                <input type="text" id="productCode" required name="productCode"><br>
+                <div id="product_fields">
 
-                <label for="productName">Product Name</label>
-                <input type="text" id="productName" required name="productName"><br>
-                <label for="productDesign">Product Design</label>
-                <input type="text" id="productDesign" name="productDesign"><br>
-                <label for="productSize">Product Size</label>
-                <input type="text" id="productSize" required name="productSize"><br>
-                <label for="productFeatures">Product Features</label>
-                <input type="text" id="productFeatures" name="productFeatures"><br>
-
-                <label for="productQty">Product Quantity</label>
-                <input type="text" id="productQty" required name="productQty"><br>
-
+                </div>
+                <button type="button" id="add_product_field">Add Product</button> <br>
                 <label for="productStatus">Product Status (Open/Closed)</label>
                 <input type="text" id="productStatus" required pattern="^(Open|Closed)$" name="productStatus"><br>
 
                 <label for="extras">Extras</label>
-                <input type="text" id="extras" name="extras"><br>
+                <input type="text" id="extras" name="extras"><br> <br>
 
                 <input type="submit" name="save" value="Save">
                 <input type="button" id="cancelBtn" value="Cancel">
@@ -386,7 +457,7 @@ if (!$retval) {
                     {$row['extras']}
                     </td>
                      <td>
-                     <input type='submit' class='edit-btn' name='edit' value='Edit'>
+                     <input type='submit' id='{$row['work_order_no']}' class='edit-btn' name='edit' value='Edit'>
             </td>
                     </tr>
                     ";
@@ -405,26 +476,53 @@ if (!$retval) {
 if (isset($_POST['save'])) {
     $workOrderNo = $_POST['workOrderNo'];
     $company = $_POST['company'];
-    $productCode = $_POST['productCode'];
-    $productName = $_POST['productName'];
-    $productDesign = $_POST['productDesign'];
-    $productSize = $_POST['productSize'];
-    $productFeatures = $_POST['productFeatures'];
-    $productQty = $_POST['productQty'];
     $productStatus = $_POST['productStatus'];
     $extras = $_POST['extras'];
-
+    $tran = 'START TRANSACTION';
+    $transtart = mysqli_query($conn, $tran);
+    if (!$transtart) {
+        echo mysqli_error($conn);
+    }
     $sql = "UPDATE `work_orders` SET `company`='$company',`extras`='$extras',`status`='$productStatus' WHERE work_order_no = '$workOrderNo'";
-    $update1 = mysqli_query($conn,$sql);
-    if(!$update1){
+    $update1 = mysqli_query($conn, $sql);
+    if (!$update1) {
         echo mysqli_error($conn);
-    }
-    $sql2 = "UPDATE `work_order_products` SET `code`='$productCode',`name`='$productName',`design`='$productDesign',`size`='$productSize',`features`='$productFeatures',`qty`='$productQty' WHERE work_order_no = '$workOrderNo'";
-    $update2 = mysqli_query($conn,$sql2);
-    if(!$update2){
-        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<script>alert('Error Occured Aborting!')</script>";
     }
 
+    $products = $_POST['products'];
+    $productCodes = $_POST['product_code'];
+    $productDesigns = $_POST['product_design'];
+    $productSizes = $_POST['product_size'];
+    $productFeatures = $_POST['product_feature'];
+    $productQtys = $_POST['product_qty'];
+
+    $sql3 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
+    $update3 = mysqli_query($conn, $sql3);
+    if (!$update3) {
+        echo mysqli_error($conn);
+        echo "<script>alert('Error Occured Aborting!')</script>";
+        mysqli_rollback($conn);
+
+    }
+    for ($i = 0; $i < count($products); $i++) {
+        $productName = $products[$i];
+        $productCode = $productCodes[$i];
+        $productDesign = $productDesigns[$i];
+        $productSize = $productSizes[$i];
+        $productFeature = $productFeatures[$i];
+        $productQty = $productQtys[$i];
+        $sql2 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,features,qty) VALUES ('$workOrderNo','$productCode','$productName','$productDesign','$productSize','$productFeature','$productQty')";
+        $update2 = mysqli_query($conn, $sql2);
+        if (!$update2) {
+            echo mysqli_error($conn);
+            echo "<script>alert('Error Occured Aborting!')</script>";
+            mysqli_rollback($conn);
+        }
+    }
+
+    mysqli_commit($conn);
     echo "<script type='text/javascript'>
                 window.location.href = 'workordershowall.php?f=0';
                 </script>";
@@ -434,18 +532,18 @@ if (isset($_POST['delete'])) {
     $workOrderNo = $_POST['workOrderNo'];
 
     $sql = "DELETE FROM `work_orders` WHERE work_order_no = '$workOrderNo'";
-    $update1 = mysqli_query($conn,$sql);
-    if(!$update1){
+    $update1 = mysqli_query($conn, $sql);
+    if (!$update1) {
         echo mysqli_error($conn);
     }
     $sql2 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
-    $update2 = mysqli_query($conn,$sql2);
-    if(!$update2){
+    $update2 = mysqli_query($conn, $sql2);
+    if (!$update2) {
         echo mysqli_error($conn);
     }
 
     echo "<script type='text/javascript'>
-               alert('Work Order " . $workOrderNo . "has been deleted')
+               alert('Work Order " . $workOrderNo . " has been deleted')
                 </script>";
     echo "<script type='text/javascript'>
                 window.location.href = 'workordershowall.php?f=0';
@@ -464,8 +562,8 @@ if (isset($_POST['filter'])) {
 
     $p_search = $_POST['search'];
     $wno = $_POST['wno'];
-    echo "<script type='text/javascript'>
-            window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&wno=$wno&ic=$ic&st=$st&pns=$p_search&wno=$wno';
-            </script>";
+    // echo "<script type='text/javascript'>
+    //         window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&wno=$wno&ic=$ic&st=$st&pns=$p_search&wno=$wno';
+    //         </script>";
 }
 ?>
