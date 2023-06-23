@@ -196,7 +196,6 @@ if (!$retval8) {
                             productData = JSON.parse(response)
                             var l = productData.length
                             var i
-                            var options='';
                             if (l > 0)
                                 for (i = 0; i < l; i++) {
                                     
@@ -424,7 +423,7 @@ if (!$retval8) {
 
           <caption>The product will be taken from the following stock</caption> <br> <br>
           <select name='product_stock[]' class='product_stock'>
-          <option selected></option>
+          <option selected>None</option>
           <option value='custom'>Custom</option>
           </select>
           <br> <br>
