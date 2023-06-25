@@ -266,6 +266,12 @@ if (!$retval) {
                 <th>
                     Extras
                 </th>
+                <th>
+                    Outpass PDF
+                </th>
+                <th>
+                    GST Invoice
+                </th>
             </thead>
             <tbody>
                 <tr>
@@ -311,6 +317,9 @@ if (!$retval) {
                     </td>
                     <td>
                     <a href='createpdfpass.php?no={$row['no']}&io=outpass' target='_blank'>Download</a>
+                    </td>
+                    <td>
+                    <a href='creategstinvoice.php?wo={$row['work_order']}' target='_blank'>Download</a>
                     </td>
                     </tr>
                     ";
