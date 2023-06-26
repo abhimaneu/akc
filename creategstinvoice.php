@@ -346,6 +346,7 @@ $ratesJson = json_encode($rates);
             <input type="hidden" name="total_amount" value="" id="total_amount_input">
         </div>
         <center>
+            <label>Please Note that old invoice of this WO will be deleted if new Invoice is Generated</label> <br>
             <input type="submit" name='generate' value="Generate Invoice">
         </center>
     </form>
@@ -386,6 +387,21 @@ if (isset($_POST['generate'])) {
         echo mysqli_error($conn);
         exit;
     }
+
+    //delete existing if new invoice is being generated
+    $sql4 = "DELETE FROM invoice where work_order_no = '$workOrderNo'";
+    $delete1 = mysqli_query($conn, $sql4);
+    if (!$delete1) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+    }
+    $sql5 = "DELETE FROM invoice_data where work_order_no = '$workOrderNo'";
+    $delete2 = mysqli_query($conn, $sql5);
+    if (!$delete2) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+    }
+
     $sql = "INSERT INTO invoice(invoice_no,date,company,company_gstin,work_order_no,place_of_supply,type_of_payment,contact,statecode,note,gst_percentage,grand_total,cgst,sgst,less_ro,total_amount,mode_of_transport) VALUES ('$invoice_no','$date','$company','$company_gstin','$workOrderNo','$place_of_supply','$type_of_payment','$contact','$statecode','$note','$gst_per_all','$grand_total','$cgst','$sgst','$less_ro','$total_amount','$mode_of_transport')";
     $insert1 = mysqli_query($conn, $sql);
     if (!$insert1) {
@@ -414,6 +430,12 @@ if (isset($_POST['generate'])) {
         if (($i + 1) % 4 == 0) {
             $j += 1;
         }
+    }
+    $sql3 = "UPDATE `outpass` SET invoice_no='$invoice_no' WHERE work_order_no = '$workOrderNo'";
+    $insert3 = mysqli_query($conn, $sql3);
+    if (!$insert3) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
     }
     mysqli_commit($conn);
     echo "<script type='text/javascript'>

@@ -318,9 +318,13 @@ if (!$retval) {
                     <td>
                     <a href='createpdfpass.php?no={$row['no']}&io=outpass' target='_blank'>Download</a>
                     </td>
-                    <td>
-                    <a href='creategstinvoice.php?wo={$row['work_order']}' target='_blank'>Download</a>
-                    </td>
+                    <td>";
+                            if (!($row['invoice_no'] == 'Not Generated')) {
+                                echo "{$row['invoice_no']} <br><a href='createpdfgstinvoice.php?wo={$row['work_order']}&in={$row['invoice_no']}' target='_blank'>Download Invoice</a> <br>";
+                            }
+                                echo "<a href='creategstinvoice.php?wo={$row['work_order']}' target='_blank'>Generate New Invoice</a>";
+                            
+                            echo "</td>
                     </tr>
                     ";
                         }

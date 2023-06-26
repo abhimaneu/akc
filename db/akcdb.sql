@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 25, 2023 at 09:08 PM
+-- Generation Time: Jun 26, 2023 at 09:26 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `invoice` (
 --
 
 INSERT INTO `invoice` (`invoice_no`, `date`, `company`, `company_gstin`, `work_order_no`, `place_of_supply`, `type_of_payment`, `contact`, `statecode`, `note`, `gst_percentage`, `grand_total`, `cgst`, `sgst`, `less_ro`, `total_amount`, `mode_of_transport`, `timestamp`) VALUES
-('A300', '2023-06-25', 'Company 2', 'GSTIN2392039', 'AAC300', 'Alapuzha', 'CASH', '974700000', '32', 'Goods', '18', '941.00', '84.69', '84.69', '0.38', '1110.00', 'Vehicle', '2023-06-25 20:53:29');
+('A300', '2023-06-25', 'Company 2', 'GSTIN239203', 'AAC300', 'Alapuzha', 'ONLINE', '974700000', '32', 'Goods', '18', '941.00', '84.69', '84.69', '0.38', '1110.00', 'Vehicle', '2023-06-26 09:24:41');
 
 -- --------------------------------------------------------
 
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `invoice_data` (
   `unit` varchar(20) NOT NULL,
   `nopcs` float NOT NULL,
   `rm` float NOT NULL,
-  `total_unit` float NOT NULL,
+  `total_unit` varchar(25) NOT NULL,
   `rate` float NOT NULL,
   `gst` float NOT NULL,
   `amount` float NOT NULL
@@ -221,22 +221,22 @@ CREATE TABLE IF NOT EXISTS `invoice_data` (
 --
 
 INSERT INTO `invoice_data` (`invoice_no`, `work_order_no`, `product_name`, `type`, `size`, `unit`, `nopcs`, `rm`, `total_unit`, `rate`, `gst`, `amount`) VALUES
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Passing Final', '17.75\" X 38.75\"', 'Inch', 10, 10, 10, 1.5, 18, 15),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Packing', '17.75\" X 38.75\"', 'Inch', 10, 10, 10, 2, 18, 20),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Tagging', '17.75\" X 38.75\"', 'Inch', 10, 10, 10, 5.75, 18, 57.5),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Landing And Loading', '17.75\" X 38.75\"', 'Inch', 10, 10, 10, 0.16, 18, 1.6),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Passing Final', '18\" X 30\"', 'Inch', 20, 20, 20, 1.5, 18, 30),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Packing', '18\" X 30\"', 'Inch', 20, 20, 20, 2, 18, 40),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Tagging', '18\" X 30\"', 'Inch', 20, 20, 20, 5.75, 18, 115),
-('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Landing And Loading', '18\" X 30\"', 'Inch', 20, 20, 20, 0.16, 18, 3.2),
-('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Passing Final', '17.75\" X 38.75\"', 'Inch', 30, 30, 30, 1.5, 18, 45),
-('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Packing', '17.75\" X 38.75\"', 'Inch', 30, 30, 30, 2, 18, 60),
-('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Tagging', '17.75\" X 38.75\"', 'Inch', 30, 30, 30, 5.75, 18, 172.5),
-('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Landing And Loading', '17.75\" X 38.75\"', 'Inch', 30, 30, 30, 0.16, 18, 4.8),
-('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Passing Final', '18\" X 30\"', 'Inch', 40, 40, 40, 1.5, 18, 60),
-('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Packing', '18\" X 30\"', 'Inch', 40, 40, 40, 2, 18, 80),
-('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Tagging', '18\" X 30\"', 'Inch', 40, 40, 40, 5.75, 18, 230),
-('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Landing And Loading', '18\" X 30\"', 'Inch', 40, 40, 40, 0.16, 18, 6.4);
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Passing Final', '17.75\" X 38.75\"', 'Inch', 10, 10, '10 Nos', 1.5, 18, 15),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Packing', '17.75\" X 38.75\"', 'Inch', 10, 10, '10 Nos', 2, 18, 20),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Tagging', '17.75\" X 38.75\"', 'Inch', 10, 10, '10 Nos', 5.75, 18, 57.5),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Welcome Border REACH', 'Landing And Loading', '17.75\" X 38.75\"', 'Inch', 10, 10, '10 Nos', 0.16, 18, 1.6),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Passing Final', '18\" X 30\"', 'Inch', 20, 20, '20 Nos', 1.5, 18, 30),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Packing', '18\" X 30\"', 'Inch', 20, 20, '20 Nos', 2, 18, 40),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Tagging', '18\" X 30\"', 'Inch', 20, 20, '20 Nos', 5.75, 18, 115),
+('A300', 'AAC300', 'Vinyl Back 15mm Natural Hello REACH', 'Landing And Loading', '18\" X 30\"', 'Inch', 20, 20, '20 Nos', 0.16, 18, 3.2),
+('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Passing Final', '17.75\" X 38.75\"', 'Inch', 30, 30, '30 Nos', 1.5, 18, 45),
+('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Packing', '17.75\" X 38.75\"', 'Inch', 30, 30, '30 Nos', 2, 18, 60),
+('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Tagging', '17.75\" X 38.75\"', 'Inch', 30, 30, '30 Nos', 5.75, 18, 172.5),
+('A300', 'AAC300', 'Black Natural 19mm Welcome Border Border 4', 'Landing And Loading', '17.75\" X 38.75\"', 'Inch', 30, 30, '30 Nos', 0.16, 18, 4.8),
+('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Passing Final', '18\" X 30\"', 'Inch', 40, 40, '40 Nos', 1.5, 18, 60),
+('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Packing', '18\" X 30\"', 'Inch', 40, 40, '40 Nos', 2, 18, 80),
+('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Tagging', '18\" X 30\"', 'Inch', 40, 40, '40 Nos', 5.75, 18, 230),
+('A300', 'AAC300', 'Black Rubber 15mm Clear Plain', 'Landing And Loading', '18\" X 30\"', 'Inch', 40, 40, '40 Nos', 0.16, 18, 6.4);
 
 -- --------------------------------------------------------
 
@@ -253,6 +253,7 @@ CREATE TABLE IF NOT EXISTS `outpass` (
   `woc` varchar(125) NOT NULL,
   `vehicleno` varchar(50) NOT NULL,
   `extras` varchar(125) NOT NULL,
+  `invoice_no` varchar(20) NOT NULL DEFAULT 'Not Generated',
   `type` varchar(10) NOT NULL DEFAULT 'outpass',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`no`)
@@ -262,11 +263,11 @@ CREATE TABLE IF NOT EXISTS `outpass` (
 -- Dumping data for table `outpass`
 --
 
-INSERT INTO `outpass` (`no`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`, `extras`, `type`, `timestamp`) VALUES
-(1200, '2023-06-24', 'AAC100', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'outpass', '2023-06-23 18:38:25'),
-(1201, '2023-06-25', 'AAC101', 'Company 4', 'C4', 'KL 05 B 2834', '', 'outpass', '2023-06-24 20:33:40'),
-(1203, '2023-06-25', 'AAC200', 'Company 5', 'C5', 'KL 33 BC 1920', '', 'outpass', '2023-06-24 20:34:21'),
-(1204, '2023-06-25', 'AAC300', 'Company 2', 'C2', 'KL 23 BC 2983', '', 'outpass', '2023-06-24 20:35:59');
+INSERT INTO `outpass` (`no`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`, `extras`, `invoice_no`, `type`, `timestamp`) VALUES
+(1200, '2023-06-24', 'AAC100', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'Not Generated', 'outpass', '2023-06-23 18:38:25'),
+(1201, '2023-06-25', 'AAC101', 'Company 4', 'C4', 'KL 05 B 2834', '', 'Not Generated', 'outpass', '2023-06-24 20:33:40'),
+(1203, '2023-06-25', 'AAC200', 'Company 5', 'C5', 'KL 33 BC 1920', '', 'Not Generated', 'outpass', '2023-06-24 20:34:21'),
+(1204, '2023-06-25', 'AAC300', 'Company 2', 'C2', 'KL 23 BC 2983', '', 'A300', 'outpass', '2023-06-24 20:35:59');
 
 -- --------------------------------------------------------
 

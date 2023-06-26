@@ -123,7 +123,7 @@ $pdf->Line($startX, $startY, $endX, $endY);
 $pdf->Cell(0, 5, 'Invoice No: ' . $invoice_no, 0, 0, 'L');
 $pdf->Cell(0, 5, 'Date: ' . $date, 0, 1, 'R');
 $pdf->Cell(0, 5, 'To: ' . $company, 0, 0, 'L');
-$pdf->Cell(0, 5, 'Type: ' . $company_gstin, 0, 1, 'R');
+$pdf->Cell(0, 5, 'Type: ' . $type_of_payment, 0, 1, 'R');
 $pdf->Cell(0, 5, 'WO NO: ' . $workOrderNo, 0, 1, 'R');
 $pdf->Cell(0, 5, 'Place of Suuply: ' . $place_of_supply, 0, 0, 'L');
 $pdf->Cell(0, 5, 'Mode of Transport: ' . $mode_of_transport, 0, 1, 'R');
