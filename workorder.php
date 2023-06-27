@@ -71,8 +71,10 @@ if (!$retval3) {
                             productDesignField.val(product.design)
                             productSizeField.val(product.size)
                             productFeatureField.val(product.features)
+                            initilizebootstrap();
                         }
                     }
+                    initilizebootstrap();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
@@ -84,42 +86,61 @@ if (!$retval3) {
         // Add product field
         $("#add_product_field").click(function () {
             var productField = `
-        <div class="product_field">
+        <div class="product_field mb-3">
 
-            <label>Product Code</label>
-          <input list="productcodelist" required name="product_code[]" class="product_code">
+        <div class=' d-flex align-items-start bg-light mb-1 w-25'>
+        <div class="form-outline mb-1 col " >
+          <input list="productcodelist" id='pcode' required name="product_code[]" class="product_code form-control">
           <datalist id="productcodelist">
           <?php
           while ($row = mysqli_fetch_assoc($retval)) {
               echo "<option>{$row['code']}";
           }
           ?>
-            </datalist> <br>
+            </datalist>
+            <label for='pcode' class='form-label'>Product Code</label>
+            </div>
+            </div>
 
-          <label>Product Name</label>
-          <input list="productlist" required name="products[]" class="product_name">
+            <div class=' d-flex align-items-start bg-light mb-1'>
+
+            <div class="form-outline mb-1 col ">
+          <input list="productlist" id='pname' required name="products[]" class="product_name form-control">
           <datalist id="productlist">
                 
-            </datalist> <br>
-         
-      
-          <label for="product_design">Design</label>
-          <input name="product_design[]"required class="product_design"> <br>
-
-          <label for="product_size">Size</label>
-          <input name="product_size[]"required class="product_size"> <br>
-
-          <label for="product_feature">Features</label>
-          <input name="product_feature[]"required class="product_feature"> <br>
-
-          <label for="product_qty">Quantity</label>
-          <input name="product_qty[]"required class="product_qty"> <br>
+            </datalist>
+            <label for='pname' class='form-label'>Product Name</label>
+         </div>
+         &nbsp;
+         <div class="form-outline mb-1 col ">
+          <input name="product_design[]" id='pdes' required class="product_design form-control">
+          <label for="pdes" class='form-label'>Design</label>
+        </div>
+        &nbsp;
+        <div class="form-outline mb-1 col ">
+          <input name="product_size[]" id='psize' required class="product_size form-control">
+          <label for="psize" class='form-label'>Size</label>
+        </div>
+        &nbsp;
+          <div class="form-outline mb-1 col ">
+          <input name="product_feature[]" id='pfeat' required class="product_feature form-control">
+          <label for="pfeat" class='form-label'>Features</label>
+            </div>
+        </div>
+        <div class=' d-flex align-items-start bg-light mb-1 w-25'>
+            <div class="form-outline mb-1 col ">
+          <input name="product_qty[]" id='pqty' required class="product_qty form-control">
+          <label for="pqty" class='form-label'>Req. Qty</label>
+          </div>
+          </div>
           
-          <button type="button" class="remove_product_field">Remove</button>
+          <button type="button" class="remove_product_field btn btn-outline-danger" data-mdb-ripple-color="dark">Remove</button>
+          <br> <br>
         </div>
       `;
 
             $("#product_fields").append(productField);
+            initilizebootstrap();
         });
 
         // Remove product field
@@ -139,122 +160,160 @@ if (!$retval3) {
             day = "0" + day;
         var today = now.getFullYear() + '-' + month + '-' + day;
         $('#date').val(today);
+        initilizebootstrap();
     });
 </script>
 
 <body>
-    <h1>Work Order</h1>
-    <form name='work_orders' method="POST">
-        <label>Date</label>
-        <input type="date" id='date' required name='date'> <br>
-        <label>Work Order No.</label>
-        <input type="text" required name='work_order_no'> <br>
-        <label>Dest. Company</label>
-        <input list='companylist' required type="text" name='company_name'>
-        <datalist id="companylist">
-            <?php
-            while ($row = mysqli_fetch_assoc($retval2)) {
-                echo "<option>{$row['name']}";
-            }
-            ?>
-        </datalist> <br>
-        <label>Add Products</label>
-        <div id='product_fields'>
+    <main>
+        <br>
+        <h1 class='mt-2 ms-4'>Generate Work Order</h1>
+        <div class="container">
+            <div class='row justify-content'>
+                <div class="col-xl-10"> <br>
+                    <form name='work_orders' class="bg-white rounded-5 shadow-5-strong p-5" method="POST">
+                        <h4>Enter Details Below</h4> <br>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-outline mb-4">
 
-        </div>
-        <button type="button" id="add_product_field">Add Product</button> <br>
-        <label>Extras</label>
-        <textarea name='extras'></textarea> <br> <br>
-        <button type="submit" name="work_orders">Generate Work Order</button>
-    </form> <br>
+                                    <input type="text" id="worder" class="form-control" required name='work_order_no'>
+                                    <label for='worder' class='form-label'>Work Order No.</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline datepicker">
+                                    <input type="date" id='date' class="form-control" required name='date'>
+                                    <label for='date' class='form-label'>Date</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-outline mb-4">
+                                    <input list='companylist' id='cname' class="form-control" required type="text"
+                                        name='company_name'>
+                                    <datalist id="companylist">
+                                        <?php
+                                        while ($row = mysqli_fetch_assoc($retval2)) {
+                                            echo "<option>{$row['name']}";
+                                        }
+                                        ?>
+                                    </datalist>
+                                    <label for='cname' class='form-label'>Dest. Company</label>
+                                </div>
+                            </div>
+                            <div class="col">
 
-    <?php
-    if (isset($_POST['work_orders'])) {
-        $wno = "";
-        $date = "";
-        $company_name = "";
-        $extras = "";
-        $wno = $_POST['work_order_no'];
-        $date = $_POST['date'];
-        $company_name = $_POST['company_name'];
-        $extras = $_POST['extras'];
-        $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
-        if (!$conn) {
-        }
-        $sql = "INSERT INTO work_orders(work_order_no,date,company,extras) VALUES ('$wno','$date','$company_name','$extras')";
-        //$sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
-        $insert = mysqli_query($conn, $sql);
-        if (!$insert) {
-            echo mysqli_error($conn);
-        } else {
-            echo "sucess";
-        }
-        // $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source'");
-        // if ($result->num_rows == 0) {
-        //     $insert2 = mysqli_query($conn, $sql2);
-        // }
-        $products = $_POST['products'];
-        $productCodes = $_POST['product_code'];
-        $productDeisgns = $_POST['product_design'];
-        $productSizes = $_POST['product_size'];
-        $productFeatures = $_POST['product_feature'];
-        $productQtys = $_POST['product_qty'];
+                            </div>
+                        </div>
+                        <label class="form-check-label">
+                            <h5>Products</h5>
+                        </label> <br>
+                        <div id='product_fields' class='row  border border-1 border-primary rounded pt-2 mb-2'>
 
-        for ($i = 0; $i < count($products); $i++) {
-            $productName = $products[$i];
-            $productCode = $productCodes[$i];
-            $productDesign = $productDeisgns[$i];
-            $productSize = $productSizes[$i];
-            $productFeature = $productFeatures[$i];
-            $productQty = $productQtys[$i];
-            $sql7 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,features,qty) VALUES ('$wno','$productCode','$productName','$productDesign','$productSize','$productFeature','$productQty')";
-            //$result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
-            $insert2 = mysqli_query($conn, $sql7);
-            if(!$insert2) {
-                echo mysqli_error($conn);
-            }
-        }
-        
-            echo "<script type='text/javascript'>
+                        </div>
+                        <button type="button" id="add_product_field" class="btn btn-outline-secondary"
+                            data-mdb-ripple-color="dark">Add Product</button> <br>
+                        <div class="form-outline mb-4 mt-4">
+                            <textarea name='extras' id='extras' class='form-control'></textarea>
+                            <label for='extras' class='form-label'>Extras</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" name="work_orders">Generate Work Order</button>
+                    </form> <br>
+                </div>
+                <?php
+                if (isset($_POST['work_orders'])) {
+                    $wno = "";
+                    $date = "";
+                    $company_name = "";
+                    $extras = "";
+                    $wno = $_POST['work_order_no'];
+                    $date = $_POST['date'];
+                    $company_name = $_POST['company_name'];
+                    $extras = $_POST['extras'];
+                    $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
+                    if (!$conn) {
+                    }
+                    $sql = "INSERT INTO work_orders(work_order_no,date,company,extras) VALUES ('$wno','$date','$company_name','$extras')";
+                    //$sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
+                    $insert = mysqli_query($conn, $sql);
+                    if (!$insert) {
+                        echo mysqli_error($conn);
+                    } else {
+                        echo "sucess";
+                    }
+                    // $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source'");
+                    // if ($result->num_rows == 0) {
+                    //     $insert2 = mysqli_query($conn, $sql2);
+                    // }
+                    $products = $_POST['products'];
+                    $productCodes = $_POST['product_code'];
+                    $productDeisgns = $_POST['product_design'];
+                    $productSizes = $_POST['product_size'];
+                    $productFeatures = $_POST['product_feature'];
+                    $productQtys = $_POST['product_qty'];
+
+                    for ($i = 0; $i < count($products); $i++) {
+                        $productName = $products[$i];
+                        $productCode = $productCodes[$i];
+                        $productDesign = $productDeisgns[$i];
+                        $productSize = $productSizes[$i];
+                        $productFeature = $productFeatures[$i];
+                        $productQty = $productQtys[$i];
+                        $sql7 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,features,qty) VALUES ('$wno','$productCode','$productName','$productDesign','$productSize','$productFeature','$productQty')";
+                        //$result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
+                        $insert2 = mysqli_query($conn, $sql7);
+                        if (!$insert2) {
+                            echo mysqli_error($conn);
+                        }
+                    }
+
+                    echo "<script type='text/javascript'>
         window.location.href = 'workorder.php';
         </script>";
-    }
-    ?>
+                }
+                ?>
 
-<div>
+            </div>
+        </div>
+        <div class="container mt-4 ms-2">
+        <div class="col">
+            <h1>Work Orders Generated <a href="workordershowall.php?f=0" class="fs-5" target="_blank">Show All</a></h1>
+            </div>
+            </div>
 
-<h1>Work Orders Generated</h1>
-<a href="workordershowall.php?f=0" target="_blank">Show All</a>
-<table style="border-spacing: 30px;">
-    <thead>
-        <th>
-            Work Order No.
-        </th>
-        <th>
-            Date
-        </th>
-        <th>
-            Company Name
-        </th>
-        <th>
-            Product Description/Size
-        </th>
-        <th>
-            Product Quantity
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Extras
-        </th>
-    </thead>
-    <tbody>
-        <tr>
-            <?php
-            while ($row = $retval3->fetch_assoc()) {
-                if (!empty($row)) {
-                    echo "
+            <div  class="container-fluid mt-2 p-2 bg-white rounded-5 shadow-5-strong">
+            <table class='table table-striped'>
+                <thead class="table-light">
+                    <th>
+                        Work Order No.
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Company Name
+                    </th>
+                    <th>
+                        Product Description/Size
+                    </th>
+                    <th>
+                        Product Quantity
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Extras
+                    </th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <?php
+                        while ($row = $retval3->fetch_assoc()) {
+                            if (!empty($row)) {
+                                echo "
             <tr>
             <td>
             {$row['work_order_no']}
@@ -287,13 +346,23 @@ if (!$retval3) {
             </td>
             </tr>
             ";
-                }
+                            }
+                        }
+                        ?>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
             }
-            ?>
-        </tr>
-    </tbody>
-</table>
-</div>
+        </script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+    </main>
 </body>
 
 </html>
