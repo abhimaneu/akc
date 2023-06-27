@@ -45,9 +45,23 @@ if (!$retval3) {
 
 <html>
 
-<link rel="stylesheet" href="css/inpass.css">
-
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Material Design for Bootstrap</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="css/mdb.min.css" />
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -73,6 +87,8 @@ if (!$retval3) {
                             alert(message);
                         } else {
                             $("#company_code").val(response);
+                            initilizebootstrap();
+
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -107,6 +123,7 @@ if (!$retval3) {
                                 productNameField.val(product.name)
                                 productDesignField.val(product.design)
                                 productSizeField.val(product.size)
+                                initilizebootstrap();
                             }
                         }
                     },
@@ -124,10 +141,11 @@ if (!$retval3) {
             // Add product field
             $("#add_product_field").click(function () {
                 var productField = `
-        <div class="product_field">
+        <div class="product_field mb-3">
+        <div class=' d-flex align-items-start bg-light mb-1 w-25'>
         
-        <label for="productcode">Supply No.</label>
-          <input type="text" list="supplynolist" required name="product_code[]" class="product_code">
+        <div class="form-outline mb-1 col " >
+          <input type="text" list="supplynolist" id='pcode' required name="product_code[]" class="product_code form-control">
           <datalist id="supplynolist">
                 <?php
                 while ($row = mysqli_fetch_assoc($retval)) {
@@ -135,34 +153,47 @@ if (!$retval3) {
                 }
                 ?>
             </datalist>
+            <label for="productcode" class="form-label">Product Code</label>
+            </div>
+            </div>
+            <div class=' d-flex align-items-start bg-light mb-1'>
 
-          <label>Product Name</label>
-          <input list="productlist" required name="products[]" class="product_name">
-          <datalist id="productlist">
-                <?php
-                // while ($row = mysqli_fetch_assoc($retval)) {
-                //     echo "<option>{$row['name']}";
-                // }
-                ?>
-            </datalist>
-         
-      
-          <label for="product_design">Design</label>
-          <input name="product_design[]"required class="product_design">
-
-          <label for="product_size">Size</label>
-          <input name="product_size[]"required class="product_size">
-
-          <label for="product_qty">Accp. Qty</label>
-          <input name="product_qty[]"required class="product_qty">
-      
-         <br><br>
+            <div class="form-outline mb-1 col ">
           
-          <button type="button" class="remove_product_field">Remove</button>
+          <input list="productlist" id='pname' required name="products[]" class="product_name form-control">
+          <datalist id="productlist">
+               
+            </datalist>
+            <label for='pname' class="form-label">Product Name</label>
+         </div>
+      &nbsp;
+         <div class="form-outline mb-1 col">
+          <input name="product_design[]"required class="product_design form-control">
+          <label for="product_design" class="form-label">Design</label>
+        </div>
+        &nbsp;
+        <div class="form-outline mb-1 col">
+          <input name="product_size[]" required class="product_size form-control">
+          <label for="product_size" class='form-label'>Size</label>
+        </div>
+        &nbsp;
+
+        
+        <div class="form-outline mb-1 col">
+          <input name="product_qty[]" required class="product_qty form-control">
+          <label for="product_qty" class='form-label'>Accp. Qty</label>
+          </div>
+          </div>
+          
+          
+          <button type="button" class="remove_product_field btn btn-outline-danger" data-mdb-ripple-color="dark">Remove</button>
+          
+        <br> <br>
         </div>
       `;
 
                 $("#product_fields").append(productField);
+                initilizebootstrap();
             });
 
             // Remove product field
@@ -182,214 +213,268 @@ if (!$retval3) {
                 day = "0" + day;
             var today = now.getFullYear() + '-' + month + '-' + day;
             $('#today_date').val(today);
+            initilizebootstrap();
         });
     </script>
 
+    <style>
+        body {
+            background-color: white;
+        }
+    </style>
 </head>
 
 <body>
-    <div>
-        <div class="formdiv">
-            <h1>Inpass</h1>
-            <form name="ip" method="post" action="">
-                <label for="ipno">Inpass No.</label>
-                <input type="text" required name="ipno">
-                <label for="date">Date</label>
-                <input type="date" required name="date" id="today_date">
-                <label>Source Name</label>
-                <input list="companylist" required name="source" id="source_name">
-                <datalist id="companylist">
-                    <?php
-                    while ($row = mysqli_fetch_assoc($retval2)) {
-                        echo "<option>{$row['name']}";
-                    }
-                    ?>
-                </datalist> <br>
-                <label for="woc">A/C of WGD WO#</label>
-                <input type="text" required name="woc" id="company_code"> <br>
-                <label for="opno">OP#</label>
-                <input type="text" required name="opno"> <br>
-                <label for="vechicle">Vehicle#</label>
-                <input type="text" required name="vehicle"> <br> <br>
-                <label>Add Products</label>
-                <div class="divider1"></div>
-                <div id="product_fields">
-                  
+    <main>
+        <br>
+        <h1 class='mt-2 ms-4'>Generate Inpass</h1>
+        <div class="container">
+            <div class='row justify-content'>
+                <div class="col-xl-10">
+                    <br>
+                    <form name="ip" class="bg-white rounded-5 shadow-5-strong p-5" method="post" action="">
+                        <h4>Enter Details Below</h4> <br>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-outline mb-4">
+                                    <input type="text" class="form-control" required name="ipno">
+                                    <label for="ipno" class="form-label">Inpass No.</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline datepicker">
+                                    <input type="date" class="form-control" required name="date" id="today_date">
+                                    <label for="roday_date" class="form-label">Date</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-outline mb-4">
+                                    <input list="companylist" class="form-control" required name="source"
+                                        id="source_name">
+                                    <datalist id="companylist">
+                                        <?php
+                                        while ($row = mysqli_fetch_assoc($retval2)) {
+                                            echo "<option>{$row['name']}";
+                                        }
+                                        ?>
+                                    </datalist>
+                                    <label class="form-label">Source Name</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline mb-4">
+                                    <input type="text" class="form-control" required name="woc" id="company_code">
+                                    <label for="woc" class="form-label">A/C of WGD WO#</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-outline mb-4 ">
+                                    <input type="text" class="form-control" required name="opno">
+                                    <label for="opno" class="form-label">OP#</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline mb-4">
+                                    <input type="text" class="form-control" required name="vehicle">
+                                    <label for="vechicle" class="form-label">Vehicle No.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="form-check-label">
+                            <h5>Products</h5>
+                        </label> <br>
+                        <div id="product_fields" class="row border border-1 border-primary rounded pt-2 mb-2">
+
+                        </div>
+
+                        <button type="button" id="add_product_field" class="btn btn-outline-secondary"
+                            data-mdb-ripple-color="dark">Add Product</button>
+                        <br>
+                        <div class="form-outline mb-4 mt-4">
+                            <textarea id="extras" class="form-control" name="extras"></textarea>
+                            <label for="extras" class="form-label">Extras</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" name="ip">Generate InPass</button>
+                    </form>
                 </div>
-
-                <button type="button" id="add_product_field">Add Product</button>
-                <br>
-                <label for="extras">Extras</label>
-                <textarea id="extras" name="extras"></textarea> <br> <br>
-                <button type="submit" name="ip">Generate InPass</button>
-            </form>
-            <br><br>
-            <?php
-            if (isset($_POST['ip'])) {
-                $ipno = "";
-                $date = "";
-                $source = "";
-                $woc = "";
-                $op = "";
-                $vechicle = "";
-                $p_name = "";
-                $p_code = "";
-                $p_bundle = "";
-                $extras = "";
-                $ipno = $_POST['ipno'];
-                $date = $_POST['date'];
-                $source = $_POST['source'];
-                $woc = $_POST['woc'];
-                $op = $_POST['opno'];
-                $vehicle = $_POST['vehicle'];
-                $p_name = $_POST['products'];
-                $p_code = $_POST['product_code'];
-                $p_design = $_POST['product_design'];
-                $extras = $_POST['extras'];
-                $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
-                if (!$conn) {
-                }
-                $tran = 'START TRANSACTION';
-                $transtart = mysqli_query($conn, $tran);
-                if (!$transtart) {
-                    echo mysqli_error($conn);
-                }
-                $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras')";
-                $sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
-                $insert = mysqli_query($conn, $sql);
-                if (!$insert) {
-                    echo mysqli_error($conn);
-                    mysqli_rollback($conn);
-                    echo "<script>alert('Some Error Occured')</script>";
-                    exit;
-                } else {
-                    echo "sucess";
-                }
-                $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source'");
-                if ($result->num_rows == 0) {
-                    $insert2 = mysqli_query($conn, $sql2);
-                }
-                $ino = "";
-                $products = $_POST['products'];
-                $productCodes = $_POST['product_code'];
-                $productDeisgns = $_POST['product_design'];
-                $productSizes = $_POST['product_size'];
-                $productQtys = $_POST['product_qty'];
-
-                for ($i = 0; $i < count($products); $i++) {
-                    $productName = $products[$i];
-                    $productCode = $productCodes[$i];
-                    $productDesign = $productDeisgns[$i];
-                    $productSize = $productSizes[$i];
-                    $productQty = $productQtys[$i];
-
-                    $sql7 = "INSERT INTO stock(code,item,design,size,qty) VALUES ('$productCode','$productName','$productDesign','$productSize','$productQty')";
-                    $result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
-                    if ($result2->num_rows == 0) {
-                        $insert2 = mysqli_query($conn, $sql7);
-                        if (!$insert2) {
-                            echo mysqli_error($conn);
-                            mysqli_rollback($conn);
-                            echo "<script>alert('Some Error Occured')</script>";
-                            exit;
-                        }
+                <br><br>
+                <?php
+                if (isset($_POST['ip'])) {
+                    $ipno = "";
+                    $date = "";
+                    $source = "";
+                    $woc = "";
+                    $op = "";
+                    $vechicle = "";
+                    $p_name = "";
+                    $p_code = "";
+                    $p_bundle = "";
+                    $extras = "";
+                    $ipno = $_POST['ipno'];
+                    $date = $_POST['date'];
+                    $source = $_POST['source'];
+                    $woc = $_POST['woc'];
+                    $op = $_POST['opno'];
+                    $vehicle = $_POST['vehicle'];
+                    $p_name = $_POST['products'];
+                    $p_code = $_POST['product_code'];
+                    $p_design = $_POST['product_design'];
+                    $extras = $_POST['extras'];
+                    $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
+                    if (!$conn) {
+                    }
+                    $tran = 'START TRANSACTION';
+                    $transtart = mysqli_query($conn, $tran);
+                    if (!$transtart) {
+                        echo mysqli_error($conn);
+                    }
+                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras')";
+                    $sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
+                    $insert = mysqli_query($conn, $sql);
+                    if (!$insert) {
+                        echo mysqli_error($conn);
+                        mysqli_rollback($conn);
+                        echo "<script>alert('Some Error Occured')</script>";
+                        exit;
                     } else {
-                        $sql8 = "Select qty from stock where code = '$productCode'";
-                        $retval4 = mysqli_query($conn, $sql8);
-                        if (!$retval4) {
+                        echo "sucess";
+                    }
+                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source'");
+                    if ($result->num_rows == 0) {
+                        $insert2 = mysqli_query($conn, $sql2);
+                    }
+                    $ino = "";
+                    $products = $_POST['products'];
+                    $productCodes = $_POST['product_code'];
+                    $productDeisgns = $_POST['product_design'];
+                    $productSizes = $_POST['product_size'];
+                    $productQtys = $_POST['product_qty'];
+
+                    for ($i = 0; $i < count($products); $i++) {
+                        $productName = $products[$i];
+                        $productCode = $productCodes[$i];
+                        $productDesign = $productDeisgns[$i];
+                        $productSize = $productSizes[$i];
+                        $productQty = $productQtys[$i];
+
+                        $sql7 = "INSERT INTO stock(code,item,design,size,qty) VALUES ('$productCode','$productName','$productDesign','$productSize','$productQty')";
+                        $result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
+                        if ($result2->num_rows == 0) {
+                            $insert2 = mysqli_query($conn, $sql7);
+                            if (!$insert2) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                        } else {
+                            $sql8 = "Select qty from stock where code = '$productCode'";
+                            $retval4 = mysqli_query($conn, $sql8);
+                            if (!$retval4) {
+                                echo "Error Occured";
+                                mysqli_rollback($conn);
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                            $row8 = mysqli_fetch_array($retval4);
+                            $oldqty = $row8[0];
+                            $newqty = $oldqty + $productQty;
+                            echo $oldqty;
+                            echo $newqty;
+                            $sql9 = "UPDATE stock SET qty = '$newqty' where code='$productCode'";
+                            $update = mysqli_query($conn, $sql9);
+                            if (!$update) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                        }
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty')";
+                        $insert = mysqli_query($conn, $sql4);
+                        if (!$insert) {
+                            echo mysqli_error($conn);
                             echo "Error Occured";
                             mysqli_rollback($conn);
                             echo "<script>alert('Some Error Occured')</script>";
                             exit;
                         }
-                        $row8 = mysqli_fetch_array($retval4);
-                        $oldqty = $row8[0];
-                        $newqty = $oldqty + $productQty;
-                        echo $oldqty;
-                        echo $newqty;
-                        $sql9 = "UPDATE stock SET qty = '$newqty' where code='$productCode'";
-                        $update = mysqli_query($conn, $sql9);
-                        if (!$update) {
-                            echo mysqli_error($conn);
-                            mysqli_rollback($conn);
-                            echo "<script>alert('Some Error Occured')</script>";
-                            exit;
-                        }
-                    }
-                    $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty')";
-                    $insert = mysqli_query($conn, $sql4);
-                    if (!$insert) {
-                        echo mysqli_error($conn);
-                        echo "Error Occured";
-                        mysqli_rollback($conn);
-                        echo "<script>alert('Some Error Occured')</script>";
-                        exit;
-                    }
 
-                    $sql3 = "INSERT INTO products(name,code,design,size) VALUES ('$productName','$productCode','$productDesign','$productSize')";
-                    $result = mysqli_query($conn, "SELECT name FROM products WHERE name = '$productName'");
-                    if ($result->num_rows == 0) {
-                        $insert3 = mysqli_query($conn, $sql3);
-                        if (!$insert3) {
-                            echo mysqli_error($conn);
-                            mysqli_rollback($conn);
-                            echo "<script>alert('Some Error Occured')</script>";
-                            exit;
+                        $sql3 = "INSERT INTO products(name,code,design,size) VALUES ('$productName','$productCode','$productDesign','$productSize')";
+                        $result = mysqli_query($conn, "SELECT name FROM products WHERE name = '$productName'");
+                        if ($result->num_rows == 0) {
+                            $insert3 = mysqli_query($conn, $sql3);
+                            if (!$insert3) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
                         }
-                    }
-                    mysqli_commit($conn);
+                        mysqli_commit($conn);
 
-                }
+                    }
                     echo "<script type='text/javascript'>
                 window.open('createpdfpass.php?no=$ipno&io=inpass');
                 </script>";
-                echo "<script type='text/javascript'>
+                    echo "<script type='text/javascript'>
                 window.location.href = 'inpass.php';
                 </script>";
-            }
-            ?>
+                }
+                ?>
+            </div>
         </div>
-    </div>
-    <div>
+        <br> <br>
+        <div class="container mt-2 ms-2">
 
-        <h1>Inpasses Generated</h1>
-        <a href="inpassshowall.php?f=0" target="_blank">Show All</a>
-        <table style="border-spacing: 30px;">
-            <thead>
-                <th>
-                    Inpass No.
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Source Company
-                </th>
-                <th>
-                    WOC
-                </th>
-                <th>
-                    Product Description/Size
-                </th>
-                <th>
-                    Product Accp. Quantity
-                </th>
-                <th>
-                    Outpass No.(Source)
-                </th>
-                <th>
-                    Vehicle No.
-                </th>
-                <th>
-                    Extras
-                </th>
-            </thead>
-            <tbody>
-                <tr>
-                    <?php
-                    while ($row = $retval3->fetch_assoc()) {
-                        if (!empty($row)) {
-                            echo "
+            <div class="col">
+                <h1>Inpasses Generated <a href="inpassshowall.php?f=0" class="fs-5" target="_blank">Show All</a></h1>
+            </div>
+
+        </div>
+        <div class="container-fluid mt-2 p-2 bg-white rounded-5 shadow-5-strong">
+            <table class='table table-striped'>
+                <thead class="table-light">
+                    <th>
+                        Inpass No.
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Source Company
+                    </th>
+                    <th>
+                        WOC
+                    </th>
+                    <th>
+                        Product Description/Size
+                    </th>
+                    <th>
+                        Product Accp. Quantity
+                    </th>
+                    <th>
+                        Outpass No.(Source)
+                    </th>
+                    <th>
+                        Vehicle No.
+                    </th>
+                    <th>
+                        Extras
+                    </th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <?php
+                        while ($row = $retval3->fetch_assoc()) {
+                            if (!empty($row)) {
+                                echo "
                     <tr>
                     <td>
                     {$row['no']}
@@ -426,14 +511,25 @@ if (!$retval3) {
                     </td>
                     </tr>
                     ";
+                            }
                         }
-                    }
-                    ?>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                        ?>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
+            }
+        </script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
 
+    </main>
 </body>
 
 </html>

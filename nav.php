@@ -1,104 +1,72 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-<style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Material Design for Bootstrap</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Google Fonts Roboto -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+    />
+    <!-- MDB -->
+    <link rel="stylesheet" href="css/mdb.min.css" />
+  </head>
 
-        #nav {
-            background-color: #333;
-        }
-
-        #navul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #navli {
-            margin: 0;
-        }
-
-        #navli a {
-            display: block;
-            text-decoration: none;
-            padding: 12px 20px;
-            color: #fff;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        #navli a:hover {
-            background-color: #555;
-        }
-    </style>
-</head>
-
+  <style>
+  /* .navbar {
+            background-color: brown;
+        } */
+</style>
 <body>
-    <div id="nav">
-        <ul id="navul">
-            <li id="navli"><a href="inpass.php">Inpass</a></li>
-            <li id="navli"><a href="outpass.php">Outpass</a></li>
-            <li id="navli"><a href="workorder.php">Work Order</a></li>
-            <li id="navli"><a href="ledger.php?f=0">Ledger</a></li>
-            <li id="navli"><a href="stock.php?f=0">Stock</a></li>
-            <li id="navli"><a href="profile.php">Profile</a></li>
-        </ul>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="profile.php">Akshay Coir</a>
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="inpass.php">Inpass</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="outpass.php">Outpass</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="workorder.php">Work Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="stock.php?f=0">Stock</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ledger.php?f=0">Ledger</a>
+                    </li>
+                </ul>
+            </div>
+            <ul class="navbar-nav">
+                <div class="d-flex align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">Profile</a>
+                    </li>
+                </div>
+            </ul>
+        </div>
+        </div>
+    </nav>
+    <!-- MDB -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
 </body>
 
 </html>
-
-
-<!-- <html>
-<style>
-    li {
-        display: inline;
-        float: left;
-    }
-
-    a {
-        display: flex;
-        text-decoration-line: none;
-        padding: 8px;
-        color: white;
-    }
-
-    ul {
-        background: none;
-        
-    }
- 
-    li:last-child {
-        padding-left: 1002;
-    }
-
-    #nav {
-        display: flex;
-        width: 100%;
-        height: 10%;
-        background-color: black;
-    }
-</style>
-
-<body>
-    <div id="nav">
-        <ul id="navul">
-            <li id="navli"><a id="nava" href="inpass.php">Inpass</a></li>
-            <li id="navli"><a id="nava" href="outpass.php">Outpass</a></li>
-            <li id="navli"><a id="nava" href="products.php">Products</a></li>
-            <li id="navli"><a id="nava" href="ledger.php?f=0">Ledger</a></li>
-            <li id="navli"><a id="nava" href="stock.php">Stock</a></li>
-            <li id="navli"><a id="nava" href="profile.php">Profile</a></li>
-        </ul>
-    </div>
-</body>
-
-</html> -->

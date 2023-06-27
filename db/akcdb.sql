@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 26, 2023 at 09:26 AM
+-- Generation Time: Jun 27, 2023 at 04:38 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `inpass` (
 --
 
 INSERT INTO `inpass` (`no`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`, `type`, `timestamp`) VALUES
+(720, '2023-06-27', 'Company 2', 'C2', 9000, 'KL 33 BC 1921', 'Goods', 'inpass', '2023-06-27 10:53:29'),
 (890, '2023-06-23', 'Company A', 'CA', 190, 'KL 33 BC 1920', '', 'inpass', '2023-06-23 12:21:36'),
 (900, '2023-06-18', 'Company 1', 'C1', 100, 'KL 23 BC 2982', '', 'inpass', '2023-06-23 12:21:36'),
 (901, '2023-06-18', 'Company 1', 'C1', 101, 'KL 23 BC 2982', '', 'inpass', '2023-06-23 12:21:36'),
@@ -156,7 +157,9 @@ INSERT INTO `inpass_products` (`inpass_no`, `product_name`, `product_code`, `pro
 (890, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 10),
 (1001, 'Vinyl back 15mm natural', 'TUF060', 'Plain', '40 X 120cm', 112),
 (7001, 'Vinyl back 15mm natural', 'TUF060', 'Plain', '40 X 120cm', 10),
-(920, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 123);
+(920, 'Vinyl back 15mm natural', 'TUF059', 'Plain', '45 X 75 Cm', 123),
+(720, 'Black Rubber 15mm', 'COD902', 'Plain', '45 X 120cm', 17),
+(720, 'Vinyl back 15mm natural', 'TUF159', 'Plain', '50 X 75 Cm', 18);
 
 -- --------------------------------------------------------
 
@@ -267,7 +270,8 @@ INSERT INTO `outpass` (`no`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`
 (1200, '2023-06-24', 'AAC100', 'Company 2', 'C2', 'KL 33 BC 1920', '', 'Not Generated', 'outpass', '2023-06-23 18:38:25'),
 (1201, '2023-06-25', 'AAC101', 'Company 4', 'C4', 'KL 05 B 2834', '', 'Not Generated', 'outpass', '2023-06-24 20:33:40'),
 (1203, '2023-06-25', 'AAC200', 'Company 5', 'C5', 'KL 33 BC 1920', '', 'Not Generated', 'outpass', '2023-06-24 20:34:21'),
-(1204, '2023-06-25', 'AAC300', 'Company 2', 'C2', 'KL 23 BC 2983', '', 'A300', 'outpass', '2023-06-24 20:35:59');
+(1204, '2023-06-25', 'AAC300', 'Company 2', 'C2', 'KL 23 BC 2983', '', 'A300', 'outpass', '2023-06-24 20:35:59'),
+(1210, '2023-06-27', 'AAC124', 'Company 2', 'C2', 'KL 33 BC 1921', '', 'Not Generated', 'outpass', '2023-06-27 16:10:02');
 
 -- --------------------------------------------------------
 
@@ -301,7 +305,9 @@ INSERT INTO `outpass_products` (`outpass_no`, `product_type`, `product_name`, `w
 (1204, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC300', 'ACP050', 'REACH', '17.75\" X 38.75\"', 10),
 (1204, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC300', 'ACP051', 'REACH', '18\" X 30\"', 20),
 (1204, 'Finished', 'Black Natural 19mm Welcome Border', 'AAC300', 'ACP022', 'Border 4', '17.75\" X 38.75\"', 30),
-(1204, 'Finished', 'Black Rubber 15mm Clear', 'AAC300', 'ACP023', 'Plain', '18\" X 30\"', 40);
+(1204, 'Finished', 'Black Rubber 15mm Clear', 'AAC300', 'ACP023', 'Plain', '18\" X 30\"', 40),
+(1210, 'Finished', 'Vinyl Back 15mm Natural Welcome Border', 'AAC124', 'ACP050', 'REACH', '17.75\" X 38.75\"', 10),
+(1210, 'Finished', 'Vinyl Back 15mm Natural Hello', 'AAC124', 'ACP051', 'REACH', '18\" X 30\"', 2);
 
 -- --------------------------------------------------------
 
@@ -365,18 +371,20 @@ CREATE TABLE IF NOT EXISTS `stock` (
   `qty` int NOT NULL,
   `default` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `stock`
 --
 
 INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, `default`) VALUES
-(9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 343, 1),
+(9, '', 'TUF059', 'Vinyl back 15mm natural', 'Plain', '45 X 75 Cm', 341, 1),
 (11, '', 'TUF060', 'Vinyl back 15mm natural', 'Plain', '40 X 120cm', 381, 1),
 (12, '', 'COD900', 'Black Rubber 15mm', 'Plain', '40 X 120cm', 620, 1),
 (15, '', 'COD901', 'Black Rubber 20mm', 'Plain', '40 X 120cm', 120, 1),
-(16, '', 'TUF100', 'Vinyl back 20mm natural', 'Border', '40 X 120cm', 99, 1);
+(16, '', 'TUF100', 'Vinyl back 20mm natural', 'Border', '40 X 120cm', 99, 1),
+(17, '', 'COD902', 'Black Rubber 15mm', 'Plain', '45 X 120cm', 17, 1),
+(18, '', 'TUF159', 'Vinyl back 15mm natural', 'Plain', '50 X 75 Cm', 8, 1);
 
 -- --------------------------------------------------------
 
@@ -417,7 +425,7 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Open',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `work_orders`
@@ -434,7 +442,8 @@ INSERT INTO `work_orders` (`id`, `date`, `work_order_no`, `company`, `extras`, `
 (17, '2023-06-24', 'AAC100', 'Company 2', '', 'Closed', '2023-06-23 18:38:25'),
 (18, '2023-06-24', 'AAC101', 'Company 4', '', 'Closed', '2023-06-24 20:33:40'),
 (19, '2023-06-25', 'AAC200', 'Company 5', '', 'Closed', '2023-06-24 20:34:21'),
-(20, '2023-06-25', 'AAC300', 'Company 2', '', 'Open', '2023-06-24 20:33:08');
+(20, '2023-06-25', 'AAC300', 'Company 2', '', 'Open', '2023-06-24 20:33:08'),
+(21, '2023-06-27', 'AAC124', 'Company 2', '', 'Closed', '2023-06-27 16:10:02');
 
 -- --------------------------------------------------------
 
@@ -476,7 +485,9 @@ INSERT INTO `work_order_products` (`work_order_no`, `code`, `name`, `design`, `s
 ('AAC300', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 100),
 ('AAC300', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 200),
 ('AAC300', 'ACP022', 'Black Natural 19mm', 'Border 4', '17.75\" X 38.75\"', 'Welcome Border', 300),
-('AAC300', 'ACP023', 'Black Rubber 15mm', 'Plain', '18\" X 30\"', 'Clear', 360);
+('AAC300', 'ACP023', 'Black Rubber 15mm', 'Plain', '18\" X 30\"', 'Clear', 360),
+('AAC124', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 10),
+('AAC124', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 2);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
