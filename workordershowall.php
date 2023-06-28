@@ -13,8 +13,6 @@ $size = 'All';
 $p_code = 'All';
 $status = 'All';
 
-$search = '';
-$wno = '';
 if ($f != 0) {
     $start = $_GET['start'];
     $end = $_GET['end'];
@@ -25,8 +23,6 @@ if ($f != 0) {
     $p_code = $_GET['ic'];
     $status = $_GET['st'];
 
-    $search = $_GET['pns'];
-    //$opno = $_GET['opno'];
 }
 if (!$conn) {
     echo "Error Occured";
@@ -88,12 +84,6 @@ if ($p_code != 'All') {
 if ($status != 'All') {
     $sql .= " AND status = '$status'";
 }
-if (!empty($search)) {
-    $sql .= " AND (name LIKE '%$search%' OR code LIKE '%$search%' OR design LIKE '%$search%')";
-}
-if (!empty($wno)) {
-    $sql .= " AND (work_order_products.work_order_no LIKE '%$wno%')";
-}
 
 
 $sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
@@ -106,15 +96,40 @@ if (!$retval) {
 
 <html>
 
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Work Orders</title>
+<!-- MDB icon -->
+<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- Google Fonts Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+<!-- MDB -->
+<link rel="stylesheet" href="css/mdb.min.css" />
+
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+<style>
+    .blur {
+        box-shadow: 0px 0px 20px 20px rgba(255, 255, 255, 1);
+        text-shadow: 0px 0px 10px rgba(51, 51, 51, 0.9);
+        transform: scale(0.9);
+        opacity: 0.6;
+    }
+</style>
 
 <script>
     //editing
     $(document).ready(function () {
+
         // Handle click event on the edit button
         $('.edit-btn').click(function (e) {
             e.preventDefault(); // Prevent the default form submission
+
+
 
             $("#product_fields").empty();
             var workOrderNo = $(this).closest('tr').find('td:eq(0)').text().trim();
@@ -154,6 +169,8 @@ if (!$retval) {
                             productSizeField.val(productData[i].size);
                             productFeatureField.val(productData[i].feature);
                             productQtyField.val(productData[i].qty)
+                            initilizebootstrap();
+
                         }
                     }
                 },
@@ -181,12 +198,17 @@ if (!$retval) {
 
             // // Show the popup window
             $('#editPopup').show();
+
+            initilizebootstrap();
+
         });
 
         // Handle click event on the cancel button in the popup window
         $('#cancelBtn').click(function () {
             // Hide the popup window
             $('#editPopup').hide();
+            initilizebootstrap();
+
         });
 
 
@@ -194,14 +216,17 @@ if (!$retval) {
         $("#add_product_field").click(function () {
 
             var productField = `
-<div class="product_field">
+<div class="product_field mb-3">
+<div class=' d-flex align-items-start bg-light mb-1 mt-4'>
 
-<label for="product_code">Product Code</label>
-<input name="product_code[]" required class="product_code">
-
-
-<label>Product Name</label>
-<input list="productlist" required name="products[]" class="product_name">
+<div class="form-outline mb-1 col " >
+<input name="product_code[]" id='pcode' required class="product_code form-control">
+<label for="pcode" class='form-label'>Product Code</label>
+</div>
+&nbsp;
+<div class="form-outline mb-1 col " >
+<input list="productlist" required name="products[]" class="product_name form-control" id='pname'>
+<label for='pname' class='form-label'>Product Name</label>
 <datalist id="productlist">
 <?php
 // while ($row = mysqli_fetch_assoc($retval)) {
@@ -209,30 +234,44 @@ if (!$retval) {
 // }
 ?>
 </datalist>
+</div>
+&nbsp;
+<div class="form-outline mb-1 col " >
+<input name="product_design[]" required class="product_design form-control" id='pdes'>
+<label for="pdes" class='form-label'>Design</label>
+</div>
+&nbsp;
 
+<div class="form-outline mb-1 col " >
+<input name="product_size[]" required class="product_size form-control" id='psize'>
+<label for="psize" class='form-label'>Size</label>
+</div>
+&nbsp;
 
-<label for="product_design">Design</label>
-<input name="product_design[]" required class="product_design">
-
-<label for="product_size">Size</label>
-<input name="product_size[]" required class="product_size">
-
-<label for="product_feature">Features</label>
-<input name="product_feature[]" required class="product_feature">
-
-<label for="product_qty">Req. Qty</label>
-<input name="product_qty[]" required class="product_qty">
-
-<button type="button" class="remove_product_field">Remove</button>  &nbsp;
+<div class="form-outline mb-1 col " >
+<input name="product_feature[]" required class="product_feature form-control" id='pfeat'>
+<label for="pfeat" class='form-label'>Features</label>
+</div>
+&nbsp;
+<div class="form-outline mb-1 col " >
+<input name="product_qty[]" required class="product_qty form-control" id='pqty'>
+<label for="pqty" class='form-label'>Req. Qty</label>
+</div>
+</div>
+&nbsp;
+<button type="button" class="remove_product_field  btn btn-outline-danger" data-mdb-ripple-color="dark">Remove</button>  &nbsp;
 </div>
 `;
 
             $("#product_fields").append(productField);
+            initilizebootstrap();
         });
 
         // Remove product field
         $(document).on("click", ".remove_product_field", function () {
             $(this).parent(".product_field").remove();
+            initilizebootstrap();
+
         });
     });
 
@@ -248,6 +287,8 @@ if (!$retval) {
             // Set the default value to the current month
             var defaultValue = year + '-' + month;
             document.getElementById('start').value = defaultValue;
+            initilizebootstrap();
+
 
         });
 
@@ -262,167 +303,285 @@ if (!$retval) {
             // Set the default value to the current month
             var defaultValue = year + '-' + month;
             document.getElementById('end').value = defaultValue;
+            initilizebootstrap();
+
 
         });
     });
 
+    $(document).ready(function () {
+        //search workorder data
+        var searchInput = document.getElementById("search");
+        var table = document.getElementById("tablebody");
+        var rows = table.getElementsByTagName("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            var input = searchInput.value.toLowerCase();
+
+            for (var i = 0; i < rows.length; i++) {
+                var rowData = rows[i].getElementsByTagName("td");
+                var found = false;
+
+                for (var j = 0; j < rowData.length; j++) {
+                    if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
+                        found = true;
+                        initilizebootstrap();
+                        break;
+                    }
+                }
+
+                if (found) {
+                    rows[i].style.display = "";
+                    initilizebootstrap();
+                } else {
+                    rows[i].style.display = "none";
+                    initilizebootstrap();
+                }
+            }
+        });
+    });
+
+
+
 </script>
 
 <body>
-    <div>
-        <h1>Work Orders</h1>
-        <form name="filter" method="post">
-            <label for="start">Start</label>
-            <input type="date" value="1990-01-01" id='start' required name="start">
-            &nbsp;
-            <label for="end">End</label>
-            <input name="end" value="2099-12-31" id='end' required type="date">
-
-            <br> <br>
-            <label>Company</label>
-            <select name='company'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval2, 0);
-                while ($row = mysqli_fetch_assoc($retval2)) {
-                    echo "
+    <main>
+        <br>
+        <h1 class="mt-2 ms-4">Work Orders</h1>
+        <div class="container-fluid">
+            <div class='row justify-content main-container'>
+                <div class="col">
+                    <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
+                        <h4 class='mb-4'>Filter</h4>
+                        <div class="row ms-1 justify-content w-50">
+                            <div class="form-outline col">
+                                <input type="date" class="form-control" value="1990-01-01" id='start' required
+                                    name="start">
+                                <label for="start" class='form-label'>Start</label>
+                            </div>
+                            <div class="col col-sm-1">
+                                <center>to</center>
+                            </div>
+                            <div class="form-outline col">
+                                <input name="end" class="form-control" value="2099-12-31" id='end' required type="date">
+                                <label for="end" class="form-label">End</label>
+                            </div>
+                        </div>
+                        <div class="col mt-4 mb-4 ms-1">
+                            <label>Company</label>
+                            <select name='company'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval2, 0);
+                                while ($row = mysqli_fetch_assoc($retval2)) {
+                                    echo "
             <option>{$row['company']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Item Name</label>
-            <select name='name'>
-                <option selected>All</option>
-                <?php
-                while ($row = mysqli_fetch_assoc($retval3)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Item Name</label>
+                            <select name='name'>
+                                <option selected>All</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($retval3)) {
+                                    echo "
             <option>{$row['name']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Item Code</label>
-            <select name='code'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval6, 0);
-                while ($row = mysqli_fetch_assoc($retval6)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Item Code</label>
+                            <select name='code'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval6, 0);
+                                while ($row = mysqli_fetch_assoc($retval6)) {
+                                    echo "
             <option>{$row['code']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Item Size</label>
-            <select name='size'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval4, 0);
-                while ($row = mysqli_fetch_assoc($retval4)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Item Size</label>
+                            <select name='size'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval4, 0);
+                                while ($row = mysqli_fetch_assoc($retval4)) {
+                                    echo "
             <option>{$row['size']}</option>
             ";
-                }
-                ?>
-            </select> &nbsp;
-            <label>Status</label>
-            <select name='status'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval7, 0);
-                while ($row = mysqli_fetch_assoc($retval7)) {
-                    echo "
+                                }
+                                ?>
+                            </select> &nbsp;
+                            <label>Status</label>
+                            <select name='status'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval7, 0);
+                                while ($row = mysqli_fetch_assoc($retval7)) {
+                                    echo "
             <option>{$row['status']}</option>
             ";
-                }
-                ?>
-            </select> &nbsp;
-            <input type="submit" name="filter" value="Search">
-            <br> <br>
-            Search by Keywords <br> <br>
-            <input type="text" name="wno" placeholder="Enter Work Order No.">
-            <input type="text" name="search" placeholder="Search Item Name/Code">
-            <input type="submit" name="filter" value="Search">
+                                }
+                                ?>
+                            </select>
 
-        </form> <br>
-
-        <div id="editPopup" style="display: none;">
-            <h2>Edit Values</h2>
-            <form id="editForm" method="post">
-                <label for="workOrderNo">Work Order No.</label>
-                <input type="text" id="workOrderNo" name="workOrderNo" readonly><br>
-                <label for="date">Date : </label>
-                <span id="date" name="date">
-                    <caption></caption>
-                </span><br>
-                <label for="company">Company</label>
-                <input type="text" id="company" required name="company"><br>
-
-                <div id="product_fields">
-
+                            &nbsp;
+                            <input type="submit" class=" btn btn-outline-primary btn-sm" data-mdb-ripple-color="dark"
+                                name="filter" value="Search">
+                        </div>
+                        <h5 class='mb-4'>Search By Keywords</h5>
+                        <div class='col justify-content w-25'>
+                            <div class="input-group">
+                                <div class="form-outline">
+                                    <input type="text" id='search' class="form-control" name="search"
+                                        placeholder="eg. ABC123">
+                                    <label class="form-label" for="search">Search</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <button type="button" id="add_product_field">Add Product</button> <br>
-                <label for="productStatus">Product Status (Open/Closed)</label>
-                <input type="text" id="productStatus" required pattern="^(Open|Closed)$" name="productStatus"><br>
 
-                <label for="extras">Extras</label>
-                <input type="text" id="extras" name="extras"><br> <br>
+                <div id="editPopup" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                        <div class="modal-content  container mt-1 mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4">
+                            <div class="modal-header">
+                                <h2 class="modal-title">Edit Values</h2>
+                                <button type="button" id='cancelBtn' class="btn-close"
+                                    data-mdb-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class='row justify-content'>
+                                    <div class="col-xl-10">
+                                        <form id="editForm" method="post">
+                                            <div class="row mb-4 w-75">
+                                                <div class="col">
+                                                    <label for="date">Date : </label>
+                                                    <span id="date" name="date">
+                                                        <caption></caption>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row w-75">
+                                                <div class='col'>
+                                                    <div class="form-outline">
+                                                        <input type="text" id="workOrderNo" class="form-control"
+                                                            name="workOrderNo" readonly>
+                                                        <label for="workOrderNo" class='form-label'>Work Order
+                                                            No.</label>
+                                                    </div>
+                                                </div>
 
-                <input type="submit" name="save" value="Save">
-                <input type="button" id="cancelBtn" value="Cancel">
-                <input type="submit" name='delete' id="delete" value="Delete">
-            </form>
-        </div>
+                                                <div class='col'>
+                                                    <div class="form-outline">
+                                                        <input type="text" id="company" class="form-control" required
+                                                            name="company">
+                                                        <label for="company" class='form-label'>Company</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <label class="mt-4">
+                                                <h6>Products</h6>
+                                            </label> <br>
+                                            <div id="product_fields"
+                                                class='row border border-1 border-primary rounded pt-2 mb-2'>
 
+                                            </div>
+                                            <button type="button" id="add_product_field"
+                                                class="btn btn-outline-secondary" data-mdb-ripple-color="dark">Add
+                                                Product</button> <br>
+                                            <div class="form-outline mt-4 w-50">
+                                                <input type="text" class="form-control" id="productStatus" required
+                                                    pattern="^(Open|Closed)$" name="productStatus">
+                                                <label for="productStatus" class='form-label'>Product Status
+                                                    (Open/Closed)</label>
+                                            </div>
+                                            <div class="form-outline mt-4 mb-4 w-50">
+                                                <input type="text" class="form-control" id="extras" name="extras">
+                                                <label for="extras" class='form-label'>Extras</label>
+                                            </div>
 
-        <br>
-        <table style="border-spacing: 30px;">
-            <thead>
-                <th>
-                    Work Order No.
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Company
-                </th>
-                <th>
-                    Product Code
-                </th>
-                <th>
-                    Product Desc.
-                </th>
-                <th>
+                                            <input type="submit" class="btn btn-success" id='bsave' name="save"
+                                                value="Save">
+                                            <input type="submit" class="btn btn-danger" id='del' name="delete"
+                                                value="Delete">
+                                            <!-- <input type='submit' class='btn btn-danger' name='delete' id='delete' value='Are You Sure?'> -->
 
-                </th>
-                <th>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                </th>
-                <th>
+                <div class="container">
+                    <div class=" mt-1 mb-2 bg-white rounded-5 shadow-5-strong p-4">
+                        <table class="table">
+                            <thead class='table-light sticky-top'>
+                                <th>
+                                    Work Order No.
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Company
+                                </th>
+                                <th>
+                                    Product Code
+                                </th>
+                                <th>
+                                    Product Desc.
+                                </th>
+                                <th>
 
-                </th>
-                <th>
-                    Product Desp. Quantity
-                </th>
-                <th>
-                    Product Status
-                </th>
-                <th>
-                    Extras
-                </th>
-                <th>
+                                </th>
+                                <th>
 
-                </th>
-            </thead>
-            <tbody>
-                <tr>
-                    <?php
-                    while ($row = $retval->fetch_assoc()) {
-                        if (!empty($row)) {
-                            echo "
-                    <tr>
+                                </th>
+                                <th>
+
+                                </th>
+                                <th>
+                                    Product Desp. Quantity
+                                </th>
+                                <th>
+                                    Product Status
+                                </th>
+                                <th>
+                                    Extras
+                                </th>
+                                <th>
+
+                                </th>
+                            </thead>
+                            <tbody id='tablebody'>
+
+                                <?php
+                                $cur_no = -1;
+                                $table_active = '';
+                                while ($row = $retval->fetch_assoc()) {
+                                    if ($cur_no == $row['work_order_no']) {
+
+                                    } else {
+                                        if ($table_active == 'table-active') {
+                                            $table_active = '';
+                                        } else {
+                                            $table_active = 'table-active';
+                                        }
+                                    }
+                                    if (!empty($row)) {
+                                        echo "
+                    <tr class='$table_active'>
                     <td>
                     {$row['work_order_no']}
                     </td>
@@ -457,17 +616,37 @@ if (!$retval) {
                     {$row['extras']}
                     </td>
                      <td>
-                     <input type='submit' id='{$row['work_order_no']}' class='edit-btn' name='edit' value='Edit'>
+                     
+                     <input type='submit' data-mdb-toggle='modal' data-mdb-target='#editPopup' id='{$row['work_order_no']}' class='edit-btn btn btn-primary' name='edit' value='Edit'>
             </td>
                     </tr>
                     ";
-                        }
-                    }
-                    ?>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                                        $cur_no = $row['work_order_no'];
+                                    }
+                                }
+                                ?>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
+            }
+        </script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+        <!-- Custom scripts -->
+        <script type="text/javascript"></script>
+    </main>
 </body>
 
 </html>
@@ -560,10 +739,8 @@ if (isset($_POST['filter'])) {
     $ic = $_POST['code'];
     $st = $_POST['status'];
 
-    $p_search = $_POST['search'];
-    $wno = $_POST['wno'];
-    // echo "<script type='text/javascript'>
-    //         window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&wno=$wno&ic=$ic&st=$st&pns=$p_search&wno=$wno';
-    //         </script>";
+    echo "<script type='text/javascript'>
+            window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&wno=$wno&ic=$ic&st=$st';
+            </script>";
 }
 ?>

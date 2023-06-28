@@ -19,7 +19,7 @@
     />
     <!-- MDB -->
     <link rel="stylesheet" href="css/mdb.min.css" />
-  </head>
+  
 
   <style>
   /* .navbar {

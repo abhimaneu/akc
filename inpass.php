@@ -49,7 +49,7 @@ if (!$retval3) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Material Design for Bootstrap</title>
+    <title>Inpass Generate</title>
     <!-- MDB icon -->
     <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
     <!-- Font Awesome -->
@@ -439,7 +439,7 @@ if (!$retval3) {
 
         </div>
         <div class="container-fluid mt-2 p-2 bg-white rounded-5 shadow-5-strong">
-            <table class='table table-striped'>
+            <table class='table'>
                 <thead class="table-light">
                     <th>
                         Inpass No.
@@ -472,10 +472,21 @@ if (!$retval3) {
                 <tbody>
                     <tr>
                         <?php
+                        $cur_no = -1;
+                        $table_active = '';
                         while ($row = $retval3->fetch_assoc()) {
+                            if ($cur_no == $row['no']) {
+
+                            } else {
+                                if ($table_active == 'table-active') {
+                                    $table_active = '';
+                                } else {
+                                    $table_active = 'table-active';
+                                }
+                            }
                             if (!empty($row)) {
                                 echo "
-                    <tr>
+                    <tr class='$table_active'>
                     <td>
                     {$row['no']}
                     </td>
@@ -511,6 +522,7 @@ if (!$retval3) {
                     </td>
                     </tr>
                     ";
+                                $cur_no = $row['no'];
                             }
                         }
                         ?>
@@ -518,7 +530,7 @@ if (!$retval3) {
                 </tbody>
             </table>
         </div>
-        
+
         <script>
             function initilizebootstrap() {
                 document.querySelectorAll('.form-outline').forEach((formOutline) => {

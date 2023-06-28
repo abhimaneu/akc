@@ -354,7 +354,7 @@ if (!$retval8) {
 
                                 tableBody.appendChild(row);
                                 initilizebootstrap();
-                        }
+                            }
                         } else {
                             // Handle errors if necessary
                             hiddenDiv.innerHTML = 'Error fetching data.';
@@ -752,18 +752,18 @@ if (!$retval8) {
                                     </div>
                                 </div>
                                 <div class="table-responsive" style="max-height:500px;">
-                                <table class='table table-sm'>
-                                    <thead class="table-light">
-                                        <th>Code</th>
-                                        <th>Name</th>
-                                        <th>Design</th>
-                                        <th>Size</th>
-                                        <th>Available. Qty</th>
-                                    </thead>
-                                    <tbody id='stockbody'>
+                                    <table class='table table-sm'>
+                                        <thead class="table-light">
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Design</th>
+                                            <th>Size</th>
+                                            <th>Available. Qty</th>
+                                        </thead>
+                                        <tbody id='stockbody'>
 
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -781,7 +781,7 @@ if (!$retval8) {
 
         </div>
         <div class="container-fluid bg-white rounded-5 shadow-5-strong p-5">
-            <table class="table table-striped">
+            <table class="table">
                 <thead class="table-light">
                     <th>
                         Outpass No.
@@ -814,10 +814,21 @@ if (!$retval8) {
                 <tbody>
                     <tr>
                         <?php
+                        $cur_no = -1;
+                        $table_active = '';
                         while ($row = $retval4->fetch_assoc()) {
+                            if ($cur_no == $row['no']) {
+
+                            } else {
+                                if ($table_active == 'table-active') {
+                                    $table_active = '';
+                                } else {
+                                    $table_active = 'table-active';
+                                }
+                            }
                             if (!empty($row)) {
                                 echo "
-                    <tr>
+                    <tr class='$table_active'>
                     <td>
                     {$row['no']}
                     </td>
@@ -855,6 +866,7 @@ if (!$retval8) {
                     </td>
                     </tr>
                     ";
+                                $cur_no = $row['no'];
                             }
                         }
                         ?>

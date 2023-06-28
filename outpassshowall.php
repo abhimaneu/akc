@@ -14,8 +14,6 @@ $wno = 'All';
 $p_code = 'All';
 $p_type = 'All';
 
-$search = '';
-$opno = '';
 if ($f != 0) {
     $start = $_GET['start'];
     $end = $_GET['end'];
@@ -25,9 +23,6 @@ if ($f != 0) {
     $wno = $_GET['wno'];
     $p_code = $_GET['pc'];
     $p_type = $_GET['pt'];
-
-    $search = $_GET['pns'];
-    $opno = $_GET['opno'];
 }
 if (!$conn) {
     echo "Error Occured";
@@ -92,12 +87,6 @@ if ($p_type != 'All') {
 if ($wno != 'All') {
     $sql .= " AND work_order_no = '$wno'";
 }
-if (!empty($search)) {
-    $sql .= " AND (product_name LIKE '%$search%' OR product_code LIKE '%$search%')";
-}
-if (!empty($opno)) {
-    $sql .= " AND (outpass_no LIKE '%$opno%')";
-}
 
 
 $sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
@@ -110,6 +99,21 @@ if (!$retval) {
 
 
 <html>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Outpass</title>
+<!-- MDB icon -->
+<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- Google Fonts Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+<!-- MDB -->
+<link rel="stylesheet" href="css/mdb.min.css" />
+</head>
+
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -127,7 +131,7 @@ if (!$retval) {
             // Set the default value to the current month
             var defaultValue = year + '-' + month;
             document.getElementById('start').value = defaultValue;
-
+            initilizebootstrap();
         });
 
         $('#end').click(function () {
@@ -141,145 +145,217 @@ if (!$retval) {
             // Set the default value to the current month
             var defaultValue = year + '-' + month;
             document.getElementById('end').value = defaultValue;
-
+            initilizebootstrap();
         });
     });
+
+    $(document).ready(function () {
+        //search outpass data
+        var searchInput = document.getElementById("search");
+        var table = document.getElementById("tablebody");
+        var rows = table.getElementsByTagName("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            var input = searchInput.value.toLowerCase();
+
+            for (var i = 0; i < rows.length; i++) {
+                var rowData = rows[i].getElementsByTagName("td");
+                var found = false;
+
+                for (var j = 0; j < rowData.length; j++) {
+                    if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
+                        found = true;
+                        initilizebootstrap();
+                        break;
+                    }
+                }
+
+                if (found) {
+                    rows[i].style.display = "";
+                    initilizebootstrap();
+                } else {
+                    rows[i].style.display = "none";
+                    initilizebootstrap();
+                }
+            }
+        });
+    });
+
 
 </script>
 
 <body>
-    <div>
-        <h1>Outpasses</h1>
-        <form name="filter" method="post">
-            <label for="start">Start</label>
-            <input type="date" value="1990-01-01" id='start' required name="start">
-            &nbsp;
-            <label for="end">End</label>
-            <input name="end" value="2099-12-31" id='end' required type="date">
-
-            <br> <br>
-            <label>Work Order No.</label>
-            <select name='workorderno'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval5, 0);
-                while ($row = mysqli_fetch_assoc($retval5)) {
-                    echo "
+    <main> <br>
+        <h1 class="mt-2 ms-4">Outpass</h1>
+        <div class="container-fluid">
+            <div class='row justify-content'>
+                <div class="col">
+                    <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
+                        <h4 class='mb-4'>Filter</h4>
+                        <div class="row ms-1 justify-content w-50">
+                            <div class="form-outline col">
+                                <input type="date" class="form-control" value="1990-01-01" id='start' required
+                                    name="start">
+                                <label for="start" class='form-label'>Start</label>
+                            </div>
+                            <div class="col col-sm-1">
+                                <center>to</center>
+                            </div>
+                            <div class="form-outline col">
+                                <input name="end" class="form-control" value="2099-12-31" id='end' required type="date">
+                                <label for="end" class='form-label'>End</label>
+                            </div>
+                        </div>
+                        <div class="col mt-4 mb-4 ms-1">
+                            <label>Work Order No.</label>
+                            <select name='workorderno'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval5, 0);
+                                while ($row = mysqli_fetch_assoc($retval5)) {
+                                    echo "
             <option>{$row['work_order_no']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Dest. Company</label>
-            <select name='company'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval2, 0);
-                while ($row = mysqli_fetch_assoc($retval2)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Dest. Company</label>
+                            <select name='company'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval2, 0);
+                                while ($row = mysqli_fetch_assoc($retval2)) {
+                                    echo "
             <option>{$row['dest']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Product Name</label>
-            <select name='product_name'>
-                <option selected>All</option>
-                <?php
-                while ($row = mysqli_fetch_assoc($retval3)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Product Name</label>
+                            <select name='product_name'>
+                                <option selected>All</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($retval3)) {
+                                    echo "
             <option>{$row['product_name']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Product Code</label>
-            <select name='product_code'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval6, 0);
-                while ($row = mysqli_fetch_assoc($retval6)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="col mt-4 mb-4 ms-1">
+                            <label>Product Code</label>
+                            <select name='product_code'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval6, 0);
+                                while ($row = mysqli_fetch_assoc($retval6)) {
+                                    echo "
             <option>{$row['product_code']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Product Size</label>
-            <select name='product_size'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval4, 0);
-                while ($row = mysqli_fetch_assoc($retval4)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Product Size</label>
+                            <select name='product_size'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval4, 0);
+                                while ($row = mysqli_fetch_assoc($retval4)) {
+                                    echo "
             <option>{$row['product_size']}</option>
             ";
-                }
-                ?>
-            </select> &nbsp;
-            <label>Product Type</label>
-            <select name='product_type'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval7, 0);
-                while ($row = mysqli_fetch_assoc($retval7)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Product Type</label>
+                            <select name='product_type'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval7, 0);
+                                while ($row = mysqli_fetch_assoc($retval7)) {
+                                    echo "
             <option>{$row['product_type']}</option>
             ";
-                }
-                ?>
-            </select> &nbsp;
-            <input type="submit" name="filter" value="Search">
-            <br> <br>
-            Search by Keywords <br> <br>
-            <input type="text" name="opno" placeholder="Enter Outpass No.">
-            <input type="text" name="search" placeholder="Search Product Name/Code">
-            <input type="submit" name="filter" value="Search">
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <input type="submit" class=" btn btn-outline-primary btn-sm" data-mdb-ripple-color="dark"
+                            name="filter" value="Search">
+                        <br> <br>
+                        <h5 class='mb-4'>Search By Keywords</h5>
+                        <div class='col justify-content w-25'>
+                            <div class="input-group">
+                                <div class="form-outline">
+                                    <input type="text" id='search' class="form-control" name="search"
+                                        placeholder="eg. ABC001">
+                                    <label class="form-label" for="search">Search</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container-fluid mt-1 mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4">
+                <table class="table table-sm">
+                    <thead class="table-light sticky-top">
+                        <th>
+                            Outpass No.
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Destination Company
+                        </th>
+                        <th>
+                            Work Order No.
+                        </th>
+                        <th>
+                            Product Desc.
+                        </th>
+                        <th>
+                            Product Desp. Quantity
+                        </th>
+                        <th>
+                            Product Type
+                        </th>
+                        <th>
+                            Vehicle No.
+                        </th>
+                        <th>
+                            Extras
+                        </th>
+                        <th>
+                            Outpass PDF
+                        </th>
+                        <th>
+                            GST Invoice
+                        </th>
+                    </thead>
+                    <tbody id='tablebody'>
+                        <tr>
+                            <?php
+                            $cur_no = -1;
+                            $table_active = '';
+                            while ($row = $retval->fetch_assoc()) {
+                                if ($cur_no == $row['no']) {
 
-        </form>
-        <table style="border-spacing: 30px;">
-            <thead>
-                <th>
-                    Outpass No.
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Destination Company
-                </th>
-                <th>
-                    Work Order No.
-                </th>
-                <th>
-                    Product Desc.
-                </th>
-                <th>
-                    Product Desp. Quantity
-                </th>
-                <th>
-                    Product Type
-                </th>
-                <th>
-                    Vehicle No.
-                </th>
-                <th>
-                    Extras
-                </th>
-                <th>
-                    Outpass PDF
-                </th>
-                <th>
-                    GST Invoice
-                </th>
-            </thead>
-            <tbody>
-                <tr>
-                    <?php
-                    while ($row = $retval->fetch_assoc()) {
-                        if (!empty($row)) {
-                            echo "
-                    <tr>
+                                } else {
+                                    if ($table_active == 'table-active') {
+                                        $table_active = '';
+                                    } else {
+                                        $table_active = 'table-active';
+                                    }
+                                }
+                                if (!empty($row)) {
+                                    echo "
+                    <tr class='$table_active'>
                     <td>
                     {$row['no']}
                     </td>
@@ -319,21 +395,35 @@ if (!$retval) {
                     <a href='createpdfpass.php?no={$row['no']}&io=outpass' target='_blank'>Download</a>
                     </td>
                     <td>";
-                            if (!($row['invoice_no'] == 'Not Generated')) {
-                                echo "{$row['invoice_no']} <br><a href='createpdfgstinvoice.php?wo={$row['work_order']}&in={$row['invoice_no']}' target='_blank'>Download Invoice</a> <br>";
-                            }
-                                echo "<a href='creategstinvoice.php?wo={$row['work_order']}' target='_blank'>Generate New Invoice</a>";
-                            
-                            echo "</td>
+                                    if (!($row['invoice_no'] == 'Not Generated')) {
+                                        echo "<p class='fw-bold mb-1'>{$row['invoice_no']}</p> <a href='createpdfgstinvoice.php?wo={$row['work_order']}&in={$row['invoice_no']}' class='fw-bold' target='_blank'>Download Invoice</a> <br>";
+                                    }
+                                    echo "<a href='creategstinvoice.php?wo={$row['work_order']}' target='_blank'>Generate New Invoice</a>";
+
+                                    echo "</td>
                     </tr>
                     ";
-                        }
-                    }
-                    ?>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                                    $cur_no = $row['no'];
+                                }
+                            }
+                            ?>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
+            }
+        </script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+        <!-- Custom scripts -->
+        <script type="text/javascript"></script>
+    </main>
 </body>
 
 </html>
@@ -349,10 +439,8 @@ if (isset($_POST['filter'])) {
     $pc = $_POST['product_code'];
     $pt = $_POST['product_type'];
 
-    $p_search = $_POST['search'];
-    $opno = $_POST['opno'];
     echo "<script type='text/javascript'>
-            window.location.href = 'outpassshowall.php?f=1&start=$start_date&end=$end_date&pn=$pn&cmp=$cmp&sz=$sz&wno=$wno&pc=$pc&pt=$pt&pns=$p_search&opno=$opno';
+            window.location.href = 'outpassshowall.php?f=1&start=$start_date&end=$end_date&pn=$pn&cmp=$cmp&sz=$sz&wno=$wno&pc=$pc&pt=$pt';
             </script>";
 }
 ?>

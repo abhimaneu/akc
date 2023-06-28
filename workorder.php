@@ -30,6 +30,8 @@ if (!$retval3) {
 
 <html>
 
+<title>Work Orders</title>
+
 <link rel="stylesheet" href="css/inpass.css">
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -219,7 +221,8 @@ if (!$retval3) {
                             <textarea name='extras' id='extras' class='form-control'></textarea>
                             <label for='extras' class='form-label'>Extras</label>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block" name="work_orders">Generate Work Order</button>
+                        <button type="submit" class="btn btn-primary btn-block" name="work_orders">Generate Work
+                            Order</button>
                     </form> <br>
                 </div>
                 <?php
@@ -278,13 +281,14 @@ if (!$retval3) {
             </div>
         </div>
         <div class="container mt-4 ms-2">
-        <div class="col">
-            <h1>Work Orders Generated <a href="workordershowall.php?f=0" class="fs-5" target="_blank">Show All</a></h1>
+            <div class="col">
+                <h1>Work Orders Generated <a href="workordershowall.php?f=0" class="fs-5" target="_blank">Show All</a>
+                </h1>
             </div>
-            </div>
+        </div>
 
-            <div  class="container-fluid mt-2 p-2 bg-white rounded-5 shadow-5-strong">
-            <table class='table table-striped'>
+        <div class="container-fluid mt-2 p-2 bg-white rounded-5 shadow-5-strong">
+            <table class='table'>
                 <thead class="table-light">
                     <th>
                         Work Order No.
@@ -311,10 +315,21 @@ if (!$retval3) {
                 <tbody>
                     <tr>
                         <?php
+                        $cur_no = -1;
+                        $table_active = '';
                         while ($row = $retval3->fetch_assoc()) {
+                            if ($cur_no == $row['work_order_no']) {
+
+                            } else {
+                                if ($table_active == 'table-active') {
+                                    $table_active = '';
+                                } else {
+                                    $table_active = 'table-active';
+                                }
+                            }
                             if (!empty($row)) {
                                 echo "
-            <tr>
+            <tr class='$table_active'>
             <td>
             {$row['work_order_no']}
             </td>
@@ -346,6 +361,7 @@ if (!$retval3) {
             </td>
             </tr>
             ";
+            $cur_no = $row['work_order_no'];
                             }
                         }
                         ?>

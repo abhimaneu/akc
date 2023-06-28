@@ -12,8 +12,6 @@ $p_name = 'All';
 $size = 'All';
 $p_code = 'All';
 
-$search = '';
-$ipno = '';
 if ($f != 0) {
     $start = $_GET['start'];
     $end = $_GET['end'];
@@ -21,9 +19,6 @@ if ($f != 0) {
     $p_name = $_GET['pn'];
     $size = $_GET['sz'];
     $p_code = $_GET['pc'];
-
-    $search = $_GET['pns'];
-    $ipno = $_GET['ipno'];
 }
 if (!$conn) {
     echo "Error Occured";
@@ -70,13 +65,6 @@ if ($size != 'All') {
 if ($p_code != 'All') {
     $sql .= " AND product_code = '$p_code'";
 }
-if (!empty($search)) {
-    $sql .= " AND (product_name LIKE '%$search%' OR product_code LIKE '%$search%' OR product_design LIKE '%$search%' OR product_size LIKE '%$search%')";
-}
-if (!empty($ipno)) {
-    $sql .= " AND (inpass_no LIKE '%$ipno%')";
-}
-
 
 $sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
 $retval = mysqli_query($conn, $sql);
@@ -88,6 +76,21 @@ if (!$retval) {
 
 
 <html>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Material Design for Bootstrap</title>
+<!-- MDB icon -->
+<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- Google Fonts Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+<!-- MDB -->
+<link rel="stylesheet" href="css/mdb.min.css" />
+
+
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -106,6 +109,7 @@ if (!$retval) {
             // Set the default value to the current month
             var defaultValue = year + '-' + month;
             document.getElementById('start').value = defaultValue;
+            initilizebootstrap();
 
         });
 
@@ -120,112 +124,179 @@ if (!$retval) {
             // Set the default value to the current month
             var defaultValue = year + '-' + month;
             document.getElementById('end').value = defaultValue;
+            initilizebootstrap();
 
+        });
+    });
+
+    $(document).ready(function () {
+        //search inpass data
+        var searchInput = document.getElementById("search");
+        var table = document.getElementById("tablebody");
+        var rows = table.getElementsByTagName("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            var input = searchInput.value.toLowerCase();
+
+            for (var i = 0; i < rows.length; i++) {
+                var rowData = rows[i].getElementsByTagName("td");
+                var found = false;
+
+                for (var j = 0; j < rowData.length; j++) {
+                    if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
+                        found = true;
+                        initilizebootstrap();
+                        break;
+                    }
+                }
+
+                if (found) {
+                    rows[i].style.display = "";
+                    initilizebootstrap();
+                } else {
+                    rows[i].style.display = "none";
+                    initilizebootstrap();
+                }
+            }
         });
     });
 
 </script>
 
 <body>
-    <div>
-        <h1>Inpasses</h1>
-        <form name="filter" method="post">
-            <label for="start">Start</label>
-            <input type="date" value="1990-01-01" id='start' required name="start">
-            &nbsp;
-            <label for="end">End</label>
-            <input name="end" value="2099-12-31" id='end' required type="date">
+    <main> <br>
+        <h1 class="mt-2 ms-4">Inpass</h1>
+        <div class="container-fluid">
+            <div class='row justify-content'>
+                <div class="col">
+                    <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
+                        <h4 class='mb-4'>Filter</h4>
+                        <div class="row ms-1 justify-content w-50">
+                            <div class="form-outline col">
+                                <input type="date" class="form-control" value="1990-01-01" id='start' required
+                                    name="start">
+                                <label for="start" class="form-label">Start</label>
+                            </div>
+                            <div class="col col-sm-1">
+                                <center>to</center>
+                            </div>
+                            <div class="form-outline col">
+                                <input name="end" class="form-control" value="2099-12-31" id='end' required type="date">
+                                <label for="end" class='form-label'>End</label>
+                            </div>
+                        </div>
 
-            <br> <br>
-            <label>Source. Company</label>
-            <select name='company'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval2, 0);
-                while ($row = mysqli_fetch_assoc($retval2)) {
-                    echo "
+                        <div class="col mt-4 mb-4 ms-1">
+                            <label>Source. Company</label>
+                            <select name='company'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval2, 0);
+                                while ($row = mysqli_fetch_assoc($retval2)) {
+                                    echo "
             <option>{$row['source']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Product Name</label>
-            <select name='product_name'>
-                <option selected>All</option>
-                <?php
-                while ($row = mysqli_fetch_assoc($retval3)) {
-                    echo "
+                                }
+                                ?>
+                            </select>
+                            &nbsp;
+                            <label>Product Name</label>
+                            <select name='product_name'>
+                                <option selected>All</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($retval3)) {
+                                    echo "
             <option>{$row['product_name']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Product Code</label>
-            <select name='product_code'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval6, 0);
-                while ($row = mysqli_fetch_assoc($retval6)) {
-                    echo "
+                                }
+                                ?>
+                            </select> &nbsp;
+                            <label>Product Code</label>
+                            <select name='product_code'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval6, 0);
+                                while ($row = mysqli_fetch_assoc($retval6)) {
+                                    echo "
             <option>{$row['product_code']}</option>
             ";
-                }
-                ?>
-            </select>
-            <label>Product Size</label>
-            <select name='product_size'>
-                <option selected>All</option>
-                <?php
-                mysqli_data_seek($retval4, 0);
-                while ($row = mysqli_fetch_assoc($retval4)) {
-                    echo "
+                                }
+                                ?>
+                            </select> &nbsp;
+                            <label>Product Size</label>
+                            <select name='product_size'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval4, 0);
+                                while ($row = mysqli_fetch_assoc($retval4)) {
+                                    echo "
             <option>{$row['product_size']}</option>
             ";
-                }
-                ?>
-            </select> &nbsp;
-            <input type="submit" name="filter" value="Search">
-            <br> <br>
-            Search by Keywords <br> <br>
-            <input type="text" name="ipno" placeholder="Enter Inpass No.">
-            <input type="text" name="search" placeholder="Search Product Name/Code">
-            <input type="submit" name="filter" value="Search">
+                                }
+                                ?>
+                            </select>
+                        </div> &nbsp;
+                        <input type="submit" class=" btn btn-outline-primary btn-sm" data-mdb-ripple-color="dark"
+                            name="filter" value="Search">
+                        <br> <br>
+                        <h5 class='mb-4'>Search By Keywords</h5>
+                        <div class='col justify-content w-25'>
+                            <div class="input-group">
+                                <div class="form-outline">
+                                    <input type="text" id='search' class="form-control" name="search"
+                                        placeholder="eg. ABC001">
+                                    <label class="form-label" for="search">Search</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container-fluid mt-1 mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4">
+                <table class="table">
+                    <thead class="table-light sticky-top">
+                        <th>
+                            Inpass No.
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Source Company
+                        </th>
+                        <th>
+                            Product Desc.
+                        </th>
+                        <th>
+                            Product Desp. Quantity
+                        </th>
+                        <th>
+                            Vehicle No.
+                        </th>
+                        <th>
+                            Extras
+                        </th>
+                        <th>
+                            PDF
+                        </th>
+                    </thead>
+                    <tbody id="tablebody">
+                        <?php
+                        $cur_no = -1;
+                        $table_active = '';
+                        while ($row = $retval->fetch_assoc()) {
+                            if ($cur_no == $row['no']) {
 
-        </form>
-        <table style="border-spacing: 30px;">
-            <thead>
-                <th>
-                    Inpass No.
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Source Company
-                </th>
-                <th>
-                    Product Desc.
-                </th>
-                <th>
-                    Product Desp. Quantity
-                </th>
-                <th>
-                    Vehicle No.
-                </th>
-                <th>
-                    Extras
-                </th>
-                <th>
-                    
-                </th>
-            </thead>
-            <tbody>
-                <tr>
-                    <?php
-                    while ($row = $retval->fetch_assoc()) {
-                        if (!empty($row)) {
-                            echo "
-                    <tr>
+                            } else {
+                                if ($table_active == 'table-active') {
+                                    $table_active = '';
+                                } else {
+                                    $table_active = 'table-active';
+                                }
+                            }
+                            if (!empty($row)) {
+                                echo "
+                    <tr class='$table_active'>
                     <td>
                     {$row['no']}
                     </td>
@@ -260,15 +331,27 @@ if (!$retval) {
                     </td>
                     </tr>
                     ";
+                                $cur_no = $row['no'];
+                            }
                         }
-                    }
-                    ?>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
+            }
+        </script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+        <!-- Custom scripts -->
+        <script type="text/javascript"></script>
+    </main>
 </body>
-
 </html>
 
 <?php
@@ -279,11 +362,8 @@ if (isset($_POST['filter'])) {
     $cmp = $_POST['company'];
     $sz = $_POST['product_size'];
     $pc = $_POST['product_code'];
-
-    $p_search = $_POST['search'];
-    $ipno = $_POST['ipno'];
     echo "<script type='text/javascript'>
-            window.location.href = 'inpassshowall.php?f=1&start=$start_date&end=$end_date&pn=$pn&cmp=$cmp&sz=$sz&pc=$pc&pns=$p_search&ipno=$ipno';
+            window.location.href = 'inpassshowall.php?f=1&start=$start_date&end=$end_date&pn=$pn&cmp=$cmp&sz=$sz&pc=$pc';
             </script>";
 }
 ?>
