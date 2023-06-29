@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 27, 2023 at 04:38 PM
+-- Generation Time: Jun 29, 2023 at 08:17 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -344,15 +344,16 @@ INSERT INTO `products` (`name`, `code`, `design`, `size`, `type`) VALUES
 DROP TABLE IF EXISTS `profile`;
 CREATE TABLE IF NOT EXISTS `profile` (
   `name` varchar(50) NOT NULL,
-  `wo` varchar(25) NOT NULL
+  `wo` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `gstin` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `profile`
 --
 
-INSERT INTO `profile` (`name`, `wo`) VALUES
-('AK Coir', 'AK123');
+INSERT INTO `profile` (`name`, `wo`, `gstin`) VALUES
+('Akshay Coir', 'AK123', 'GSTIN00000000');
 
 -- --------------------------------------------------------
 
@@ -425,7 +426,7 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Open',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `work_orders`
@@ -437,13 +438,14 @@ INSERT INTO `work_orders` (`id`, `date`, `work_order_no`, `company`, `extras`, `
 (7, '2023-06-23', 'AAC004', 'Company 3', '', 'Open', '2023-06-23 12:22:33'),
 (8, '2023-06-23', 'AAC800', 'Company 4', '', 'Closed', '2023-06-23 12:22:33'),
 (9, '2023-06-23', 'AAC801', 'Company 1', '', 'Closed', '2023-06-23 12:22:33'),
-(14, '2023-06-23', 'Testfor123', 'Company 1', '', 'Closed', '2023-06-23 12:22:33'),
 (16, '2023-06-23', 'AAC123', 'Company 2', '', 'Closed', '2023-06-23 12:36:24'),
 (17, '2023-06-24', 'AAC100', 'Company 2', '', 'Closed', '2023-06-23 18:38:25'),
 (18, '2023-06-24', 'AAC101', 'Company 4', '', 'Closed', '2023-06-24 20:33:40'),
 (19, '2023-06-25', 'AAC200', 'Company 5', '', 'Closed', '2023-06-24 20:34:21'),
 (20, '2023-06-25', 'AAC300', 'Company 2', '', 'Open', '2023-06-24 20:33:08'),
-(21, '2023-06-27', 'AAC124', 'Company 2', '', 'Closed', '2023-06-27 16:10:02');
+(21, '2023-06-27', 'AAC124', 'Company 2', '', 'Closed', '2023-06-27 16:10:02'),
+(23, '2023-06-28', 'AAC101', 'Company 2', '', 'Open', '2023-06-27 18:55:17'),
+(24, '2023-06-28', 'AAC102', 'Company 3', '123', 'Open', '2023-06-27 18:56:07');
 
 -- --------------------------------------------------------
 
@@ -468,14 +470,9 @@ CREATE TABLE IF NOT EXISTS `work_order_products` (
 
 INSERT INTO `work_order_products` (`work_order_no`, `code`, `name`, `design`, `size`, `features`, `qty`) VALUES
 ('AAC004', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 100),
-('AAC800', 'ACP052', 'Vinyl Back 15mm Natural', 'Border 4', '18\" X 30\"', 'Clear', 50),
 ('AAC801', 'TUF059', 'Black Natural 19mmm', 'Plain', '40 X 120cm', 'Welcome Border', 1000),
 ('AAC001', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 500),
 ('AAC002', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 5),
-('Testfor123', 'ACP050', 'Vinyl Back 15mm Natural', 'Plain', '17.75\" X 38.75\"', 'Welcome Round Border', 100),
-('Testfor123', 'ACP051', 'Vinyl Back 15mm Natural', 'Plain', '18\" X 30\"', 'Hello', 50),
-('Testfor123', 'TUF90', 'Black Rubber 18mm', 'Round', '20', 'WET', 1),
-('AAC123', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 100),
 ('AAC100', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 100),
 ('AAC100', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 20),
 ('AAC101', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 1),
@@ -487,7 +484,13 @@ INSERT INTO `work_order_products` (`work_order_no`, `code`, `name`, `design`, `s
 ('AAC300', 'ACP022', 'Black Natural 19mm', 'Border 4', '17.75\" X 38.75\"', 'Welcome Border', 300),
 ('AAC300', 'ACP023', 'Black Rubber 15mm', 'Plain', '18\" X 30\"', 'Clear', 360),
 ('AAC124', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 10),
-('AAC124', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 2);
+('AAC124', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 2),
+('AAC101', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 5),
+('AAC101', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 10),
+('AAC123', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 100),
+('AAC800', 'ACP052', 'Vinyl Back 15mm Natural', 'Border 4', '18\" X 30\"', 'Clear', 50),
+('AAC102', 'ACP050', 'Vinyl Back 15mm Natural', 'REACH', '17.75\" X 38.75\"', 'Welcome Border', 50),
+('AAC102', 'ACP051', 'Vinyl Back 15mm Natural', 'REACH', '18\" X 30\"', 'Hello', 60);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
