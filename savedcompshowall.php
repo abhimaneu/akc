@@ -24,9 +24,9 @@ if (!$retval) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
-<title>Saved Company Products</title>
+<title>Saved Companies</title>
 <!-- MDB icon -->
-<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <!-- Google Fonts Roboto -->
@@ -72,7 +72,7 @@ if (!$retval) {
 
 <body>
     <main><br>
-        <h1 class="mt-2 ms-4">Saved Companys</h1>
+        <h1 class="mt-2 ms-4">Saved Companies</h1>
         <div class="container-fluid">
             <div class="mt-4 w-50 ">
                 <form method="post" class="bg-white rounded-5 shadow-2-strong ps-5 pb-5 pt-1  pt-2 mb-2">

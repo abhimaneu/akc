@@ -32,12 +32,20 @@ $ratesJson = json_encode($rates);
 ?>
 
 <html>
-<style>
-    input[type="text"] {
-        width: 110px;
-    }
-</style>
 
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Generate GST Invoice</title>
+<!-- MDB icon -->
+<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- Google Fonts Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+<!-- MDB -->
+<link rel="stylesheet" href="css/mdb.min.css" />
+</head>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -144,6 +152,7 @@ $ratesJson = json_encode($rates);
                         total_amount.text(Math.floor(cur_total) + '.00');
                         total_amount_input.val(Math.floor(cur_total) + '.00');
                     }
+                    initilizebootstrap();
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -155,41 +164,43 @@ $ratesJson = json_encode($rates);
         // Add product field
         $("#add_data").click(function () {
             var dataproductField = `
-            <tbody class='data_fields'>
+            <div class='data_fields container-fluid'>
        
-        
-        <tr><td></td><td><input type='text' name='product_name[]' class='product_name' placeholder='Product Name'></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>        
+        <div  class='border border-1 rounded  border-primary p-2 mb-2 mt-4'>
+        <div class='row p-4'><div class='form-outline w-50'><input type='text' name='product_name[]' id='pnamefield' class='product_name form-control' placeholder='Product Name'><label for='pnamefield' class='form-label'>Product Name</label></div></div>        
                
         
       `;
             var datatypeField = `
         
-                    <tr class ='data_fields1'>
-                    <td> No. </td>
-                    <td><input type='text' name='type[]' class='type' placeholder='Type'></td>
-                    <td><input type='text' name='size[]' class='size'></td>
-                    <td><input type='text' name='unit[]' class='unit'></td>
-                    <td><input type='text' name='nopcs[]' class='nopcs'></td>
-                    <td><input type='text' name='rm[]' class='rm'></td>
-                    <td><input type='text' data-id="field" name='total_unit[]' class='total_unit'></td>
-                    <td><input type='text' data-id="field" name='rate[]' class='rate'></td>
-                    <td><input type='text' data-id="field" name='gst_per[]' class='gst_per'></td>
-                    <td><input type='text' name='amount[]' readonly class='amount'></td>
-                </tr>
+                    <div class ='data_fields1 row p-1'>
+                    
+                    <div class='col'><div class='form-outline'> <input type='text' name='type[]' id='tfield' class='type form-control' placeholder='Type'><label for='tfield' class='form-label'>Type</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='size[]' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='unit[]' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='nopcs[]' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='rm[]' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='amount[]' id='afield' readonly class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
+                </div>
                 
       `;
             var type_limit = 4;
             for (var i = 0; i < type_limit; i++) {
                 dataproductField += datatypeField;
             }
-            dataproductField += '</tbody>'
+            dataproductField += '</div></div>'
 
             $("#data_body").append(dataproductField);
+            initilizebootstrap();
         });
 
         // Remove product field
         $(document).on("click", ".remove_product_field", function () {
             $(this).parent(".product_field").remove();
+            initilizebootstrap();
         });
     });
 
@@ -197,6 +208,7 @@ $ratesJson = json_encode($rates);
         $('.gst_per').on('change', function () {
             var newValue = $(this).val(); // Get the new value entered in the changed input field
             $('.gst_per').not(this).val(newValue); // Set the new value to all other input fields except the changed one
+            initilizebootstrap();
         });
     });
 
@@ -204,6 +216,7 @@ $ratesJson = json_encode($rates);
         $('.gst_per').on('keyup', function () {
             var newValue = $(this).val(); // Get the new value entered in the changed input field
             $('.gst_per').not(this).val(newValue); // Set the new value to all other input fields except the changed one
+            initilizebootstrap();
         });
 
         $(document).on('keyup', 'input[data-id="field"]', function () {
@@ -250,6 +263,7 @@ $ratesJson = json_encode($rates);
                 }
 
             }
+            initilizebootstrap();
 
             grand_total.text(gt.toFixed(2));
             grand_total_input.val(gt.toFixed(2));
@@ -265,6 +279,7 @@ $ratesJson = json_encode($rates);
             less_ro_input.val(lro_value.toFixed(2));
             total_amount.text(Math.floor(cur_total) + '.00');
             total_amount_input.val(Math.floor(cur_total) + '.00');
+            initilizebootstrap();
 
         });
 
@@ -273,83 +288,171 @@ $ratesJson = json_encode($rates);
 </script>
 
 <body>
-    <h1>GST Invoice</h1>
-    <form id='gstinvoice' method='POST'>
-        Invoice No.:
-        <?php echo "$invoice_no"; ?><br>
-        To:
-        <?php echo "$company"; ?> <br>
-        Date:
-        <?php echo "$date"; ?> <br>
-        Place of Sply: <input type="text" name='place_of_supply' placeholder="Enter if avalable"> <br>
-        Contact : <input type="text" name='contact' placeholder="Enter if avalable"> <br>
-        GSTIN: <input type="text" name='company_gstin' placeholder="Type Here"> <br> <br>
-        Type: <input type="text" name='type_of_payment' placeholder="Payment Method"> <br> <br>
-        Mode of Transport: <input type="text" name='mode_of_transport' placeholder="Enter Here"> <br> <br>
-        WO NO:
-        <?php echo "$workOrderNo"; ?> <br> <br>
-        StateCode: <input type="text" name='statecode' placeholder="Type Here"> <br> <br>
-        Note: <input type="text" name='note' placeholder="Enter if avalable">
-        Current GST Percentage : <input type='text' name='gst_per_all' class='gst_per' value="18">
-        <div id='data_field'>
+    <main> <br>
+        <h1 class="mt-2 ms-4">GST Invoice</h1>
+        <div class="container-fluid">
+            <form id='gstinvoice' class="bg-white " method='POST'>
+                <div class="rounded-5 shadow-2-strong p-5">
+                    <h4 class='mb-4 fw-bold'>Enter the following</h4>
+                    <div class="row mb-4">
+                        <div class="col">
+                            Invoice No.:
+                            <?php echo "$invoice_no"; ?>
+                        </div>
+                        <div class="col">
+                            Date:
+                            <?php echo "$date"; ?>
+                        </div>
+                        <div class="col">
+                            WO NO:
+                            <?php echo "$workOrderNo"; ?>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            To:
+                            <?php echo "$company"; ?>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id='comgstfield' class="form-control" name='company_gstin'>
+                                <label for='comgstfield' class='form-label'>Company(dest.) GSTIN</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id='confield' class="form-control" name='contact'>
+                                <label for='confield' class='form-label'>Contact</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id="posfield" class="form-control" name='place_of_supply'>
+                                <label for='posfield' class='form-label'>Place of Supply</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id='scfield' class="form-control" name='statecode'>
+                                <label for='scfield' class='form-label'>State Code</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id='motfield' class="form-control" name='mode_of_transport'>
+                                <label for='motfield' class='form-label'> Mode of Transport</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id='typefield' class="form-control" name='type_of_payment'>
+                                <label for='typefield' class='form-label'>Payment Type</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id='notefield' class="form-control" name='note'>
+                                <label for='notefield' class='form-label'>Notes</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type='number' id='gstperallfield' name='gst_per_all' class='gst_per form-control'
+                                    value="18">
+                                <label for='gstperallfield' class='form-label'>GST Percentage</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id='data_field'>
 
-        </div>
-        <table style="border-spacing:30px;">
-            <thead>
-                <th>
-                    No.
-                </th>
-                <th>
-                    DESCRIPTION
-                </th>
-                <th>
-                    SIZE
-                </th>
-                <th>
-                    Unit
-                </th>
-                <th>
-                    NO: PICS
-                </th>
-                <th>
-                    RM/Sqf/Sam
-                </th>
-                <th>
-                    Total Unit
-                </th>
-                <th>
-                    Rate
-                </th>
-                <th>
-                    GST
-                </th>
-                <th>
-                    Amount
-                </th>
-            </thead>
-        </table>
-        <div id='data_body'>
+                    </div>
+                </div>
 
+                <div class="container-fluid mt-2 mb-4 p-2 bg-white rounded-5 shadow-1-strong">
+                <h4 class='mb-4 fw-bold ps-4 pt-4'>Product Detials</h4>
+                        <div class="row mb-1 ms-2">
+                            
+                            <div class="col">
+                                DESCRIPTION
+                            </div>
+                            <div class="col">
+                                SIZE
+                            </div>
+                            <div class="col">
+                                Unit
+                            </div>
+                            <div class="col">
+                                NO: PICS
+                            </div>
+                            <div class="col">
+                                RM/Sqf/Sam
+                            </div>
+                            <div class="col">
+                                Total Unit
+                            </div>
+                            <div class="col">
+                                Rate
+                            </div>
+                            <div class="col">
+                                GST
+                            </div>
+                            <div class="col">
+                                Amount
+                            </div>
+                        </div>
+                    <div id='data_body'>
+                        
+                    </div>
+                    <button type="button" style="visibility: hidden;" class='add_data' id='add_data'>Add</button>
+                    <button type="button" style="visibility: hidden;" class='add_data_type' id='add_data_type'>Add
+                        Type</button>
+                        <div class="container d-flex flex-column justify-content-start align-items-end">
+                    <div class=''>
+                        <div class="d-flex flex-row ">
+                        <p class=' fs-6 text-muted'>Grand Total : &nbsp;</p><span id='grand_total' name='grand_total' class='grand_total fw-bold fs-5 fw-bold'></span>
+                        <input type="hidden" name="grand_total" value="" id="grand_total_input">
+                        </div>
+                        <div class="d-flex flex-row ">
+                        <p class=' fs-6 text-muted'>CGST Collected : &nbsp;</p><span id='cgst' name='cgst' class='cgst'></span>
+                        <input type="hidden" name="cgst" value="" id="cgst_input">
+                        </div>
+                        <div class="d-flex flex-row ">
+                        <p class=' fs-6 text-muted'>SGST Collected : &nbsp;</p><span id='sgst' name='sgst' class='sgst'></span>
+                        <input type="hidden" name="sgst" value="" id="sgst_input">
+                        </div>
+                        <div class="d-flex flex-row ">
+                        <p class=' fs-6 text-muted'>Less : Round Off : &nbsp;</p><span id='less_ro' name='less_ro' class='less_ro'></span>
+                        <input type="hidden" name="less_ro" value="" id="less_ro_input">
+                        </div>
+                        <div class="d-flex flex-row ">
+                        <p class=' fs-6 text-muted'>Total AMOUNT : &nbsp;</p><span id='total_amount' class='total_amount fw-bold fs-4 fw-bold'></span>
+                        <input type="hidden" name="total_amount" value="" id="total_amount_input">
+                        </div>
+                    </div>
+                        </div>
+                </div>
+                <center>
+                    <label class="mb-2">Please Note that Old Invoice of this Work Order will be deleted if New Invoice is
+                        Generated</label>
+                    <br>
+                    <input type="submit" name='generate' class="btn btn-success" value="Generate Invoice">
+                </center>
+            </form>
         </div>
-        <button type="button" style="visibility: hidden;" class='add_data' id='add_data'>Add</button>
-        <button type="button" style="visibility: hidden;" class='add_data_type' id='add_data_type'>Add Type</button>
-        <div>
-            Grand Total : <span id='grand_total' name='grand_total' class='grand_total'></span> <br>
-            <input type="hidden" name="grand_total" value="" id="grand_total_input">
-            CGST Collected : <span id='cgst' name='cgst' class='cgst'></span> <br>
-            <input type="hidden" name="cgst" value="" id="cgst_input">
-            SGST Collected : <span id='sgst' name='sgst' class='sgst'></span> <br>
-            <input type="hidden" name="sgst" value="" id="sgst_input">
-            Less : Round Off : <span id='less_ro' name='less_ro' class='less_ro'></span> <br>
-            <input type="hidden" name="less_ro" value="" id="less_ro_input">
-            Total AMOUNT : <span id='total_amount' class='total_amount'></span> <br>
-            <input type="hidden" name="total_amount" value="" id="total_amount_input">
-        </div>
-        <center>
-            <label>Please Note that old invoice of this WO will be deleted if new Invoice is Generated</label> <br>
-            <input type="submit" name='generate' value="Generate Invoice">
-        </center>
-    </form>
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
+            }
+        </script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+        <!-- Custom scripts -->
+        <script type="text/javascript"></script>
+    </main>
 </body>
 
 </html>

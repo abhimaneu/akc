@@ -62,6 +62,8 @@ if (!$retval8) {
 
 <html>
 
+<title>Outpass</title>
+
 <link rel="stylesheet" href="css/outpass.css">
 
 <html>
