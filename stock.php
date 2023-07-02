@@ -101,7 +101,7 @@ if (!$retval) {
 
 <body>
     <main><br>
-        <h1 class="mt-2 ms-4">Current Stocks</h1>
+        <h1 class="mt-2 ms-4">Current Stock</h1>
         <div class="container-fluid">
             <div class="row justify-content">
                 <div class="col">

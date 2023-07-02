@@ -21,6 +21,13 @@ $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
 
 }
+
+$sql3 = "SELECT * FROM profile";
+$retval3 = mysqli_query($conn, $sql3);
+if (!$retval3) {
+
+}
+$gstin = '';
 $date = '';
 $company = '';
 $company_gstin = '';
@@ -37,6 +44,9 @@ $sgst = '';
 $less_ro = '';
 $total_amount = '';
 $mode_of_transport = '';
+
+$data3 = mysqli_fetch_assoc($retval3);
+$gstin = $data3['gstin'];
 
 $data1 = mysqli_fetch_assoc($retval);
 $date = $data1['date'];
@@ -108,7 +118,7 @@ $pdf->Cell(0, 5, 'NC JOHN DIPPO ROAD, THUMPOLI', 0, 1, 'C');
 $pdf->Cell(0, 5, 'ALAPUZHA', 0, 1, 'C');
 $pdf->Cell(0, 5, 'PH: 9447746156', 0, 1, 'C');
 $pdf->Ln(10);
-$pdf->Cell(0, 5, 'GSTIN: ', 0, 0, 'L');
+$pdf->Cell(0, 5, 'GSTIN: ' . $gstin, 0, 0, 'L');
 $pdf->Cell(0, 5, 'State Code: 32', 0, 1, 'R');
 $pdf->Cell(0, 5, 'GST INVOICE', 0, 1, 'C');
 

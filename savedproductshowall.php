@@ -7,16 +7,11 @@ include 'conn.php';
 $p_name = 'All';
 $design = 'All';
 $size = 'All';
-$search = '';
-$code = '';
 $f = $_GET['f'];
 if ($f != 0) {
     $p_name = $_GET['i'];
     $design = $_GET['d'];
     $size = $_GET['s'];
-
-    $search = $_GET['pns'];
-    $code = $_GET['pc'];
 }
 
 //for item filter
@@ -58,13 +53,6 @@ if ($size != 'All') {
     $sql .= " AND size = '$size'";
 }
 
-if (!empty($search)) {
-    $sql .= " AND (name LIKE '%$search%' OR design LIKE '%$search%' OR size LIKE '%$search%')";
-}
-if (!empty($code)) {
-    $sql .= " AND (code LIKE '%$code%')";
-}
-
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo "Error Occred";
@@ -74,77 +62,180 @@ if (!$retval) {
 
 <html>
 
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Company Products</title>
+<!-- MDB icon -->
+<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- Google Fonts Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+<!-- MDB -->
+<link rel="stylesheet" href="css/mdb.min.css" />
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        //search stock data
+        var searchInput = document.getElementById("search");
+        var table = document.getElementById("pbody");
+        var rows = table.getElementsByTagName("tr");
+
+        searchInput.addEventListener("keyup", function () {
+            var input = searchInput.value.toLowerCase();
+
+            for (var i = 0; i < rows.length; i++) {
+                var rowData = rows[i].getElementsByTagName("td");
+                var found = false;
+
+                for (var j = 0; j < rowData.length; j++) {
+                    if (rowData[j].innerHTML.toLowerCase().indexOf(input) > -1) {
+                        found = true;
+                        initilizebootstrap();
+                        break;
+                    }
+                }
+
+                if (found) {
+                    rows[i].style.display = "";
+                    initilizebootstrap();
+                } else {
+                    rows[i].style.display = "none";
+                    initilizebootstrap();
+                }
+            }
+        });
+    });
+</script>
+
 <body>
-    <h2>Saved Products</h2>
-    <br>
-    <br>
-    <form name="filter" method="post">
-        <label>Name</label>
-        <select name='name'>
-            <option selected>All</option>
-            <?php
-            while ($row = mysqli_fetch_assoc($retval2)) {
-                echo "
+    <main><br>
+        <h1 class="mt-2 ms-4">Saved Products</h1>
+        <div class="container-fluid">
+        <div class="mt-4">
+                    <form method="post"
+                        class="bg-white rounded-5 shadow-2-strong ps-5 pb-5 pt-1">
+                        <h4 class='mb-4 mt-4'>Add Product</h4>
+                        <div class='row'>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id='codefield' class="form-control" required name="code">
+                                    <label for="codefield" class='form-label'>Code</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id='namefield' class="form-control" required name="name">
+                                    <label for="namefield" class='form-label'>Name</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id='designfield' class="form-control" required name="design">
+                                    <label for="designfield" class='form-label'>Design</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-outline">
+                                    <input type="text" id='sizefield' class="form-control" required name="size">
+                                    <label for="sizefield" class='form-label'>Size</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <button name="add" class="btn btn-outline-secondary text-nowrap"
+                                    data-mdb-ripple-color="dark">Add Product</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            <div class="row justify-content">
+                <div class="col">
+                    <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
+                        <h4 class='mb-4'>Filter</h4>
+                        <div class="col justify-content">
+                            <label>Name</label>
+                            <select name='name'>
+                                <option selected>All</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($retval2)) {
+                                    echo "
             <option>{$row['name']}</option>
             ";
-            }
-            ?>
-        </select>
-        <label>Design</label>
-        <select name='design'>
-            <option selected>All</option>
-            <?php
-            mysqli_data_seek($retval3, 0);
-            while ($row = mysqli_fetch_assoc($retval3)) {
-                echo "
+                                }
+                                ?>
+                            </select>
+                            <label>Design</label>
+                            <select name='design'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval3, 0);
+                                while ($row = mysqli_fetch_assoc($retval3)) {
+                                    echo "
             <option>{$row['design']}</option>
             ";
-            }
-            ?>
-        </select>
-        <label>Size</label>
-        <select name='size'>
-            <option selected>All</option>
-            <?php
-            mysqli_data_seek($retval4, 0);
-            while ($row = mysqli_fetch_assoc($retval4)) {
-                echo "
+                                }
+                                ?>
+                            </select>
+                            <label>Size</label>
+                            <select name='size'>
+                                <option selected>All</option>
+                                <?php
+                                mysqli_data_seek($retval4, 0);
+                                while ($row = mysqli_fetch_assoc($retval4)) {
+                                    echo "
             <option>{$row['size']}</option>
             ";
-            }
-            ?>
-        </select> &nbsp;
-        <input type="submit" name="filter" value="Search"> <br> <br>
-        Search by Keywords <br> <br>
-        <input type="text" name="code" placeholder="Enter Product Code No.">
-        <input type="text" name="search" placeholder="Search Product Name/Code...">
-        <input type="submit" name="filter" value="Search">
+                                }
+                                ?>
+                            </select> &nbsp;
+                            <input type="submit"  class=" btn btn-outline-primary btn-sm" data-mdb-ripple-color="dark" name="filter" value="Search">
+                        </div>
+                        <h5 class='mb-4 mt-4'>Search By Keywords</h5>
+                        <div class='col justify-content w-25'>
+                            <div class="input-group">
+                                <div class="form-outline">
+                                    <input type="text" name="search" id='search' class="form-control"
+                                        placeholder="eg. ABC001">
+                                    <label class="form-label" for="search">Search</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
 
-    </form>
+            <div class="container-fluid  mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            Code
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Design
+                        </th>
+                        <th>
+                            Size
+                        </th>
+                        <th>
 
-    <table style="border-spacing:30px;">
-        <thead>
-            <th>
-                No.
-            </th>
-            <th>
-                Code
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Design
-            </th>
-            <th>
-                Size
-            </th>
-        </thead>
-        <tbody>
-            <?php
-            $i = 1;
-            while ($row = mysqli_fetch_assoc($retval)) {
-                echo "
+                        </th>
+                    </thead>
+                    <tbody id='pbody'>
+                        <?php
+                        $i = 1;
+                        while ($row = mysqli_fetch_assoc($retval)) {
+                            echo "
                 <tr>
                 <td>
                     $i
@@ -164,27 +255,28 @@ if (!$retval) {
                 <td>
                     <form method='post' id='delete_product' name='delete_product'>
                     <input type='hidden' name='id' value='{$row['code']}'>
-                    <input type='submit' id='delete_product' name='delete_product' value='Delete'>
+                    <input type='submit' class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' id='delete_product' name='delete_product' value='Delete'>
                     </form>
                     </td>
                 </tr>";
-                $i = $i + 1;
+                            $i = $i + 1;
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            function initilizebootstrap() {
+                document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                    new mdb.Input(formOutline).init();
+                });
             }
-            ?>
-            <tr>
-                <form method="post">
-                    <td>
-                        <?php echo $i ?>
-                    </td>
-                    <td><input type="text" required name="name"></td>
-                    <td><input type="text" required name="code"></td>
-                    <td><input type="text" required name="design"></td>
-                    <td><input type="text" required name="size"></td>
-                    <td><button name="add">Add Product</button></td>
-                </form>
-            </tr>
-        </tbody>
-    </table>
+        </script>
+        <!-- MDB -->
+        <script type="text/javascript" src="js/mdb.min.js"></script>
+
+    </main>
 </body>
 
 </html>

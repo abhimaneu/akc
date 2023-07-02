@@ -95,7 +95,7 @@ if (!$retval5) {
                         <div class='row justify-content'>
                             <div class="col-xl-10">
                                 <form id="editcompany" class="editcompanyfields" method="post">
-                                <h4></h4>
+                                    <h4></h4>
                                     <div class="row w-75 mb-4">
                                         <div class='col'>
                                             <div class="form-outline">
@@ -136,8 +136,9 @@ if (!$retval5) {
         <div class="container m-5 bg-white rounded-5 shadow-4-strong p-5">
             <div class="row-md-4">
                 <div>
-                    <button class='edit-btn btn btn-primary float-end' data-mdb-toggle='modal' data-mdb-target='#editcompanyPopup'
-                        class='edit-btn btn btn-primary' name='editcompany'>Edit</button>
+                    <button class='edit-btn btn btn-primary float-end' data-mdb-toggle='modal'
+                        data-mdb-target='#editcompanyPopup' class='edit-btn btn btn-primary'
+                        name='editcompany'>Edit</button>
 
                 </div>
             </div>
@@ -151,7 +152,7 @@ if (!$retval5) {
                 </div>
 
                 <div class="col">
-                    <p class='fs-6 fw-light'>Company Code:</p>
+                    <p class='fs-6 fw-light'>Company Code</p>
                     <h1 class="display-6">
                         <?php echo $wo ?>
                     </h1>
@@ -166,10 +167,12 @@ if (!$retval5) {
             </div>
         </div>
         <div class="container m-5 bg-white rounded-5 shadow-4-strong p-5">
-            <h1>Company Products</h1>
-            <a href="compproductshowall.php?f=0" target="_blank">Show All</a>
-            <table style="border-spacing: 30px;">
-                <thead>
+            <div class="col">
+                <h1>Company Products <a href="compproductshowall.php?f=0" class="fs-5" target="_blank">Show All</a></h1>
+            </div>
+
+            <table class='table table-sm'>
+                <thead class="table-light">
                     <th>No.</th>
                     <th>Code</th>
                     <th>Name</th>
@@ -206,10 +209,10 @@ if (!$retval5) {
                     <td>
                     <form method='post' id='delete_company_product' name='delete_company_product'>
                     <input type='hidden' name='id' value='{$row['code']}'>
-                    <input type='submit' id='delete_company_product' name='delete_company_product' value='Delete'>
+                    <button type='submit' id='delete_company_product' class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' name='delete_company_product' >Delete</button>
                     </form>
                     </td>
-                    </tr>
+                    </tr>   
                     </form>
                     ";
                         $i = $i + 1;
@@ -220,20 +223,42 @@ if (!$retval5) {
                             <td>
                                 <?php echo $i ?>
                             </td>
-                            <td><input type="text" required name="code"></td>
-                            <td><input type="text" required name="name"></td>
-                            <td><input type="text" required name="design"></td>
-                            <td><input type="text" required name="size"></td>
-                            <td><input type="text" name="features"></td>
-                            <td><button name="add_company_product">Add Product</button></td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='codefield'
+                                        required name="code"><label for="codefield" class='form-label'> Code</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" id='namefield' class="form-control"
+                                        required name="name"><label for="namefield" class='form-label'>Name</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" id="designfield" class="form-control"
+                                        required name="design"><label for="designfield"
+                                        class='form-label'>Design</label></div>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" id='sizefield' class="form-control"
+                                        required name="size"><label for="sizefield" class='form-label'>Size</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" id='featfield' class="form-control"
+                                        name="features"><label for="featfield" class='form-label'>Feature</label></div>
+                            </td>
+                            <td><button name="add_company_product" class="btn btn-outline-secondary text-nowrap"
+                                    data-mdb-ripple-color="dark">Add Product</button></td>
                         </form>
                     </tr>
                 </tbody>
             </table>
-            <br> <br>
-            <h1>Vehicle List</h1> <br> <br>
-            <table style="border-spacing: 30px;">
-                <thead>
+
+            <div class="col">
+                <h1 class='mt-5'>Vehicle List</h1>
+            </div>
+            <table class='table table-sm'>
+                <thead class="table-light">
                     <th>No.</th>
                     <th>Vehicle No.</th>
                     <th>Vehicle Type</th>
@@ -261,7 +286,7 @@ if (!$retval5) {
                     <td>
                     <form method='post' id='delete_vehicle' name='delete_vehicle'>
                     <input type='hidden' name='id' value='{$row['number']}'>
-                    <input type='submit' id='delete_vehicle' name='delete_vehicle' value='Delete'>
+                    <input type='submit' id='delete_vehicle' class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' name='delete_vehicle' value='Delete'>
                     </form>
                     </td>
                     </tr>
@@ -274,10 +299,22 @@ if (!$retval5) {
                             <td>
                                 <?php echo $i ?>
                             </td>
-                            <td><input type="text" required name="no"></td>
-                            <td><input type="text" required name="type"></td>
-                            <td><input type="text" required name="owner"></td>
-                            <td><button name="add_vehicle">Add Vechicle</button></td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='vnofield' required
+                                        name="no"><label for="vnofield" class='form-label'>Vehicle No.</label></div>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='vtypefield'
+                                        required name="type"><label for="vtypefield" class='form-label'>Vehicle
+                                        Type</label></div>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='vownerfield'
+                                        required name="owner"><label for="vownerfield" class='form-label'>Vehicle
+                                        Owner</label></div>
+                            </td>
+                            <td><button name="add_vehicle" class="btn btn-outline-secondary text-nowrap"
+                                    data-mdb-ripple-color="dark">Add Vechicle</button></td>
                         </form>
                     </tr>
                 </tbody>
@@ -285,10 +322,11 @@ if (!$retval5) {
         </div>
         <div class="container m-5 bg-white rounded-5 shadow-4-strong p-5">
 
-            <h1>Saved Products</h1>
-            <a href='savedproductshowall.php?f=0' target="_blank">Show All</a> <br> <br>
-            <table>
-                <thead>
+            <div class="col">
+                <h1>Saved Products <a href='savedproductshowall.php?f=0' class="fs-5" target="_blank">Show All</a></h1>
+            </div>
+            <table class='table table-sm'>
+                <thead class='table-light"'>
                     <th>No.</th>
                     <th>Name</th>
                     <th>Code</th>
@@ -321,7 +359,7 @@ if (!$retval5) {
                     <td>
                     <form method='post' id='delete_product' name='delete_product'>
                     <input type='hidden' name='id' value='{$row['code']}'>
-                    <input type='submit' id='delete_product' name='delete_product' value='Delete'>
+                    <button type='submit' class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' id='delete_product' name='delete_product' >Delete</button>
                     </form>
                     </td>
                     </tr>
@@ -335,11 +373,24 @@ if (!$retval5) {
                             <td>
                                 <?php echo $i ?>
                             </td>
-                            <td><input type="text" required name="name"></td>
-                            <td><input type="text" required name="code"></td>
-                            <td><input type="text" required name="design"></td>
-                            <td><input type="text" required name="size"></td>
-                            <td><button name="add">Add Product</button></td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='pnamef' required
+                                        name="name"><label for='pnamef' class='form-label'>Name</label>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='pcodefield'
+                                        required name="code"><label for='pcodef' class='form-label'>Code</label>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='pdesignf' required
+                                        name="design"><label for='pdesignf' class='form-label'>Design</label>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" class="form-control" id='psizef' required
+                                        name="size"><label for='psizef' class='form-label'>Size</label>
+                            </td>
+                            <td><button name="add" class="btn btn-outline-secondary text-nowrap"
+                                    data-mdb-ripple-color="dark">Add Product</button></td>
                         </form>
                     </tr>
                 </tbody>
@@ -396,20 +447,22 @@ if (!$retval5) {
             }
             ?>
 
-            <h1>Saved Companies</h1>
-            <a href="savedcompshowall.php?f=0" target="_blank">Show All</a> <br> <br>
-            <table style="border-spacing: 30px;">
-                <thead>
-                    <th>No.</th>
-                    <th>Company Name</th>
-                    <th>WO#</th>
-                    <th></th>
-                </thead>
-                <tbody>
-                    <?php
-                    $i = 1;
-                    while ($row = mysqli_fetch_assoc($retval3)) {
-                        echo "
+            <div class="col">
+                <h1>Saved Companies <a href="savedcompshowall.php?f=0" class="fs-5" target="_blank">Show All</a></h1>
+            </div>
+                
+                <table class="table table-sm">
+                    <thead class='table-light'>
+                        <th>No.</th>
+                        <th>Company Name</th>
+                        <th>WO#</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $i = 1;
+                        while ($row = mysqli_fetch_assoc($retval3)) {
+                            echo "
                     <form method='POST'>
                     <tr>
                     <td>
@@ -424,39 +477,40 @@ if (!$retval5) {
                     <td>
                     <form method='post' id='delete_company' name='delete_company'>
                     <input type='hidden' name='id' value='{$row['code']}'>
-                    <input type='submit' id='delete_company' name='delete_company' value='Delete'>
+                    <button type='submit' id='delete_company' class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' name='delete_company' >Delete</button>
                     </form>
                     </td>
                     </tr>
                     </form>
                     ";
-                        $i = $i + 1;
-                    }
-                    ?>
-                    <tr>
-                        <form method="post">
-                            <td>
-                                <?php echo $i ?>
-                            </td>
-                            <td><input type="text" required name="name"></td>
-                            <td><input type="text" required name="code"></td>
-                            <td><button name="add_company">Add Company</button></td>
-                        </form>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <script>
-            function initilizebootstrap() {
-                document.querySelectorAll('.form-outline').forEach((formOutline) => {
-                    new mdb.Input(formOutline).init();
-                });
-            }
-        </script>
-        <!-- MDB -->
-        <script type="text/javascript" src="js/mdb.min.js"></script>
-        <!-- Custom scripts -->
-        <script type="text/javascript"></script>
+                            $i = $i + 1;
+                        }
+                        ?>
+                        <tr>
+                            <form method="post">
+                                <td>
+                                    <?php echo $i ?>
+                                </td>
+                                <td><div class='form-outline'><input type="text" id='cnamef' class="form-control" required name="name"><label for='cnamef' class='form-label'>Name</label></td>
+                                <td><div class='form-outline'><input type="text" id='ccodef' class="form-control" required name="code"><label for='ccodef' class='form-label'>Code</label></td>
+                                <td><button name="add_company" class="btn btn-outline-secondary text-nowrap"
+                                    data-mdb-ripple-color="dark">Add Company</button></td>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                function initilizebootstrap() {
+                    document.querySelectorAll('.form-outline').forEach((formOutline) => {
+                        new mdb.Input(formOutline).init();
+                    });
+                }
+            </script>
+            <!-- MDB -->
+            <script type="text/javascript" src="js/mdb.min.js"></script>
+            <!-- Custom scripts -->
+            <script type="text/javascript"></script>
 
     </main>
 </body>
@@ -521,7 +575,7 @@ if (isset($_POST['add_company'])) {
     }
 }
 
-if(isset($_POST['save'])){
+if (isset($_POST['save'])) {
     $cname = '';
     $ccode = '';
     $cgstin = '';
@@ -529,8 +583,8 @@ if(isset($_POST['save'])){
     $ccode = $_POST['company_code'];
     $cgstin = $_POST['company_gstin'];
     $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin'";
-    $updatedata = mysqli_query($conn,$sqlupdate);
-    if(!$updatedata){
+    $updatedata = mysqli_query($conn, $sqlupdate);
+    if (!$updatedata) {
         echo mysqli_error($conn);
     }
     echo "<script type='text/javascript'>
@@ -564,7 +618,6 @@ if (isset($_POST['add_vehicle'])) {
 }
 
 if (isset($_POST['delete_company_product'])) {
-
     $delete_code = $_POST['id'];
     $sql = "DELETE from company_products where code = '$delete_code'";
     $retval7 = mysqli_query($conn, $sql);

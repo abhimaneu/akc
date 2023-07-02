@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 29, 2023 at 08:17 AM
+-- Generation Time: Jul 02, 2023 at 03:17 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `name` varchar(50) NOT NULL,
   `code` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company`
@@ -45,8 +45,7 @@ INSERT INTO `company` (`id`, `name`, `code`) VALUES
 (3, 'Company 3', 'C3'),
 (4, 'Company 4', 'C4'),
 (5, 'Company 5', 'C5'),
-(17, 'Company 6', 'C6'),
-(18, 'Company A', 'CA');
+(17, 'Company 6', 'C6');
 
 -- --------------------------------------------------------
 
@@ -63,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `company_products` (
   `size` varchar(25) NOT NULL,
   `features` varchar(25) NOT NULL DEFAULT 'none',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `company_products`
