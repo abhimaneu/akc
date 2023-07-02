@@ -145,7 +145,7 @@ $retval3 = mysqli_query($conn, $sql3);
 </script>
 
 <body>
-    <main>
+    <main> <br>
         <h1 class="mt-2 ms-4">Ledger</h1>
         <div class="container-fluid">
             <div class="row justify-content">
