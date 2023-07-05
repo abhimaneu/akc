@@ -40,6 +40,21 @@ if (!$retval3) {
     die($conn);
 }
 
+
+//fetch inpass data for ipno
+$sql4 = "Select no from inpass";
+$retval4 = mysqli_query($conn, $sql4);
+if (!$retval4) {
+    echo mysqli_error($conn);
+    die($conn);
+}
+$exist_ipnos = array();
+$i = 0;
+while($row = mysqli_fetch_assoc($retval4)){
+    $exist_ipnos[$i] = $row['no'];
+    $i += 1;
+}
+
 ?>
 
 
@@ -97,6 +112,20 @@ if (!$retval3) {
                     }
                 });
             });
+
+            //check if inpass exist
+            $('#ipno').on('keyup', function () {
+                var user_ipno = $(this).val();
+                var exist_ipnos = <?php echo json_encode($exist_ipnos); ?>;
+                if(exist_ipnos.includes(user_ipno)){
+                    $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Inpass No. Already Exists</h1>");
+                }
+                else{
+                    $('#error_no').html("");
+                }
+                initilizebootstrap();
+            });
+
 
             //for Product Data
             $(document).on("change", ".product_code", function () {
@@ -236,10 +265,12 @@ if (!$retval3) {
                         <h4>Enter Details Below</h4> <br>
                         <div class="row mb-2">
                             <div class="col">
-                                <div class="form-outline mb-4">
-                                    <input type="text" class="form-control" required name="ipno">
+                                <div class="form-outline mb-0">
+                                    <input type="text" id='ipno' class="form-control" required name="ipno">
                                     <label for="ipno" class="form-label">Inpass No.</label>
                                 </div>
+                                <div id='error_no'></div>
+                                <div class='mb-4'></div>
                             </div>
                             <div class="col">
                                 <div class="form-outline datepicker">

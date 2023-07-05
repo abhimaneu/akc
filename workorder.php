@@ -26,6 +26,20 @@ if (!$retval3) {
     echo mysqli_error($conn);
     die($conn);
 }
+
+//fetch workorders data for wno
+$sql5 = "Select work_order_no from work_orders";
+$retval5 = mysqli_query($conn, $sql5);
+if (!$retval5) {
+    echo mysqli_error($conn);
+    die($conn);
+}
+$exist_wnos = array();
+$i = 0;
+while($row = mysqli_fetch_assoc($retval5)){
+    $exist_wnos[$i] = $row['work_order_no'];
+    $i += 1;
+}
 ?>
 
 <html>
@@ -42,6 +56,20 @@ if (!$retval3) {
         $(function () {
             $('#add_product_field').click();
         });
+
+        //check if outpass exist
+        $('#workorderno').on('keyup', function () {
+                var user_wno = $(this).val();
+                var exist_wnos = <?php echo json_encode($exist_wnos); ?>;
+                if(exist_wnos.includes(user_wno)){
+                    $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Work Order Already Exists</h1>");
+                }
+                else{
+                    $('#error_no').html("");
+                }
+                initilizebootstrap();
+            });
+
 
         //for Product Data
         $(document).on("change", ".product_code", function () {
@@ -175,11 +203,13 @@ if (!$retval3) {
                         <h4>Enter Details Below</h4> <br>
                         <div class="row mb-2">
                             <div class="col">
-                                <div class="form-outline mb-4">
+                                <div class="form-outline">
 
-                                    <input type="text" id="worder" class="form-control" required name='work_order_no'>
-                                    <label for='worder' class='form-label'>Work Order No.</label>
+                                    <input type="text" id="workorderno" class="form-control" required name='work_order_no'>
+                                    <label for='workorderno' class='form-label'>Work Order No.</label>
                                 </div>
+                                <div id='error_no'></div>
+                                <div class='mb-4'></div>
                             </div>
                             <div class="col">
                                 <div class="form-outline datepicker">

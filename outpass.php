@@ -58,11 +58,38 @@ if (!$retval8) {
     echo mysqli_error($conn);
     die($conn);
 }
+
+//fetch poutass data for opno
+$sql5 = "Select no from outpass";
+$retval5 = mysqli_query($conn, $sql5);
+if (!$retval5) {
+    echo mysqli_error($conn);
+    die($conn);
+}
+$exist_opnos = array();
+$i = 0;
+while ($row = mysqli_fetch_assoc($retval5)) {
+    $exist_opnos[$i] = $row['no'];
+    $i += 1;
+}
 ?>
 
 <html>
 
 <title>Outpass</title>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<title>Inpass</title>
+<!-- MDB icon -->
+<!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- Google Fonts Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+<!-- MDB -->
+<link rel="stylesheet" href="css/mdb.min.css" />
 
 <head>
 
@@ -141,6 +168,19 @@ if (!$retval8) {
                         alert(message);
                     }
                 });
+            });
+
+            //check opno
+            $('#opno').on('keyup', function () {
+                var user_opno = $(this).val();
+                var exist_opnos = <?php echo json_encode($exist_opnos); ?>;
+                if (exist_opnos.includes(user_opno)) {
+                    $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Outpass No. Already Exists</h1>");
+                }
+                else {
+                    $('#error_no').html("");
+                }
+                initilizebootstrap();
             });
 
             var product_code_final;
@@ -511,10 +551,12 @@ if (!$retval8) {
                             <h4>Enter Details Below</h4> <br>
                             <div class="row mb-2">
                                 <div class="col">
-                                    <div class="form-outline mb-4">
-                                        <input type="text" class="form-control" required name="opno">
+                                    <div class="form-outline">
+                                        <input type="text" id='opno' class="form-control" required name="opno">
                                         <label for="opno" class="form-label">Outpass No.</label>
                                     </div>
+                                    <div id='error_no'></div>
+                                    <div class='mb-4'></div>
                                 </div>
                                 <div class="col">
                                     <div class="form-outline datepicker">
