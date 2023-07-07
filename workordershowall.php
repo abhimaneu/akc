@@ -511,7 +511,7 @@ if (!$retval) {
 
                                             <input type="submit" class="btn btn-success" id='bsave' name="save"
                                                 value="Save">
-                                            <input type="submit" class="btn btn-danger" id='del' name="delete"
+                                            <input type="submit" onclick="return confirm('Are you sure?');" class="btn btn-danger" id='del' name="delete"
                                                 value="Delete">
                                             <!-- <input type='submit' class='btn btn-danger' name='delete' id='delete' value='Are You Sure?'> -->
 
