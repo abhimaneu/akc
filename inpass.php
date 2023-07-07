@@ -221,7 +221,7 @@ while($row = mysqli_fetch_assoc($retval4)){
 
         
         <div class="form-outline mb-1 col">
-          <input name="product_qty[]" required class="product_qty form-control">
+          <input type='number' name="product_qty[]" required class="product_qty form-control">
           <label for="product_qty" class='form-label'>Accp. Qty</label>
           </div>
           </div>

@@ -514,7 +514,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 
            <div class=' d-flex align-items-start bg-light mb-3 w-25'>
           <div class='form-outline mb-1 col'>
-          <input name="product_qty[]" id='pqty' required class="product_qty form-control">
+          <input type='number' name="product_qty[]" id='pqty' required class="product_qty form-control">
           <label for="pqty" class='form-label'>Desp. Qty</label>
           </div>
           </div>
