@@ -5,6 +5,19 @@ include 'nav.php';
 
 
 <?php
+
+$msgcolor = 'text-danger';
+if(isset($_GET['f'])){
+    $f = $_GET['f'];
+    if($f == 's'){
+        $msg = "Work Order Succesfully Generated";
+        $msgcolor = 'text-success';
+    }
+    else {
+        $msg = "Error Occured... Could Not Complete the Process";
+    }
+}
+
 //fetch company data for dropdown
 $sql2 = "Select * from company";
 $retval2 = mysqli_query($conn, $sql2);
@@ -198,7 +211,9 @@ while($row = mysqli_fetch_assoc($retval5)){
         <h1 class='mt-2 ms-4'>Generate Work Order</h1>
         <div class="container">
             <div class='row justify-content'>
-                <div class="col-xl-10"> <br>
+                <div class="col-xl-10">
+                <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>    
+                <br>
                     <form name='work_orders' class="bg-white rounded-5 shadow-5-strong p-5" method="POST">
                         <h4>Enter Details Below</h4> <br>
                         <div class="row mb-2">
@@ -271,6 +286,10 @@ while($row = mysqli_fetch_assoc($retval5)){
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
+                        echo "<script type='text/javascript'>
+                        window.location.href = 'workorder.php?f=e1';
+                        </script>";
+                        exit;
                     } else {
                         echo "sucess";
                     }
@@ -297,11 +316,15 @@ while($row = mysqli_fetch_assoc($retval5)){
                         $insert2 = mysqli_query($conn, $sql7);
                         if (!$insert2) {
                             echo mysqli_error($conn);
+                            echo "<script type='text/javascript'>
+                            window.location.href = 'workorder.php?f=e2';
+                            </script>";
+                            exit;
                         }
                     }
 
                     echo "<script type='text/javascript'>
-        window.location.href = 'workorder.php';
+        window.location.href = 'workorder.php?f=s';
         </script>";
                 }
                 ?>

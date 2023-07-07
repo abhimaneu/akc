@@ -8,6 +8,18 @@ include 'nav.php';
 if (!$conn) {
     echo "Error Occured";
 }
+
+$msgcolor = 'text-danger';
+if (isset($_GET['f'])) {
+    $f = $_GET['f'];
+    if ($f == 's') {
+        $msg = "Outpass Succesfully Generated";
+        $msgcolor = 'text-success';
+    } else {
+        $msg = "Error Occured... Could Not Complete the Process";
+    }
+}
+
 $sql = "Select * from products";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
@@ -546,6 +558,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
             <div class="row justify-content">
                 <div class="row">
                     <div class="col-xl-7">
+                        <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>
                         <br>
                         <form name="op" class="bg-white rounded-5 shadow-5-strong p-5" method="post" action="">
                             <h4>Enter Details Below</h4> <br>
@@ -672,8 +685,11 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         $insert = mysqli_query($conn, $sql);
                         if (!$insert) {
                             echo mysqli_error($conn);
-                        } else {
-                            echo "sucess";
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e1';
+                        </script>";
+                        exit;
                         }
                         $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest'");
                         if ($result->num_rows == 0) {
@@ -711,25 +727,32 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
                                 echo mysqli_error($conn);
-                                echo "Error Occured";
+                                echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e2';
+                        </script>";
+                        exit;
                             }
 
                             //updating quantity in stock
                             $sql8 = "Select qty from stock where code = '$productCode_stock'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
-                                echo "Error Occured";
+                                echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e3';
+                        </script>";
+                        exit;
                             }
                             $row8 = mysqli_fetch_array($retval4);
                             $oldqty = $row8[0];
                             $newqty = $oldqty - $productQty;
                             if (!($newqty < 0)) {
-                                echo $oldqty;
-                                echo $newqty;
                                 $sql9 = "UPDATE stock SET qty = '$newqty' where code = '$productCode_stock'";
                                 $update = mysqli_query($conn, $sql9);
                                 if (!$update) {
                                     echo mysqli_error($conn);
+                                    echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e4';
+                        </script>";
                                 }
                             } else {
                                 mysqli_rollback($conn);
@@ -764,11 +787,18 @@ while ($row = mysqli_fetch_assoc($retval5)) {
             window.open('createpdfpass.php?no=$opno&io=outpass');
             </script>";
                         }
+                        else {
+                            echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e3';
+                        </script>";
+                        exit;
+                        }
                         mysqli_commit($conn);
                         echo "<script type='text/javascript'>
-            window.location.href = 'outpass.php';
+            window.location.href = 'outpass.php?f=s';
             </script>";
                     }
+                    
                     ?>
 
                     <div id="stockdata" class="col bg-white rounded-5 shadow-5-strong pt-5 pb-1" style="

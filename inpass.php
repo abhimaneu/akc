@@ -8,6 +8,18 @@ if (!$conn) {
     echo "Error Occured";
 }
 
+$msgcolor = 'text-danger';
+if(isset($_GET['f'])){
+    $f = $_GET['f'];
+    if($f == 's'){
+        $msg = "Inpass Succesfully Generated";
+        $msgcolor = 'text-success';
+    }
+    else {
+        $msg = "Error Occured... Could Not Complete the Process";
+    }
+}
+
 //fetch product data for dropdown
 $sql = "Select * from products";
 $retval = mysqli_query($conn, $sql);
@@ -260,6 +272,8 @@ while($row = mysqli_fetch_assoc($retval4)){
         <div class="container">
             <div class='row justify-content'>
                 <div class="col-xl-10">
+                    <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>
+                <div class='text-center' id='confirm_msg'></div>
                     <br>
                     <form name="ip" class="bg-white rounded-5 shadow-5-strong p-5" method="post" action="">
                         <h4>Enter Details Below</h4> <br>
@@ -371,6 +385,9 @@ while($row = mysqli_fetch_assoc($retval4)){
                     if (!$insert) {
                         echo mysqli_error($conn);
                         mysqli_rollback($conn);
+                        echo "<script type='text/javascript'>
+                        window.location.href = 'inpass.php?f=e1';
+                        </script>";
                         echo "<script>alert('Some Error Occured')</script>";
                         exit;
                     } else {
@@ -401,6 +418,9 @@ while($row = mysqli_fetch_assoc($retval4)){
                             if (!$insert2) {
                                 echo mysqli_error($conn);
                                 mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e2';
+                                </script>";
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
@@ -410,6 +430,9 @@ while($row = mysqli_fetch_assoc($retval4)){
                             if (!$retval4) {
                                 echo "Error Occured";
                                 mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e3';
+                                </script>";
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
@@ -423,6 +446,9 @@ while($row = mysqli_fetch_assoc($retval4)){
                             if (!$update) {
                                 echo mysqli_error($conn);
                                 mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e4';
+                                </script>";
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
@@ -433,17 +459,23 @@ while($row = mysqli_fetch_assoc($retval4)){
                             echo mysqli_error($conn);
                             echo "Error Occured";
                             mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                            window.location.href = 'inpass.php?f=e5';
+                            </script>";
                             echo "<script>alert('Some Error Occured')</script>";
                             exit;
                         }
 
                         $sql3 = "INSERT INTO products(name,code,design,size) VALUES ('$productName','$productCode','$productDesign','$productSize')";
-                        $result = mysqli_query($conn, "SELECT name FROM products WHERE name = '$productName'");
+                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode'");
                         if ($result->num_rows == 0) {
                             $insert3 = mysqli_query($conn, $sql3);
                             if (!$insert3) {
                                 echo mysqli_error($conn);
                                 mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e6';
+                                </script>";
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
@@ -455,7 +487,7 @@ while($row = mysqli_fetch_assoc($retval4)){
                 window.open('createpdfpass.php?no=$ipno&io=inpass');
                 </script>";
                     echo "<script type='text/javascript'>
-                window.location.href = 'inpass.php';
+                window.location.href = 'inpass.php?f=s';
                 </script>";
                 }
                 ?>
