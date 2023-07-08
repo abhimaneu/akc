@@ -84,6 +84,18 @@ while ($row = mysqli_fetch_assoc($retval5)) {
     $exist_opnos[$i] = $row['no'];
     $i += 1;
 }
+
+//fetch largest opno
+$max_opno = 1000;
+$sql10 = "Select max(no) as mno from outpass";
+$retval10 = mysqli_query($conn, $sql10);
+if (!$retval10) {
+    echo mysqli_error($conn);
+    
+}else {
+$retmaxno = mysqli_fetch_assoc($retval10);
+$max_opno = $retmaxno['mno'];
+}
 ?>
 
 <html>
@@ -181,6 +193,10 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     }
                 });
             });
+
+            $('#opno').val('<?php echo $max_opno + 1; ?>');
+            $('#opno').trigger('click');
+            initilizebootstrap();
 
             //check opno
             $('#opno').on('keyup', function () {

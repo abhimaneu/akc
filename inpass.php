@@ -67,6 +67,18 @@ while($row = mysqli_fetch_assoc($retval4)){
     $i += 1;
 }
 
+//fetch largest ipno
+$max_ipno = 1000;
+$sql5 = "Select max(no) as mno from inpass";
+$retval5 = mysqli_query($conn, $sql5);
+if (!$retval5) {
+    echo mysqli_error($conn);
+    
+}else {
+$retmaxno = mysqli_fetch_assoc($retval5);
+$max_ipno = $retmaxno['mno'];
+}
+
 ?>
 
 
@@ -124,6 +136,10 @@ while($row = mysqli_fetch_assoc($retval4)){
                     }
                 });
             });
+
+            $('#ipno').val('<?php echo $max_ipno + 1; ?>');
+            $('#ipno').trigger('click');
+            initilizebootstrap();
 
             //check if inpass exist
             $('#ipno').on('keyup', function () {

@@ -38,7 +38,7 @@ $ratesJson = json_encode($rates);
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
 <title>Generate GST Invoice</title>
 <!-- MDB icon -->
-<link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+<!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <!-- Google Fonts Roboto -->
@@ -182,7 +182,7 @@ $ratesJson = json_encode($rates);
                     <div class='col'><div class='form-outline'> <input type='text' name='rm[]' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
                     <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
                     <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='number' data-id="field" id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
                     <div class='col'><div class='form-outline'> <input type='text' name='amount[]' id='afield' readonly class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
                 </div>
                 
