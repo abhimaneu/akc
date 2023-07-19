@@ -5,6 +5,7 @@ include 'conn.php';
 <?php
 $workOrderNo = '000000';
 
+
 // $sql = "select * from outpass,outpass_products where work_order_no = '$workOrderNo'";
 // $retval = mysqli_query($conn, $sql);
 // if (!$retval) {

@@ -429,6 +429,7 @@ $max_ipno = $retmaxno['mno'];
 
                         $sql7 = "INSERT INTO stock(item,design,size,qty) VALUES ('$productName','$productDesign','$productSize','$productQty')";
                         $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize'");
+                        $flag_stock1 = 0;
                         if ($result2->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql7);
                             if (!$insert2) {
@@ -468,7 +469,21 @@ $max_ipno = $retmaxno['mno'];
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty) VALUES ('$productName','$productSize','$productQty','$newqty')";
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass')";
+                            $update92 = mysqli_query($conn,$sql92);
+                            $flag_stock1 = 1;
+                            if (!$update92) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn); 
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e4';
+                                </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                        }
+                        if($flag_stock1 != 1) {
+                        $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass')";
                             $update92 = mysqli_query($conn,$sql92);
                             if (!$update92) {
                                 echo mysqli_error($conn);
@@ -480,7 +495,7 @@ $max_ipno = $retmaxno['mno'];
                                 exit;
                             }
                         }
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty,type) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty','Inpass')";
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);
