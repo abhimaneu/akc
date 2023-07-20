@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 19, 2023 at 06:44 PM
+-- Generation Time: Jul 20, 2023 at 11:24 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -164,7 +164,8 @@ CREATE TABLE IF NOT EXISTS `invoice` (
 
 INSERT INTO `invoice` (`invoice_no`, `date`, `company`, `company_gstin`, `work_order_no`, `place_of_supply`, `type_of_payment`, `contact`, `statecode`, `note`, `gst_percentage`, `grand_total`, `cgst`, `sgst`, `less_ro`, `total_amount`, `mode_of_transport`, `timestamp`) VALUES
 ('A001', '2023-07-18', 'Company 2', '', 'AKC001', '', '', '', '', '', '18', '15.00', '1.35', '1.35', '0.70', '17.00', '', '2023-07-19 18:41:02'),
-('A003', '2023-07-18', 'Company 6', 'GSTIN2392039', 'AKC003', 'Alapuzha', '', '974700000', '32', 'Goods', '18', '2990.00', '269.10', '269.10', '0.20', '3528.00', 'Vehicle', '2023-07-19 18:43:24');
+('A003', '2023-07-18', 'Company 6', 'GSTIN2392039', 'AKC003', 'Alapuzha', '', '974700000', '32', 'Goods', '18', '2990.00', '269.10', '269.10', '0.20', '3528.00', 'Vehicle', '2023-07-19 18:43:24'),
+('A00custom', '2023-07-14', 'Company 2', 'GSTIN00000000', 'AKCcustom', 'a', '', '9747000001', '001', 'Goods', '18', '3000.00', '270.00', '270.00', '0.00', '3540.00', 'Vehicle', '2023-07-19 18:47:07');
 
 -- --------------------------------------------------------
 
@@ -198,7 +199,9 @@ INSERT INTO `invoice_data` (`invoice_no`, `work_order_no`, `product_slno`, `prod
 ('A003', 'AKC003', 0, 'Vinyl back 15mm Natural', 'Passing Final', '45 X 75 cm', 'Inch', 100, 100, '100 Nos', 1.5, 18, 150),
 ('A003', 'AKC003', 0, 'Vinyl back 15mm Natural', 'Packing', '20 X 70 cm', 'Inch', 1000, 1000, '1000 Sqft', 2.75, 18, 2750),
 ('A003', 'AKC003', 1, 'Vinyl back 15mm Natural', 'Passing Final', '40 X 120 cm', 'Inch', 50, 50, '50 Nos', 1.5, 18, 75),
-('A003', 'AKC003', 2, 'Vinyl Back 15mm Natural', 'Passing Final', '50 X 50 cm', 'Inch', 10, 10, '10 Nos', 1.5, 18, 15);
+('A003', 'AKC003', 2, 'Vinyl Back 15mm Natural', 'Passing Final', '50 X 50 cm', 'Inch', 10, 10, '10 Nos', 1.5, 18, 15),
+('A00custom', 'AKCcustom', 0, 'Vinyl back 15mm Natural Test', 'Test', '18 X 30 CM', 'INCH', 1000, 1000, '1000 Nos', 1.5, 18, 1500),
+('A00custom', 'AKCcustom', 0, 'Vinyl back 15mm Natural Test', 'Test2', '40 X 75 cm', 'INCH', 1000, 1000, '1000 Nos', 1.5, 18, 1500);
 
 -- --------------------------------------------------------
 
@@ -227,7 +230,8 @@ CREATE TABLE IF NOT EXISTS `outpass` (
 
 INSERT INTO `outpass` (`no`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`, `extras`, `invoice_no`, `type`, `timestamp`) VALUES
 (1, '2023-07-18', 'AKC001', 'Company 2', 'C2', 'KL 33 BC 1923', 'test 1', 'Not Generated', 'outpass', '2023-07-18 13:00:29'),
-(2, '2023-07-18', 'AKC001', 'Company 2', 'C2', 'KL 33 BC 1923', '', 'Not Generated', 'outpass', '2023-07-18 13:01:03');
+(2, '2023-07-18', 'AKC001', 'Company 2', 'C2', 'KL 33 BC 1923', '', 'Not Generated', 'outpass', '2023-07-18 13:01:03'),
+(3, '2023-07-20', 'AAkdel', 'Company 1 ltd', 'C100', 'KL 33 BC 1921', '', 'Not Generated', 'outpass', '2023-07-20 10:54:44');
 
 -- --------------------------------------------------------
 
@@ -253,7 +257,8 @@ CREATE TABLE IF NOT EXISTS `outpass_products` (
 
 INSERT INTO `outpass_products` (`outpass_no`, `product_type`, `product_name`, `work_order`, `product_code`, `product_design`, `product_size`, `product_qty`) VALUES
 (1, 'Finished', 'Vinyl back 15mm Natural', 'AKC001', 'ACP050', 'Plain', '40 X 75 cm', 30),
-(2, 'Finished', 'Vinyl back 15mm Natural', 'AKC001', 'ACP050', 'Plain', '40 X 75 cm', 10);
+(2, 'Finished', 'Vinyl back 15mm Natural', 'AKC001', 'ACP050', 'Plain', '40 X 75 cm', 10),
+(3, 'Finished', 'Vinyl back 15mm Natural', 'AAkdel', 'ACP051', 'Plain', '45 X 75 cm', 10);
 
 -- --------------------------------------------------------
 
@@ -323,7 +328,7 @@ CREATE TABLE IF NOT EXISTS `stock` (
 
 INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, `default`) VALUES
 (1, '', 'NULL', 'Vinyl Back 15mm Natural', 'Plain', '45 X 75 cm', 60, 1),
-(2, '', 'NULL', 'Vinyl Back 15mm Natural', 'Plain', '40 X 120 cm', 110, 1);
+(2, '', 'NULL', 'Vinyl Back 15mm Natural', 'Plain', '40 X 120 cm', 100, 1);
 
 -- --------------------------------------------------------
 
@@ -350,7 +355,8 @@ INSERT INTO `stock_data` (`timestamp`, `product_name`, `product_size`, `product_
 ('2023-07-18 17:58:48', 'Vinyl Back 15mm Natural', '40 X 120 cm', 50, 50, 'Inpass'),
 ('2023-07-18 17:59:37', 'Vinyl Back 15mm Natural', '40 X 120 cm', 60, 110, 'Inpass'),
 ('2023-07-18 18:30:29', 'Vinyl Back 15mm Natural', '45 X 75 cm', 30, 70, 'Outpass'),
-('2023-07-18 18:31:03', 'Vinyl Back 15mm Natural', '45 X 75 cm', 10, 60, 'Outpass');
+('2023-07-18 18:31:03', 'Vinyl Back 15mm Natural', '45 X 75 cm', 10, 60, 'Outpass'),
+('2023-07-20 16:24:44', 'Vinyl Back 15mm Natural', '40 X 120 cm', 10, 100, 'Outpass');
 
 -- --------------------------------------------------------
 
@@ -392,7 +398,7 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `work_order_no` (`work_order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `work_orders`
@@ -401,7 +407,8 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
 INSERT INTO `work_orders` (`id`, `date`, `work_order_no`, `company`, `extras`, `status`, `timestamp`) VALUES
 (1, '2023-07-18', 'AKC001', 'Company 2', 'test', 'Closed', '2023-07-18 13:01:03'),
 (3, '2023-07-18', 'AKC002', 'Company 3', '', 'Open', '2023-07-18 13:08:01'),
-(4, '2023-07-18', 'AKC003', 'Company 6', '', 'Open', '2023-07-18 15:16:19');
+(4, '2023-07-18', 'AKC003', 'Company 6', '', 'Open', '2023-07-18 15:16:19'),
+(6, '2023-07-20', 'AAC001del', 'Company 4', '', 'Open', '2023-07-20 11:02:42');
 
 -- --------------------------------------------------------
 
@@ -426,10 +433,11 @@ CREATE TABLE IF NOT EXISTS `work_order_products` (
 
 INSERT INTO `work_order_products` (`work_order_no`, `code`, `name`, `design`, `size`, `features`, `qty`) VALUES
 ('AKC001', 'ACP050', 'Vinyl back 15mm Natural', 'Plain', '40 X 75 cm', '', 10),
-('AKC002', 'ACP051', 'Vinyl back 15mm Natural', 'Plain', '45 X 75 cm', '', 80),
-('AKC003', 'ACP051', 'Vinyl back 15mm Natural', 'Plain', '45 X 75 cm', '', 100),
+('AKC002', 'ACP051', 'Vinyl back 15mm Natural', 'Plain', '45 X 75 cm', '', 990),
+('AKC003', 'ACP051', 'Vinyl back 15mm Natural', 'Plain', '45 X 75 cm', '', 990),
 ('AKC003', 'ACP050', 'Vinyl back 15mm Natural', 'Plain', '40 X 120 cm', '', 50),
-('AKC003', 'ACP053', 'Vinyl Back 15mm Natural', 'Plain', '50 X 50 cm', '', 10);
+('AKC003', 'ACP053', 'Vinyl Back 15mm Natural', 'Plain', '50 X 50 cm', '', 10),
+('AAC001del', 'ACP051', 'Vinyl back 15mm Natural', 'Plain', '45 X 75 cm', '', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

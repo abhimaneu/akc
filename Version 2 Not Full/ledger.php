@@ -268,7 +268,7 @@ $retval3 = mysqli_query($conn, $sql3);
                     <button onclick="printTable()" class="btn btn-primary " id='dontprintbtn'>Print Ledger</button>
                 </div>
                 <div class="container-fluid mt-1 mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4" id='printbody'>
-                    <table class="table table-striped table-sm" id='myTable'>
+                    <table class="table table-sm" id='myTable'>
                         <thead class="table-light sticky-top" id='tablehead'>
                             <th>
                                 Date

@@ -59,110 +59,9 @@ $workOrderNo = '000000';
         var rates = ['1.50', '2.00', '5.75', '0.16'];
 
 
-        // $.ajax({
-        //     method: "POST",
-        //     url: "getproductdatafromwnofromoutpass.php",
-        //     data: {
-        //         workorder_no: workOrderNo
-        //     },
-        //     success: function (response) {
-        //         if (response === "FALSE") {
-        //             var message = "ERROR: something went wrong on the MYSQL side";
-        //             alert(message);
-        //         } else {
-        //             productData = JSON.parse(response)
-        //             var l = productData.length;
-        //             var m = l * 4;
-        //             var k = 0;
-
-        //             var grand_total = $('.grand_total')
-        //             var grand_total_input = $('#grand_total_input')
-        //             var cgst = $('.cgst')
-        //             var cgst_input = $('#cgst_input')
-        //             var sgst = $('.sgst')
-        //             var sgst_input = $('#sgst_input')
-        //             var less_ro = $('.less_ro')
-        //             var less_ro_input = $('#less_ro_input')
-        //             var total_amount = $('.total_amount')
-        //             var total_amount_input = $('#total_amount_input')
-        //             var l = productData.length;
-        //             var m = l * 4;
-        //             var k = 0;
-        //             var i = 0;
-        //             var cur_amt = 0;
-        //             var cur_total;
-        //             var gt = 0;
-        //             var cgst_def = 9;
-        //             var cgst_value = 0;
-        //             var sgst_def = 9;
-        //             var sgst_value = 0;
-        //             var lro_value = 0;
-
-        //             for (var i = 0; i < l; i++) {
-        //                 $('#add_data').click();
-        //                 var productNameField = $(".data_fields:eq(" + i + ")").find(".product_name");
-        //                 productNameField.val(productData[i].name + " " + productData[i].design);
-        //             }
-        //             var i = 0;
-        //             var cur_amt = 0;
-        //             for (var j = 0; j < m; j++) {
-        //                 cur_amt = 0;
-        //                 var typeField = $(".data_fields1:eq(" + j + ")").find(".type");
-        //                 var sizeField = $(".data_fields1:eq(" + j + ")").find(".size");
-        //                 var unitField = $(".data_fields1:eq(" + j + ")").find(".unit");
-        //                 var nopcsField = $(".data_fields1:eq(" + j + ")").find(".nopcs");
-        //                 var rmField = $(".data_fields1:eq(" + j + ")").find(".rm");
-        //                 var totalunitField = $(".data_fields1:eq(" + j + ")").find(".total_unit");
-        //                 var rateField = $(".data_fields1:eq(" + j + ")").find(".rate");
-        //                 var gstField = $(".data_fields1:eq(" + j + ")").find(".gst_per");
-        //                 var amountField = $(".data_fields1:eq(" + j + ")").find(".amount");
-        //                 typeField.val(descTypes[k]);
-        //                 sizeField.val(productData[i].size);
-        //                 unitField.val("Inch");
-        //                 nopcsField.val(productData[i].qty);
-        //                 rmField.val(productData[i].qty);
-        //                 totalunitField.val(productData[i].qty + " " + "Nos");
-        //                 rateField.val(rates[k]);
-        //                 gstField.val('18');
-        //                 amountField.val(0);
-
-        //                 var digits = totalunitField.val().match(/\d+(\.\d+)?/g);
-        //                 var extractedDigits = digits ? digits.join('') : '';
-        //                 cur_amt += (extractedDigits * rateField.val());
-        //                 amountField.val(cur_amt.toFixed(2));
-        //                 gt += parseFloat(cur_amt.toFixed(2));
-        //                 k += 1;
-        //                 if ((j + 1) % 4 == 0) {
-        //                     k = 0
-        //                     i += 1;
-        //                 }
-
-        //                 grand_total.text(gt.toFixed(2));
-        //                 grand_total_input.val(gt.toFixed(2));
-        //                 cgst_value = gt.toFixed(2) * (cgst_def / 100);
-        //                 sgst_value = gt.toFixed(2) * (sgst_def / 100);
-        //                 cgst.text(cgst_value.toFixed(2));
-        //                 cgst_input.val(cgst_value.toFixed(2));
-        //                 sgst.text(sgst_value.toFixed(2));
-        //                 sgst_input.val(sgst_value.toFixed(2));
-        //                 cur_total = (parseFloat(gt.toFixed(2)) + parseFloat(cgst_value.toFixed(2)) + parseFloat(sgst_value.toFixed(2)));
-        //                 lro_value = (parseFloat(cur_total) - parseFloat(Math.floor(cur_total)));
-        //                 less_ro.text(lro_value.toFixed(2));
-        //                 less_ro_input.val(lro_value.toFixed(2));
-        //                 total_amount.text(Math.floor(cur_total) + '.00');
-        //                 total_amount_input.val(Math.floor(cur_total) + '.00');
-        //             }
-        //             initilizebootstrap();
-        //         }
-        //     },
-        //     error: function (jqXHR, textStatus, errorThrown) {
-        //         var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
-        //         alert(message);
-        //     }
-        // });
-
         $(document).ready(function () {
             $("#add_data").click();
+            $("#add_data_type").click();
         });
 
         // Add product field
@@ -171,7 +70,7 @@ $workOrderNo = '000000';
             <div class='data_fields container-fluid'>
        
         <div  class='border border-1 rounded  border-primary p-2 mb-2 mt-4'>
-        <div class='row p-4 justify-content-between'><div class='form-outline w-50'><input type='text' name='product_name[]' id='pnamefield' class='product_name form-control' placeholder='Product Name'><label for='pnamefield' class='form-label'>Product Name</label></div> <button type='button' class='btn btn-outline-danger btn-floating shadow-0 remove_product' id='remove_product'>X</button></div>        
+        <div class='row p-4 justify-content-between'><div class='form-outline w-50'><input type='text' required name='product_name[]' id='pnamefield' class='product_name form-control' placeholder='Product Name'><label for='pnamefield' class='form-label'>Product Name</label></div> <button type='button' class='btn btn-outline-danger btn-floating shadow-0 remove_product' id='remove_product'>X</button></div>        
                <div id='data_types1'>
         
       `;
@@ -180,14 +79,14 @@ $workOrderNo = '000000';
                     <div class ='data_fields1 row p-1' style="display:none">
                     
                     <div class='col'><div class='form-outline'> <input type='text' name='type[]' value='-12345' id='tfield' class='type form-control' placeholder='Type'><label for='tfield' class='form-label'>Type</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='size[]' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='unit[]' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='nopcs[]' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='rm[]' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='number' data-id="field" id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='amount[]' id='afield' readonly class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='size[]' value=' ' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='unit[]' value=' ' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='nopcs[]' value=' ' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='rm[]' value=' ' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" value=' ' id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='number' step='0.01' data-id="field" value=' ' id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='number' data-id="field" value=' ' id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' name='amount[]' value=' ' id='afield' readonly class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
                 </div>
                 
       `;
@@ -207,15 +106,15 @@ $workOrderNo = '000000';
             // var datatypeField = $(this).parent(".data_fields1");
             var datatypeField_val = `<div class ='data_fields1 row p-1'>
             <button class='btn text-danger btn-floating shadow-0 remove_data_type' id='remove_data_type'>X</button>
-            <div class='col'><div class='form-outline'> <input type='text' name='type[]' id='tfield' class='type form-control' placeholder='Type'><label for='tfield' class='form-label'>Type</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='size[]' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='unit[]' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='nopcs[]' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='rm[]' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='number' data-id="field" value='18' id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='amount[]' id='afield' class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
+            <div class='col'><div class='form-outline'> <input type='text' name='type[]' required id='tfield' class='type form-control' placeholder='Type'><label for='tfield' class='form-label'>Type</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' required name='size[]' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' required name='unit[]' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' required name='nopcs[]' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' required name='rm[]' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' required data-id="field" id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='number' step='0.01' required data-id="field" id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='number' required data-id="field" value='18' id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
+                    <div class='col'><div class='form-outline'> <input type='text' required name='amount[]' id='afield' class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
                     </div>`;
             $(this).closest(".data_fields").find("#data_types1").append(datatypeField_val);
             initilizebootstrap();
@@ -304,28 +203,6 @@ $workOrderNo = '000000';
             }
             initilizebootstrap();
 
-            // for (var j = 0; j < m; j++) {
-            //     cur_amt = 0;
-            //     var totalunitField = $(".data_fields1:eq(" + j + ")").find(".total_unit").val();
-            //     var rateField = $(".data_fields1:eq(" + j + ")").find(".rate").val();
-            //     var gstField = $(".data_fields1:eq(" + j + ")").find(".gst_per").val();
-            //     var amountField = $(".data_fields1:eq(" + j + ")").find(".amount");
-            //     //takes only numbers
-            //     var digits = totalunitField.match(/\d+(\.\d+)?/g);
-            //     // Join the extracted digits into a single string
-            //     var extractedDigits = digits ? digits.join('') : '';
-            //     cur_amt += (extractedDigits * rateField);
-            //     amountField.val(cur_amt.toFixed(2));
-            //     //gt += parseFloat(cur_amt.toFixed(2));
-            //     k += 1;
-            //     if ((j + 1) % 4 == 0) {
-            //         k = 0
-            //         i += 1;
-            //     }
-
-            // }
-            // initilizebootstrap();
-
             grand_total.text(gt.toFixed(2));
             grand_total_input.val(gt.toFixed(2));
             cgst_value = gt.toFixed(2) * (cgst_def / 100);
@@ -358,19 +235,19 @@ $workOrderNo = '000000';
                     <div class="row mb-4">
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='invnofield' class="form-control" name='invoice_no'>
+                                <input type="text" required id='invnofield' class="form-control" name='invoice_no'>
                                 <label for='invnofield' class='form-label'>Invoice No</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type="date" id='datefield' class="form-control" name='date'>
+                                <input type="date" required id='datefield' class="form-control" name='date'>
                                 <label for='datefield' class='form-label'>Date</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='wnofield' class="form-control" name='wno'>
+                                <input type="text" required id='wnofield' class="form-control" name='wno'>
                                 <label for='wnofield' class='form-label'>Work Order No.</label>
                             </div>
                         </div>
@@ -378,7 +255,7 @@ $workOrderNo = '000000';
                     <div class="row mb-4">
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='companyfield' class="form-control" name='company'>
+                                <input type="text" required id='companyfield' class="form-control" name='company'>
                                 <label for='companyfield' class='form-label'>Company (dest.)</label>
                             </div>
                         </div>
@@ -607,7 +484,7 @@ if (isset($_POST['generate'])) {
             continue;
         }
 
-        $sql2 = "INSERT INTO invoice_data(invoice_no,work_order_no,product_name,type,size,unit,nopcs,rm,total_unit,rate,gst,amount) VALUES ('$invoice_no','$workOrderNo','$productNames[$j]','$type','$size','$unit','$nopcs','$rm','$total_unit','$rate','$gst_per','$amount')";
+        $sql2 = "INSERT INTO invoice_data(invoice_no,work_order_no,product_slno,product_name,type,size,unit,nopcs,rm,total_unit,rate,gst,amount) VALUES ('$invoice_no','$workOrderNo','$j','$productNames[$j]','$type','$size','$unit','$nopcs','$rm','$total_unit','$rate','$gst_per','$amount')";
         $insert2 = mysqli_query($conn, $sql2);
         if (!$insert2) {
             echo mysqli_error($conn);
@@ -626,7 +503,7 @@ if (isset($_POST['generate'])) {
     // }
     mysqli_commit($conn);
     echo "<script type='text/javascript'>
-            window.open('createpdfgstinvoice.php?wo=$workOrderNo&in=$invoice_no');
+            window.location.href = 'createpdfgstinvoice.php?wo=$workOrderNo&in=$invoice_no';
             </script>";
 }
 ?>

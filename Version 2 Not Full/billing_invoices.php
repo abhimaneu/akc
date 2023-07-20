@@ -9,6 +9,16 @@ $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
 }
+
+$sql2 = 'SELECT work_order_no FROM work_orders';
+$retval2 = mysqli_query($conn, $sql2);
+if (!$retval2) {
+    echo mysqli_error($conn);
+}
+$all_work_orders = array();
+while($row2 = mysqli_fetch_assoc($retval2)) {
+    $all_work_orders[] = $row2['work_order_no'];
+}
 ?>
 
 <html>
@@ -56,6 +66,10 @@ if (!$retval) {
         } else {
             window.open("creategstinvoice?wo=" + wno + "");
         }
+    }
+
+    function generate_invoice_2(wno,ino) {
+            window.open("creategstinvoice?wo=" + wno + "&in=" + ino);
     }
 
     function download_invoice(ino, wno) {
@@ -139,10 +153,22 @@ if (!$retval) {
                         <div class='row'>
                         <small>Date: {$row['date']}</small>
                         </div>
-                        <div class='row pt-2'>
-                        <small><button onclick=\"download_invoice('{$row['invoice_no']}','{$row['work_order_no']}')\" type='button' class='btn btn-primary shadow-2'>Download</button></small>
+                        <div class='row pt-2 pb-2'>
+                        <div class='col'>
+                        <form id='del_work_order' method='post'>
+                        <small><button onclick=\"download_invoice('{$row['invoice_no']}','{$row['work_order_no']}')\" type='button' class='btn btn-primary btn-sm shadow-2'>Download</button></small>
+                        <input type='hidden' name='cur_ino' value='{$row['invoice_no']}'>
+                        <small><button type='submit' onclick=\"return confirm('Are you sure?');\" id='del_wo' name='del_work_order' class='btn btn-danger btn-sm shadow-2'>Delete</button></small>
+                        </form>
                         </div>
-                        </div>
+                        </div>";
+                        if(in_array($row['work_order_no'] , $all_work_orders)){
+                        echo "<small><button onclick=\"generate_invoice_2('{$row['work_order_no']}','{$row['invoice_no']}')\" type='button' class='btn btn-success btn-sm shadow-2'>Generate New Invoice</button></small>";
+                        }
+                        else {
+                            echo "<small>Custom Generated</small>";
+                        }
+                        echo "</div>
                     </div>";
                     if ($i % $row_count == $row_count - 1) {
                         echo "</div>";
@@ -166,3 +192,27 @@ if (!$retval) {
 </body>
 
 </html>
+
+<?php
+if (isset($_POST['del_work_order'])) {
+    $del_invoiceNo = $_POST['cur_ino'];
+
+    $sql = "DELETE FROM `invoice` WHERE invoice_no = '$del_invoiceNo'";
+    $update1 = mysqli_query($conn, $sql);
+    if (!$update1) {
+        echo mysqli_error($conn);
+    }
+    $sql2 = "DELETE FROM `invoice_data` WHERE invoice_no = '$del_invoiceNo'";
+    $update2 = mysqli_query($conn, $sql2);
+    if (!$update2) {
+        echo mysqli_error($conn);
+    }
+
+    echo "<script type='text/javascript'>
+               alert('Invoice " . $del_invoiceNo . " has been deleted')
+                </script>";
+    echo "<script type='text/javascript'>
+                window.location.href = 'billing_invoices.php';
+                </script>";
+}
+?>

@@ -4,9 +4,14 @@ include 'conn.php';
 
 <?php
 $workOrderNo = '000000';
+$ino = "";
 
 if (isset($_GET['wo'])) {
     $workOrderNo = $_GET['wo'];
+}
+
+if (isset($_GET['in'])) {
+    $ino = $_GET['in'];
 }
 
 $sql = " select * from work_orders inner join work_order_products on work_orders.work_order_no = work_order_products.work_order_no where work_orders.work_order_no = 'AKC003'";
@@ -91,7 +96,7 @@ $date = $row2['date'];
                     var sgst_value = 0;
                     var lro_value = 0;
                     for (var i = 0; i < l; i++) {
-                        cur_amt=0
+                        cur_amt = 0
                         $('#add_data').click();
                         $(".data_fields:eq(" + i + ")").find('#add_data_type').click();
                         var productNameField = $(".data_fields:eq(" + i + ")").find(".product_name");
@@ -320,19 +325,22 @@ $date = $row2['date'];
                     <div class="row mb-4">
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='invnofield' class="form-control" name='invoice_no'>
+                                <input type="text" required id='invnofield' value="<?php echo $ino; ?>"
+                                    class="form-control" name='invoice_no'>
                                 <label for='invnofield' class='form-label'>Invoice No</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type="date" id='datefield' value="<?php echo $date ?>" class="form-control" name='date'>
+                                <input type="date" required id='datefield' value="<?php echo $date ?>"
+                                    class="form-control" name='date'>
                                 <label for='datefield' class='form-label'>Date</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='wnofield' value="<?php echo $workOrderNo; ?>" class="form-control" name='wno'>
+                                <input type="text" required id='wnofield' value="<?php echo $workOrderNo; ?>"
+                                    class="form-control" name='wno'>
                                 <label for='wnofield' class='form-label'>Work Order No.</label>
                             </div>
                         </div>
@@ -340,7 +348,8 @@ $date = $row2['date'];
                     <div class="row mb-4">
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='companyfield' value="<?php echo $company ?>" class="form-control" name='company'>
+                                <input type="text" required id='companyfield' value="<?php echo $company ?>"
+                                    class="form-control" name='company'>
                                 <label for='companyfield' class='form-label'>Company (dest.)</label>
                             </div>
                         </div>
@@ -390,8 +399,8 @@ $date = $row2['date'];
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type='number' id='gstperallfield' name='gst_per_all' class='gst_per form-control'
-                                    value="18">
+                                <input type='number' required id='gstperallfield' name='gst_per_all'
+                                    class='gst_per form-control' value="18">
                                 <label for='gstperallfield' class='form-label'>GST Percentage</label>
                             </div>
                         </div>
@@ -587,8 +596,9 @@ if (isset($_POST['generate'])) {
     //     mysqli_rollback($conn);
     // }
     mysqli_commit($conn);
+
     echo "<script type='text/javascript'>
-            window.open('createpdfgstinvoice.php?wo=$workOrderNo&in=$invoice_no');
+            window.location.href = 'createpdfgstinvoice.php?wo=$workOrderNo&in=$invoice_no';
             </script>";
 }
 ?>

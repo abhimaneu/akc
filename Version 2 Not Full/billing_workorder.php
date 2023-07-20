@@ -141,7 +141,7 @@ if (!$retval) {
                         <small>Status: {$row['status']}</small>
                         </div>
                         <div class='row pt-2'>
-                        <small><button onclick=\"generate_invoice('{$row['work_order_no']}')\" type='button' class='btn btn-primary shadow-2'>Generate</button></small>
+                        <small><button onclick=\"generate_invoice('{$row['work_order_no']}')\" type='button' class='btn btn-success shadow-2'>Generate</button></small>
                         </div>
                         </div>
                     </div>";
