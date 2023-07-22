@@ -9,7 +9,8 @@ if (!$conn) {
     echo "Error Occured";
     die($conn);
 }
-$sql = "SELECT * from profile";
+
+$sql = "SELECT * FROM profile WHERE user_id = '" . (string)$loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
@@ -23,25 +24,25 @@ while ($row = $retval->fetch_assoc()) {
     $gstin = $row['gstin'];
 }
 
-$sql = "SELECT * from vehicles";
+$sql = "SELECT * from vehicles WHERE user_id = '".(string)$loggedin_session."'";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
 
-$sql2 = "SELECT * from company Order by name LIMIT 10";
+$sql2 = "SELECT * from company WHERE user_id = '".(string)$loggedin_session."' Order by name LIMIT 10";
 $retval3 = mysqli_query($conn, $sql2);
 if (!$retval3) {
     echo mysqli_error($conn);
 }
 
-$sql4 = "SELECT * from company_products LIMIT 10";
+$sql4 = "SELECT * from company_products WHERE user_id = '".(string)$loggedin_session."' LIMIT 10";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
 }
 
-$sql5 = "SELECT * from products LIMIT 10";
+$sql5 = "SELECT * from products WHERE user_id = '".(string)$loggedin_session."' LIMIT 10";
 $retval5 = mysqli_query($conn, $sql5);
 if (!$retval5) {
     echo mysqli_error($conn);
@@ -254,10 +255,7 @@ if (!$retval5) {
                                         required name="size"><label for="sizefield" class='form-label'>Size</label>
                                 </div>
                             </td>
-                            <!-- <td>
-                                <div class='form-outline'><input type="text" id='featfield' class="form-control"
-                                        name="features"><label for="featfield" class='form-label'>Feature</label></div>
-                            </td> -->
+                            
                             <td><button name="add_company_product" class="btn btn-outline-secondary text-nowrap"
                                     data-mdb-ripple-color="dark">Add Product</button></td>
                         </form>
@@ -418,7 +416,7 @@ if (!$retval5) {
                 }
 
                 $delete_code = $_POST['id'];
-                $sql = "DELETE from products where code = '$delete_code'";
+                $sql = "DELETE from products where code = '$delete_code' AND user_id = '".(string)$loggedin_session."'";
                 $retval6 = mysqli_query($conn, $sql);
                 if (!$retval6) {
                     echo "Error Occured";
@@ -443,7 +441,7 @@ if (!$retval5) {
                 $product_code = $_POST['code'];
                 $product_size = $_POST['size'];
                 $product_design = $_POST['design'];
-                $sql = "INSERT into products(name,code,design,size) VALUES ('$product_name','$product_code','$product_design','$product_size')";
+                $sql = "INSERT into products(name,code,design,size,user_id) VALUES ('$product_name','$product_code','$product_design','$product_size','".(string)$loggedin_session."')";
                 $insert = mysqli_query($conn, $sql);
                 if (!$insert) {
                     echo "Error";
@@ -536,7 +534,7 @@ if (isset($_POST['delete_vehicle']) && isset($_POST['id'])) {
         echo "Error Occured";
     }
 
-    $sql = "DELETE FROM vehicles where number = '$id'";
+    $sql = "DELETE FROM vehicles where number = '$id' AND user_id = '".(string)$loggedin_session."'";
     $delete = mysqli_query($conn, $sql);
     if (!$delete) {
         echo "Delete was not possible";
@@ -553,7 +551,7 @@ if (isset($_POST['delete_company']) && isset($_POST['id'])) {
         echo "Error Occured";
     }
 
-    $sql = "DELETE FROM company where code = '$id'";
+    $sql = "DELETE FROM company where code = '$id' AND user_id = '".(string)$loggedin_session."'";
     $delete = mysqli_query($conn, $sql);
     if (!$delete) {
         echo "Delete was not possible";
@@ -572,7 +570,7 @@ if (isset($_POST['add_company'])) {
     $company_code = '';
     $company_name = $_POST['name'];
     $company_code = $_POST['code'];
-    $sql = "INSERT into company(name,code) VALUES ('$company_name','$company_code')";
+    $sql = "INSERT into company(name,code,user_id) VALUES ('$company_name','$company_code','".(string)$loggedin_session."')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";
@@ -593,7 +591,7 @@ if (isset($_POST['save'])) {
     $cname = $_POST['company_name'];
     $ccode = $_POST['company_code'];
     $cgstin = $_POST['company_gstin'];
-    $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin'";
+    $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin' WHERE user_id = '".(string)$loggedin_session."'";
     $updatedata = mysqli_query($conn, $sqlupdate);
     if (!$updatedata) {
         echo mysqli_error($conn);
@@ -614,7 +612,7 @@ if (isset($_POST['add_vehicle'])) {
     $vehicle_no = $_POST['no'];
     $vehicle_type = $_POST['type'];
     $vehicle_owner = $_POST['owner'];
-    $sql = "INSERT into vehicles(type,number,owner) VALUES ('$vehicle_type','$vehicle_no','$vehicle_owner')";
+    $sql = "INSERT into vehicles(type,number,owner,user_id) VALUES ('$vehicle_type','$vehicle_no','$vehicle_owner','".(string)$loggedin_session."')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";
@@ -630,7 +628,7 @@ if (isset($_POST['add_vehicle'])) {
 
 if (isset($_POST['delete_company_product'])) {
     $delete_code = $_POST['id'];
-    $sql = "DELETE from company_products where code = '$delete_code'";
+    $sql = "DELETE from company_products where code = '$delete_code' AND user_id = '".(string)$loggedin_session."'";
     $retval7 = mysqli_query($conn, $sql);
     if (!$retval7) {
         echo "Error Occured";
@@ -649,13 +647,11 @@ if (isset($_POST['add_company_product'])) {
     $product_code = '';
     $product_size = '';
     $product_design = '';
-    //$product_features = '';
     $product_name = $_POST['name'];
     $product_code = $_POST['code'];
     $product_size = $_POST['size'];
     $product_design = $_POST['design'];
-    //$product_features = $_POST['features'];
-    $sql = "INSERT into company_products(code,name,design,size) VALUES ('$product_code','$product_name','$product_design','$product_size')";
+    $sql = "INSERT into company_products(code,name,design,size,user_id) VALUES ('$product_code','$product_name','$product_design','$product_size','".(string)$loggedin_session."')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";

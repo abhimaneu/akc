@@ -4,7 +4,7 @@ include 'conn.php';
 ?>
 
 <?php
-$sql = 'SELECT * FROM work_orders';
+$sql = "SELECT * FROM work_orders WHERE user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);

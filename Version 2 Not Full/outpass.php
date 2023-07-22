@@ -20,21 +20,21 @@ if (isset($_GET['f'])) {
     }
 }
 
-$sql = "Select * from products";
+$sql = "Select * from products WHERE user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql = "Select * from company";
+$sql = "Select * from company WHERE user_id = '".(string)$loggedin_session."'";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql3 = "Select * from outpass ORDER BY no DESC";
+$sql3 = "Select * from outpass WHERE user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -42,14 +42,14 @@ if (!$retval3) {
 }
 
 //for table
-$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no ORDER BY timestamp DESC LIMIT 5";
+$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '".(string)$loggedin_session."' ORDER BY timestamp DESC LIMIT 5";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql6 = "Select * from vehicles";
+$sql6 = "Select * from vehicles WHERE user_id = '".(string)$loggedin_session."'";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
     echo mysqli_error($conn);
@@ -57,14 +57,14 @@ if (!$retval6) {
 }
 
 //only for dropdown menu
-$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' GROUP BY work_order_no";
+$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '".(string)$loggedin_session."' GROUP BY work_order_no";
 $retval7 = mysqli_query($conn, $sql7);
 if (!$retval7) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open'";
+$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '".(string)$loggedin_session."'";
 $retval8 = mysqli_query($conn, $sql8);
 if (!$retval8) {
     echo mysqli_error($conn);
@@ -134,8 +134,6 @@ if (!$retval10) {
                 var productNameField = $(this).closest(".product_field").find(".product_name");
                 var productDesignField = $(this).closest(".product_field").find(".product_design");
                 var productSizeField = $(this).closest(".product_field").find(".product_size");
-                //var productFeatureField = $(this).closest(".product_field").find(".product_feature");
-
 
                 $.ajax({
                     method: "POST",
@@ -155,7 +153,7 @@ if (!$retval10) {
                                 productNameField.val(product.name)
                                 productDesignField.val(product.design)
                                 productSizeField.val(product.size)
-                                //productFeatureField.val(product.features)
+                                
                                 $(productNameField).trigger("change");
                                 initilizebootstrap();
                             }
@@ -340,7 +338,6 @@ if (!$retval10) {
                                     var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
                                     var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
                                     var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
-                                    //var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
                                     var productReqQtyField = $(".product_field:eq(" + i + ")").find(".req_qty");
                                     var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
                                     productCodeField.val(productData[i].code);
@@ -348,7 +345,6 @@ if (!$retval10) {
                                     $(productNameField).trigger("change");
                                     productDesignField.val(productData[i].design);
                                     productSizeField.val(productData[i].size);
-                                    //productFeatureField.val(productData[i].feature);
                                     productReqQtyField.val(productData[i].qty)
                                     initilizebootstrap();
 
@@ -693,8 +689,8 @@ if (!$retval10) {
                         if (!$transtart) {
                             echo mysqli_error($conn);
                         }
-                        $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras')";
-                        $sql2 = "INSERT INTO company(name,code) VALUES ('$dest','$woc')";
+                        $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras,user_id) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras','".(string)$loggedin_session."')";
+                        $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$dest','$woc','".(string)$loggedin_session."')";
                         $insert = mysqli_query($conn, $sql);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -704,7 +700,7 @@ if (!$retval10) {
                         </script>";
                             exit;
                         }
-                        $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest'");
+                        $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest' AND user_id = '".(string)$loggedin_session."'");
                         if ($result->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql2);
                         }
@@ -714,7 +710,6 @@ if (!$retval10) {
                         $productCodes = $_POST['product_code'];
                         $productDesigns = $_POST['product_design'];
                         $productSizes = $_POST['product_size'];
-                        //$productFeatures = $_POST['product_feature'];
                         $productQtys = $_POST['product_qty'];
                         $productDatas_stock = $_POST['product_stock'];
                         $productCodes_customstock = $_POST['custom_field'];
@@ -726,7 +721,6 @@ if (!$retval10) {
                             $productType = $productTypes[$i];
                             $productDesign = $productDesigns[$i];
                             $productSize = $productSizes[$i];
-                            //$productFeature = $productFeatures[$i];
                             $productQty = $productQtys[$i];
                             $productData_stock = $productDatas_stock[$i];
                             $productCode_customstock = $productCodes_customstock[$i];
@@ -748,7 +742,7 @@ if (!$retval10) {
 
                             $reqQty = $reqQtys[$i];
 
-                            $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty) VALUES ('$opno','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty')";
+                            $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$opno','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
                                 echo mysqli_error($conn);
@@ -759,7 +753,7 @@ if (!$retval10) {
                             }
 
                             //updating quantity in stock
-                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock'";
+                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock' AND user_id = '".(string)$loggedin_session."'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo "<script type='text/javascript'>
@@ -771,7 +765,7 @@ if (!$retval10) {
                             $oldqty = $row8[0];
                             $newqty = $oldqty - $productQty;
                             if (!($newqty < 0)) {
-                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock'";
+                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock' AND user_id = '".(string)$loggedin_session."'";
                                 $update = mysqli_query($conn, $sql9);
                                 if (!$update) {
                                     echo mysqli_error($conn);
@@ -779,7 +773,7 @@ if (!$retval10) {
                         window.location.href = 'outpass.php?f=e4';
                         </script>";
                                 }
-                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','Outpass')";
+                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','Outpass','".(string)$loggedin_session."')";
                                 $update92 = mysqli_query($conn, $sql92);
                                 if (!$update92) {
                                     echo mysqli_error($conn);
@@ -800,7 +794,7 @@ if (!$retval10) {
                         if ($flag == 0) {
                             if ($reqQty - $productQty > 0) {
                                 $newqtywo = $reqQty - $productQty;
-                                $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode'";
+                                $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode' AND user_id = '".(string)$loggedin_session."'";
                                 $update2 = mysqli_query($conn, $sql8);
                                 if (!$update2) {
                                     echo mysqli_error($conn);
@@ -808,7 +802,7 @@ if (!$retval10) {
                                     $flag = 1;
                                 }
                             } else {
-                                $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno'";
+                                $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno' AND user_id = '".(string)$loggedin_session."'";
                                 $update2 = mysqli_query($conn, $sql8);
                                 if (!$update2) {
                                     echo mysqli_error($conn);

@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -12,7 +13,7 @@ if ($f != 0) {
     $end = $_GET['end'];
 }
 
-$sql = "SELECT * from stock_data where timestamp BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
+$sql = "SELECT * from stock_data where user_id = '".(string)$loggedin_session."' AND timestamp BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);

@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -10,7 +11,7 @@ if ($f != 0) {
 }
 
 //for table
-$sql = "SELECT * from company where 1=1";
+$sql = "SELECT * from company WHERE user_id = '".(string)$loggedin_session."'";
 
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
@@ -180,7 +181,7 @@ if (isset($_POST['delete_company']) && isset($_POST['id'])) {
         echo "Error Occured";
     }
 
-    $sql = "DELETE FROM company where code = '$id'";
+    $sql = "DELETE FROM company where code = '$id' AND user_id = '".(string)$loggedin_session."'";
     $delete = mysqli_query($conn, $sql);
     if (!$delete) {
         echo "Delete was not possible";
@@ -199,7 +200,7 @@ if (isset($_POST['add_company'])) {
     $company_code = '';
     $company_name = $_POST['name'];
     $company_code = $_POST['code'];
-    $sql = "INSERT into company(name,code) VALUES ('$company_name','$company_code')";
+    $sql = "INSERT into company(name,code,user_id) VALUES ('$company_name','$company_code','".(string)$loggedin_session."')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";

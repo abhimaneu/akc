@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -15,7 +16,7 @@ if ($f != 0) {
 }
 
 //for item filter
-$sql2 = "SELECT name from products where 1=1";
+$sql2 = "SELECT name from products WHERE user_id = '".(string)$loggedin_session."'";
 $sql2 .= " GROUP BY name";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
@@ -23,7 +24,7 @@ if (!$retval2) {
 }
 
 //for design filter
-$sql3 = "SELECT design from products where 1=1";
+$sql3 = "SELECT design from products WHERE user_id = '".(string)$loggedin_session."'";
 $sql3 .= " GROUP BY design";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
@@ -31,7 +32,7 @@ if (!$retval3) {
 }
 
 //for size filter
-$sql4 = "SELECT size from products where 1=1";
+$sql4 = "SELECT size from products WHERE user_id = '".(string)$loggedin_session."'";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
@@ -39,7 +40,7 @@ if (!$retval4) {
 }
 
 //for table
-$sql = "SELECT * from products where 1=1";
+$sql = "SELECT * from products WHERE user_id = '".(string)$loggedin_session."'";
 
 if ($p_name != 'All') {
     $sql .= " AND name = '$p_name'";
@@ -291,7 +292,7 @@ if (isset($_POST['delete_product'])) {
     }
 
     $delete_code = $_POST['id'];
-    $sql = "DELETE from products where code = '$delete_code'";
+    $sql = "DELETE from products where code = '$delete_code' AND user_id = '".(string)$loggedin_session."'";
     $retval6 = mysqli_query($conn, $sql);
     if (!$retval6) {
         echo "Error Occured";
@@ -316,7 +317,7 @@ if (isset($_POST['add'])) {
     $product_code = $_POST['code'];
     $product_size = $_POST['size'];
     $product_design = $_POST['design'];
-    $sql = "INSERT into products(name,code,design,size) VALUES ('$product_name','$product_code','$product_design','$product_size')";
+    $sql = "INSERT into products(name,code,design,size,user_id) VALUES ('$product_name','$product_code','$product_design','$product_size','".(string)$loggedin_session."')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";

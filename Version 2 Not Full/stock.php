@@ -16,7 +16,7 @@ if ($f != 0) {
 }
 
 //for item filter
-$sql2 = "SELECT item from stock where 1=1";
+$sql2 = "SELECT item from stock WHERE user_id = '".(string)$loggedin_session."'";
 $sql2 .= " GROUP BY item";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
@@ -24,7 +24,7 @@ if (!$retval2) {
 }
 
 //for design filter
-$sql3 = "SELECT design from stock where 1=1";
+$sql3 = "SELECT design from stock WHERE user_id = '".(string)$loggedin_session."'";
 $sql3 .= " GROUP BY design";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
@@ -32,7 +32,7 @@ if (!$retval3) {
 }
 
 //for size filter
-$sql4 = "SELECT size from stock where 1=1";
+$sql4 = "SELECT size from stock WHERE user_id = '".(string)$loggedin_session."'";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
@@ -40,7 +40,7 @@ if (!$retval4) {
 }
 
 //for table
-$sql = "SELECT * from stock where 1=1";
+$sql = "SELECT * from stock WHERE user_id = '".(string)$loggedin_session."'";
 
 if ($item != 'All') {
     $sql .= " AND item = '$item'";

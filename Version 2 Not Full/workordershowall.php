@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -29,37 +30,37 @@ if (!$conn) {
 }
 
 //for dropdowns
-$sql2 = "SELECT company from work_orders where 1=1";
+$sql2 = "SELECT company from work_orders WHERE user_id = '".(string)$loggedin_session."'";
 $sql2 .= " GROUP BY company";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
-$sql3 = "SELECT name from work_order_products where 1=1";
+$sql3 = "SELECT name from work_order_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql3 .= " GROUP BY name";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
 }
-$sql4 = "SELECT size from work_order_products where 1=1";
+$sql4 = "SELECT size from work_order_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
 }
-$sql5 = "SELECT work_order_no from work_orders where 1=1";
+$sql5 = "SELECT work_order_no from work_orders WHERE user_id = '".(string)$loggedin_session."'";
 $sql5 .= " GROUP BY work_order_no";
 $retval5 = mysqli_query($conn, $sql5);
 if (!$retval5) {
     echo mysqli_error($conn);
 }
-$sql6 = "SELECT code from work_order_products where 1=1";
+$sql6 = "SELECT code from work_order_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql6 .= " GROUP BY code";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
     echo mysqli_error($conn);
 }
-$sql7 = "SELECT status from work_orders where 1=1";
+$sql7 = "SELECT status from work_orders WHERE user_id = '".(string)$loggedin_session."'";
 $sql7 .= " GROUP BY status";
 $retval7 = mysqli_query($conn, $sql7);
 if (!$retval7) {
@@ -67,7 +68,7 @@ if (!$retval7) {
 }
 
 //for table
-$sql = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no";
+$sql = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '".(string)$loggedin_session."'";
 
 if ($company != 'All') {
     $sql .= " AND company = '$company'";
@@ -161,13 +162,11 @@ if (!$retval) {
                             var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
                             var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
                             var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
-                            //var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
                             var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
                             productCodeField.val(productData[i].code);
                             productNameField.val(productData[i].name);
                             productDesignField.val(productData[i].design);
                             productSizeField.val(productData[i].size);
-                            //productFeatureField.val(productData[i].feature);
                             productQtyField.val(productData[i].qty)
                             initilizebootstrap();
 
@@ -339,16 +338,7 @@ if (!$retval) {
     });
 
 
-    function printTable() {
-            var table = document.getElementById('myTable');
-            var html = table.outerHTML;
-
-            var printWindow = window.open('', '_blank');
-            printWindow.document.open();
-            printWindow.document.write('<html><head><title>Print Table</title></head><body>' + html + '</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-        }
+    
 
 </script>
 
@@ -663,7 +653,7 @@ if (isset($_POST['save'])) {
     if (!$transtart) {
         echo mysqli_error($conn);
     }
-    $sql = "UPDATE `work_orders` SET `company`='$company',`extras`='$extras',`status`='$productStatus' WHERE work_order_no = '$workOrderNo'";
+    $sql = "UPDATE `work_orders` SET `company`='$company',`extras`='$extras',`status`='$productStatus' WHERE work_order_no = '$workOrderNo' AND user_id = '".(string)$loggedin_session."'";
     $update1 = mysqli_query($conn, $sql);
     if (!$update1) {
         echo mysqli_error($conn);
@@ -675,10 +665,9 @@ if (isset($_POST['save'])) {
     $productCodes = $_POST['product_code'];
     $productDesigns = $_POST['product_design'];
     $productSizes = $_POST['product_size'];
-    //$productFeatures = $_POST['product_feature'];
     $productQtys = $_POST['product_qty'];
 
-    $sql3 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
+    $sql3 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo' AND user_id = '".(string)$loggedin_session."'";
     $update3 = mysqli_query($conn, $sql3);
     if (!$update3) {
         echo mysqli_error($conn);
@@ -691,9 +680,8 @@ if (isset($_POST['save'])) {
         $productCode = $productCodes[$i];
         $productDesign = $productDesigns[$i];
         $productSize = $productSizes[$i];
-        //$productFeature = $productFeatures[$i];
         $productQty = $productQtys[$i];
-        $sql2 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,qty) VALUES ('$workOrderNo','$productCode','$productName','$productDesign','$productSize','$productQty')";
+        $sql2 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,qty,user_id) VALUES ('$workOrderNo','$productCode','$productName','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
         $update2 = mysqli_query($conn, $sql2);
         if (!$update2) {
             echo mysqli_error($conn);
@@ -711,12 +699,12 @@ if (isset($_POST['save'])) {
 if (isset($_POST['delete'])) {
     $workOrderNo = $_POST['workOrderNo'];
 
-    $sql = "DELETE FROM `work_orders` WHERE work_order_no = '$workOrderNo'";
+    $sql = "DELETE FROM `work_orders` WHERE work_order_no = '$workOrderNo' AND user_id = '".(string)$loggedin_session."'";
     $update1 = mysqli_query($conn, $sql);
     if (!$update1) {
         echo mysqli_error($conn);
     }
-    $sql2 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
+    $sql2 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo' AND user_id = '".(string)$loggedin_session."'";
     $update2 = mysqli_query($conn, $sql2);
     if (!$update2) {
         echo mysqli_error($conn);

@@ -1,8 +1,10 @@
 <?php
+include 'checkuserlogin.php';
+
 $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
 
 $product_code = $_POST["product_code"];
-$sql = "SELECT * FROM company_products WHERE code = '$product_code'";
+$sql = "SELECT * FROM company_products WHERE code = '$product_code' AND user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 // if(!$retval){
 //     echo mysqli_error($conn);

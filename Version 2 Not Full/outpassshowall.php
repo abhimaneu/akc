@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -29,37 +30,37 @@ if (!$conn) {
 }
 
 //for dropdowns
-$sql2 = "SELECT dest from outpass where 1=1";
+$sql2 = "SELECT dest from outpass WHERE user_id = '".(string)$loggedin_session."'";
 $sql2 .= " GROUP BY dest";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
-$sql3 = "SELECT product_name from outpass_products where 1=1";
+$sql3 = "SELECT product_name from outpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql3 .= " GROUP BY product_name";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
 }
-$sql4 = "SELECT product_size from outpass_products where 1=1";
+$sql4 = "SELECT product_size from outpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql4 .= " GROUP BY product_size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
 }
-$sql5 = "SELECT work_order_no from outpass where 1=1";
+$sql5 = "SELECT work_order_no from outpass WHERE user_id = '".(string)$loggedin_session."'";
 $sql5 .= " GROUP BY work_order_no";
 $retval5 = mysqli_query($conn, $sql5);
 if (!$retval5) {
     echo mysqli_error($conn);
 }
-$sql6 = "SELECT product_code from outpass_products where 1=1";
+$sql6 = "SELECT product_code from outpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql6 .= " GROUP BY product_code";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
     echo mysqli_error($conn);
 }
-$sql7 = "SELECT product_type from outpass_products where 1=1";
+$sql7 = "SELECT product_type from outpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql7 .= " GROUP BY product_type";
 $retval7 = mysqli_query($conn, $sql7);
 if (!$retval7) {
@@ -67,7 +68,7 @@ if (!$retval7) {
 }
 
 //for table
-$sql = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no";
+$sql = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '".(string)$loggedin_session."'";
 
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";

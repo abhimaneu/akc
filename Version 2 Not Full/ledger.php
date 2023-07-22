@@ -22,7 +22,7 @@ if ($f != 0) {
 $sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type,timestamp
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
-WHERE date BETWEEN '$start' AND '$end'";
+WHERE outpass.user_id = '".(string)$loggedin_session."' AND date BETWEEN '$start' AND '$end'";
 
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";
@@ -42,7 +42,7 @@ $sql .= " UNION
 SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type,timestamp
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
-WHERE date BETWEEN '$start' AND '$end'";
+WHERE inpass.user_id = '".(string)$loggedin_session."' AND date BETWEEN '$start' AND '$end'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";
@@ -64,9 +64,9 @@ if (!$retval) {
 
 }
 
-$sql2 = "select * from company";
+$sql2 = "select * from company WHERE user_id = '".(string)$loggedin_session."'";
 $retval2 = mysqli_query($conn, $sql2);
-$sql3 = "select * from products";
+$sql3 = "select * from products WHERE user_id = '".(string)$loggedin_session."'";
 $retval3 = mysqli_query($conn, $sql3);
 
 

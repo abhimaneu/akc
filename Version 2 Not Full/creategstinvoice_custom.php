@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -448,20 +449,20 @@ if (isset($_POST['generate'])) {
     }
 
     //delete existing if new invoice is being generated
-    $sql4 = "DELETE FROM invoice where invoice_no = '$invoice_no'";
+    $sql4 = "DELETE FROM invoice where invoice_no = '$invoice_no' AND user_id = '".(string)$loggedin_session."'";
     $delete1 = mysqli_query($conn, $sql4);
     if (!$delete1) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
     }
-    $sql5 = "DELETE FROM invoice_data where invoice_no = '$invoice_no'";
+    $sql5 = "DELETE FROM invoice_data where invoice_no = '$invoice_no' AND user_id = '".(string)$loggedin_session."'";
     $delete2 = mysqli_query($conn, $sql5);
     if (!$delete2) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
     }
 
-    $sql = "INSERT INTO invoice(invoice_no,date,company,company_gstin,work_order_no,place_of_supply,type_of_payment,contact,statecode,note,gst_percentage,grand_total,cgst,sgst,less_ro,total_amount,mode_of_transport) VALUES ('$invoice_no','$date','$company','$company_gstin','$workOrderNo','$place_of_supply','$type_of_payment','$contact','$statecode','$note','$gst_per_all','$grand_total','$cgst','$sgst','$less_ro','$total_amount','$mode_of_transport')";
+    $sql = "INSERT INTO invoice(invoice_no,date,company,company_gstin,work_order_no,place_of_supply,type_of_payment,contact,statecode,note,gst_percentage,grand_total,cgst,sgst,less_ro,total_amount,mode_of_transport,user_id) VALUES ('$invoice_no','$date','$company','$company_gstin','$workOrderNo','$place_of_supply','$type_of_payment','$contact','$statecode','$note','$gst_per_all','$grand_total','$cgst','$sgst','$less_ro','$total_amount','$mode_of_transport','".(string)$loggedin_session."')";
     $insert1 = mysqli_query($conn, $sql);
     if (!$insert1) {
         echo mysqli_error($conn);
@@ -484,7 +485,7 @@ if (isset($_POST['generate'])) {
             continue;
         }
 
-        $sql2 = "INSERT INTO invoice_data(invoice_no,work_order_no,product_slno,product_name,type,size,unit,nopcs,rm,total_unit,rate,gst,amount) VALUES ('$invoice_no','$workOrderNo','$j','$productNames[$j]','$type','$size','$unit','$nopcs','$rm','$total_unit','$rate','$gst_per','$amount')";
+        $sql2 = "INSERT INTO invoice_data(invoice_no,work_order_no,product_slno,product_name,type,size,unit,nopcs,rm,total_unit,rate,gst,amount,user_id) VALUES ('$invoice_no','$workOrderNo','$j','$productNames[$j]','$type','$size','$unit','$nopcs','$rm','$total_unit','$rate','$gst_per','$amount','".(string)$loggedin_session."')";
         $insert2 = mysqli_query($conn, $sql2);
         if (!$insert2) {
             echo mysqli_error($conn);

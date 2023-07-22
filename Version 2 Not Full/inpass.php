@@ -21,7 +21,7 @@ if(isset($_GET['f'])){
 }
 
 //fetch product data for dropdown
-$sql = "Select * from products";
+$sql = "Select * from products WHERE user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
@@ -29,7 +29,7 @@ if (!$retval) {
 }
 
 //fetch company data for dropdown
-$sql = "Select * from company";
+$sql = "Select * from company WHERE user_id = '".(string)$loggedin_session."'";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
     echo mysqli_error($conn);
@@ -37,7 +37,7 @@ if (!$retval2) {
 }
 
 //fetch inpass data for table
-$sql3 = "Select * from inpass ORDER BY no DESC";
+$sql3 = "Select * from inpass WHERE user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -45,7 +45,7 @@ if (!$retval3) {
 }
 
 //fetch inpass data for table
-$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no order by timestamp DESC LIMIT 5";
+$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '".(string)$loggedin_session."' order by timestamp DESC LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -395,8 +395,8 @@ $max_ipno = $retmaxno['mno'];
                     if (!$transtart) {
                         echo mysqli_error($conn);
                     }
-                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras')";
-                    $sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
+                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras','".(string)$loggedin_session."')";
+                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$woc','".(string)$loggedin_session."')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
@@ -409,7 +409,7 @@ $max_ipno = $retmaxno['mno'];
                     } else {
                         echo "sucess";
                     }
-                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source'");
+                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source' AND user_id = '".(string)$loggedin_session."'");
                     if ($result->num_rows == 0) {
                         $insert2 = mysqli_query($conn, $sql2);
                     }
@@ -427,8 +427,8 @@ $max_ipno = $retmaxno['mno'];
                         $productSize = $productSizes[$i];
                         $productQty = $productQtys[$i];
 
-                        $sql7 = "INSERT INTO stock(item,design,size,qty) VALUES ('$productName','$productDesign','$productSize','$productQty')";
-                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize'");
+                        $sql7 = "INSERT INTO stock(item,design,size,qty,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
+                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND user_id = '".(string)$loggedin_session."'");
                         $flag_stock1 = 0;
                         if ($result2->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql7);
@@ -442,7 +442,7 @@ $max_ipno = $retmaxno['mno'];
                                 exit;
                             }
                         } else {
-                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize'";
+                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND user_id = '".(string)$loggedin_session."'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo "Error Occured";
@@ -458,7 +458,7 @@ $max_ipno = $retmaxno['mno'];
                             $newqty = $oldqty + $productQty;
                             echo $oldqty;
                             echo $newqty;
-                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize'";
+                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND user_id = '".(string)$loggedin_session."'";
                             $update = mysqli_query($conn, $sql9);
                             if (!$update) {
                                 echo mysqli_error($conn);
@@ -469,7 +469,7 @@ $max_ipno = $retmaxno['mno'];
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass')";
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass','".(string)$loggedin_session."')";
                             $update92 = mysqli_query($conn,$sql92);
                             $flag_stock1 = 1;
                             if (!$update92) {
@@ -483,7 +483,7 @@ $max_ipno = $retmaxno['mno'];
                             }
                         }
                         if($flag_stock1 != 1) {
-                        $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass')";
+                        $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass','".(string)$loggedin_session."')";
                             $update92 = mysqli_query($conn,$sql92);
                             if (!$update92) {
                                 echo mysqli_error($conn);
@@ -495,7 +495,7 @@ $max_ipno = $retmaxno['mno'];
                                 exit;
                             }
                         }
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty')";
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -508,8 +508,8 @@ $max_ipno = $retmaxno['mno'];
                             exit;
                         }
 
-                        $sql3 = "INSERT INTO products(name,code,design,size) VALUES ('$productName','$productCode','$productDesign','$productSize')";
-                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode'");
+                        $sql3 = "INSERT INTO products(name,code,design,size,user_id) VALUES ('$productName','$productCode','$productDesign','$productSize','".(string)$loggedin_session."')";
+                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode' AND user_id = '".(string)$loggedin_session."'");
                         if ($result->num_rows == 0) {
                             $insert3 = mysqli_query($conn, $sql3);
                             if (!$insert3) {

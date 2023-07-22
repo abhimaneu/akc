@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -25,25 +26,25 @@ if (!$conn) {
 }
 
 //for dropdowns
-$sql2 = "SELECT source from inpass where 1=1";
+$sql2 = "SELECT source from inpass WHERE user_id = '".(string)$loggedin_session."'";
 $sql2 .= " GROUP BY source";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
-$sql3 = "SELECT product_name from inpass_products where 1=1";
+$sql3 = "SELECT product_name from inpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql3 .= " GROUP BY product_name";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
 }
-$sql4 = "SELECT product_size from inpass_products where 1=1";
+$sql4 = "SELECT product_size from inpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql4 .= " GROUP BY product_size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
 }
-$sql6 = "SELECT product_code from inpass_products where 1=1";
+$sql6 = "SELECT product_code from inpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql6 .= " GROUP BY product_code";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
@@ -51,7 +52,7 @@ if (!$retval6) {
 }
 
 //for table
-$sql = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no";
+$sql = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '".(string)$loggedin_session."'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";

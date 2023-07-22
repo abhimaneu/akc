@@ -19,21 +19,21 @@ if(isset($_GET['f'])){
 }
 
 //fetch company data for dropdown
-$sql2 = "Select * from company";
+$sql2 = "Select * from company WHERE user_id = '".(string)$loggedin_session."'";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
     die($conn);
 }
 //fetch product data for company_products
-$sql = "Select * from company_products";
+$sql = "Select * from company_products WHERE user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
     die($conn);
 }
 //fetch workorder data for table
-$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no order by timestamp desc LIMIT 5";
+$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '".(string)$loggedin_session."' order by timestamp desc LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -41,7 +41,7 @@ if (!$retval3) {
 }
 
 //fetch workorders data for wno
-$sql5 = "Select work_order_no from work_orders";
+$sql5 = "Select work_order_no from work_orders WHERE user_id = '".(string)$loggedin_session."'";
 $retval5 = mysqli_query($conn, $sql5);
 if (!$retval5) {
     echo mysqli_error($conn);
@@ -90,7 +90,6 @@ while($row = mysqli_fetch_assoc($retval5)){
             var productNameField = $(this).closest(".product_field").find(".product_name");
             var productDesignField = $(this).closest(".product_field").find(".product_design");
             var productSizeField = $(this).closest(".product_field").find(".product_size");
-            //var productFeatureField = $(this).closest(".product_field").find(".product_feature");
 
 
             $.ajax({
@@ -111,7 +110,6 @@ while($row = mysqli_fetch_assoc($retval5)){
                             productNameField.val(product.name)
                             productDesignField.val(product.design)
                             productSizeField.val(product.size)
-                            //productFeatureField.val(product.features)
                             initilizebootstrap();
                         }
                     }
@@ -278,7 +276,7 @@ while($row = mysqli_fetch_assoc($retval5)){
                     $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                     if (!$conn) {
                     }
-                    $sql = "INSERT INTO work_orders(work_order_no,date,company,extras) VALUES ('$wno','$date','$company_name','$extras')";
+                    $sql = "INSERT INTO work_orders(work_order_no,date,company,extras,user_id) VALUES ('$wno','$date','$company_name','$extras','".(string)$loggedin_session."')";
                     //$sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
@@ -298,7 +296,6 @@ while($row = mysqli_fetch_assoc($retval5)){
                     $productCodes = $_POST['product_code'];
                     $productDeisgns = $_POST['product_design'];
                     $productSizes = $_POST['product_size'];
-                   // $productFeatures = $_POST['product_feature'];
                     $productQtys = $_POST['product_qty'];
 
                     for ($i = 0; $i < count($products); $i++) {
@@ -306,10 +303,8 @@ while($row = mysqli_fetch_assoc($retval5)){
                         $productCode = $productCodes[$i];
                         $productDesign = $productDeisgns[$i];
                         $productSize = $productSizes[$i];
-                        //$productFeature = $productFeatures[$i];
                         $productQty = $productQtys[$i];
-                        $sql7 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,qty) VALUES ('$wno','$productCode','$productName','$productDesign','$productSize','$productQty')";
-                        //$result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
+                        $sql7 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,qty,user_id) VALUES ('$wno','$productCode','$productName','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
                         $insert2 = mysqli_query($conn, $sql7);
                         if (!$insert2) {
                             echo mysqli_error($conn);

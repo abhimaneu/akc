@@ -1,4 +1,6 @@
 <?php
+include 'checkuserlogin.php.';
+
 require_once('TCPDF-main/tcpdf.php');
 
 $no = $_GET['no'];
@@ -26,14 +28,14 @@ $vehicle_no = "";
 $extras = "";
 $total_pieces = 0;
 if ($type == 'inpass') {
-    $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' ORDER BY no DESC";
+    $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
     $retval = mysqli_query($conn, $sql);
     if (!$retval) {
         // echo mysqli_error($conn);
         // die($conn);
     }
 
-    $sql2 = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' ORDER BY no DESC";
+    $sql2 = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
     $retval2 = mysqli_query($conn, $sql2);
     if (!$retval2) {
         // echo mysqli_error($conn);
@@ -64,14 +66,14 @@ if ($type == 'inpass') {
     }
 }
 if ($type == 'outpass') {
-    $sql = " SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' ORDER BY no DESC";
+    $sql = " SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
     $retval = mysqli_query($conn, $sql);
     if (!$retval) {
         // echo mysqli_error($conn);
         // die($conn);
     }
 
-    $sql2 = "SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' ORDER BY no DESC";
+    $sql2 = "SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
     $retval2 = mysqli_query($conn, $sql2);
     if (!$retval2) {
         // echo mysqli_error($conn);

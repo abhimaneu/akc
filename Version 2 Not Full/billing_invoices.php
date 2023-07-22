@@ -4,13 +4,13 @@ include 'conn.php';
 ?>
 
 <?php
-$sql = 'SELECT * FROM invoice';
+$sql = "SELECT * FROM invoice WHERE user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
 }
 
-$sql2 = 'SELECT work_order_no FROM work_orders';
+$sql2 = "SELECT work_order_no FROM work_orders WHERE user_id = '".(string)$loggedin_session."'";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
@@ -197,12 +197,12 @@ while($row2 = mysqli_fetch_assoc($retval2)) {
 if (isset($_POST['del_work_order'])) {
     $del_invoiceNo = $_POST['cur_ino'];
 
-    $sql = "DELETE FROM `invoice` WHERE invoice_no = '$del_invoiceNo'";
+    $sql = "DELETE FROM `invoice` WHERE invoice_no = '$del_invoiceNo' AND user_id = '".(string)$loggedin_session."'";
     $update1 = mysqli_query($conn, $sql);
     if (!$update1) {
         echo mysqli_error($conn);
     }
-    $sql2 = "DELETE FROM `invoice_data` WHERE invoice_no = '$del_invoiceNo'";
+    $sql2 = "DELETE FROM `invoice_data` WHERE invoice_no = '$del_invoiceNo' AND user_id = '".(string)$loggedin_session."'";
     $update2 = mysqli_query($conn, $sql2);
     if (!$update2) {
         echo mysqli_error($conn);
