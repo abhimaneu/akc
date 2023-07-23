@@ -22,7 +22,7 @@ if ($f != 0) {
 $sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type,timestamp
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
-WHERE outpass.user_id = '".(string)$loggedin_session."' AND date BETWEEN '$start' AND '$end'";
+WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
 
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";
@@ -42,7 +42,7 @@ $sql .= " UNION
 SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type,timestamp
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
-WHERE inpass.user_id = '".(string)$loggedin_session."' AND date BETWEEN '$start' AND '$end'";
+WHERE inpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";
@@ -64,9 +64,9 @@ if (!$retval) {
 
 }
 
-$sql2 = "select * from company WHERE user_id = '".(string)$loggedin_session."'";
+$sql2 = "select * from company WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql2);
-$sql3 = "select * from products WHERE user_id = '".(string)$loggedin_session."'";
+$sql3 = "select * from products WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval3 = mysqli_query($conn, $sql3);
 
 
@@ -154,8 +154,10 @@ $retval3 = mysqli_query($conn, $sql3);
 <style>
     @media print {
         body {
-            padding: 20px; /* Add padding to provide margin around the content */
+            padding: 20px;
+            /* Add padding to provide margin around the content */
         }
+
         #dontprint {
             display: none;
         }
@@ -167,11 +169,15 @@ $retval3 = mysqli_query($conn, $sql3);
         #dontprintnav {
             display: none;
         }
+
         #printbody {
-            padding-top: 0; /* Remove padding at the top of the printed content */
+            padding-top: 0;
+            /* Remove padding at the top of the printed content */
         }
+
         #myTable td {
-            page-break-inside: avoid; /* Prevent table cells from breaking across pages */
+            page-break-inside: avoid;
+            /* Prevent table cells from breaking across pages */
         }
 
         /* #printbody * {
@@ -185,7 +191,7 @@ $retval3 = mysqli_query($conn, $sql3);
         <h1 class="mt-2 ms-4">Ledger</h1>
         <div class="container-fluid">
             <div class="row justify-content">
-                <div class="col"  id='dontprint'>
+                <div class="col" id='dontprint'>
                     <form name="filter-date" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
                         <h4 class='mb-4'>Filter</h4>
 
@@ -312,12 +318,21 @@ $retval3 = mysqli_query($conn, $sql3);
                                 } else {
                                     $table_color = 'table-danger';
                                 }
+                                $time = strtotime($row['date']);
+                                $pass_short_date = '';
+                                if (date('n', $time) > 4) {
+                                    $temp_date = date('y', $time);
+                                    $pass_short_date = $temp_date . ($temp_date + 1);
+                                } else {
+                                    $temp_date = date('y', $time);
+                                    $pass_short_date = ($temp_date - 1) . $temp_date;
+                                }
                                 echo "<tr  class='$table_active $table_color'>
                 <td>
                 {$row['date']}
                 </td>
                 <td>
-                {$row['no']}
+                {$row['no']}/". $pass_short_date ."
                 </td>
                 <td>
                 {$row['company']}

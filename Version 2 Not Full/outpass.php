@@ -923,11 +923,21 @@ if (!$retval10) {
                                     $table_active = 'table-active';
                                 }
                             }
+                            $time=strtotime($row['date']);
+                            $outpass_short_date = '';
+                            if(date('n',$time) > 4) {
+                                $temp_date = date('y',$time);
+                                $outpass_short_date =  $temp_date . ($temp_date + 1) ;
+                            }
+                            else {
+                                $temp_date = date('y',$time);
+                                $outpass_short_date =  ($temp_date-1) . $temp_date ;
+                            }
                             if (!empty($row)) {
                                 echo "
                     <tr class='$table_active'>
                     <td>
-                    {$row['no']}
+                    {$row['no']}/". $outpass_short_date ."
                     </td>
                     <td>
                     {$row['date']}

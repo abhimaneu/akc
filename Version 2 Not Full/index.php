@@ -22,13 +22,13 @@ if (isset($_POST['signin_user'])) {
             sleep(1);
             header('location:inpass.php');
         } else {
-            echo "<center><p class='text-danger'>Invalid Password or Username!</p></center>";
+            echo "<center><p class='text-danger pt-2'>Invalid Password or Username!</p></center>";
         }
 
 
 
     } else {
-        echo "<center><p class='text-danger'>User Not Registered</p></center>";
+        echo "<center><p class='text-danger pt-2'>User Not Registered</p></center>";
     }
 
 }
@@ -44,7 +44,7 @@ if (isset($_POST['register_user'])) {
 
         $check_user = mysqli_query($conn, "SELECT user_id FROM profile where user_id = '$register_username' ");
         if (mysqli_num_rows($check_user) > 0) {
-            echo "<center>User Already Exists</center>";
+            echo "<center><p class='text-danger pt-2'>User Already Exists</p></center>";
         } else {
             $query = "INSERT into profile (name, user_id, password) VALUES ('$register_name', '$register_username', '$encr_pass');";
             $result = mysqli_query($conn, $query);
@@ -53,7 +53,7 @@ if (isset($_POST['register_user'])) {
                 $_SESSION['username'] = $register_username;
                 $flag = 0;
                 sleep(1);
-                header('Location:inpass.php');
+                header('Location:profile.php');
             }
         }
     } else {
@@ -95,17 +95,18 @@ if (isset($_POST['register_user'])) {
             <!-- Pills content -->
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                    <form id='signin_user' method="post">
+                    <form id='signin_user' onsubmit="return validation()" method="post">
                         <h1 class='fs-4 pb-4 pt-2'>Enter Credentials</h1>
                         <!-- Email input -->
                         <div class="form-outline mb-4">
-                            <input type="text" id="loginName" name="login_username" class="form-control" />
+                            <input type="text" id="loginName" pattern="[A-Za-z0-9]+" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" required name="login_username" class="form-control" />
                             <label class="form-label" for="loginName">Username</label>
                         </div>
 
                         <!-- Password input -->
                         <div class="form-outline mb-4">
-                            <input type="password" id="loginPassword" name='login_password' class="form-control" />
+                            <input type="password" id="loginPassword" pattern="[A-Za-z0-9]+" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" required name='login_password'
+                                class="form-control" />
                             <label class="form-label" for="loginPassword">Password</label>
                         </div>
 
@@ -145,20 +146,20 @@ if (isset($_POST['register_user'])) {
 
                         <!-- Username input -->
                         <div class="form-outline mb-4">
-                            <input type="text" id="registerUsername" name='register_username' class="form-control" />
+                            <input type="text" id="registerUsername" pattern="[A-Za-z0-9]+" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" name='register_username' class="form-control" />
                             <label class="form-label" for="registerUsername">Username</label>
                         </div>
 
                         <!-- Password input -->
                         <div class="form-outline mb-4">
-                            <input type="password" id="registerPassword" name='register_password'
+                            <input type="password" id="registerPassword" pattern="[A-Za-z0-9]+" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" name='register_password'
                                 class="form-control" />
                             <label class="form-label" for="registerPassword">Password</label>
                         </div>
 
                         <!-- Repeat Password input -->
                         <div class="form-outline mb-4">
-                            <input type="password" id="registerRepeatPassword" name='register_v_password'
+                            <input type="password" id="registerRepeatPassword" pattern="[A-Za-z0-9]+" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" name='register_v_password'
                                 class="form-control" />
                             <label class="form-label" for="registerRepeatPassword">Repeat password</label>
                         </div>

@@ -589,11 +589,22 @@ $max_ipno = $retmaxno['mno'];
                                     $table_active = 'table-active';
                                 }
                             }
+                            $time=strtotime($row['date']);
+                            $inpass_short_date = '';
+                            if(date('n',$time) > 4) {
+                                $temp_date = date('y',$time);
+                                $inpass_short_date =  $temp_date . ($temp_date + 1) ;
+                            }
+                            else {
+                                $temp_date = date('y',$time);
+                                $inpass_short_date =  ($temp_date-1) . $temp_date ;
+                            }
+                            
                             if (!empty($row)) {
                                 echo "
                     <tr class='$table_active'>
                     <td>
-                    {$row['no']}
+                    {$row['no']}/". $inpass_short_date ."
                     </td>
                     <td>
                     {$row['date']}

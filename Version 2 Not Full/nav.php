@@ -23,7 +23,12 @@ include 'checkuserlogin.php';
             background-color: brown;
         } */
 </style>
-
+<?php 
+$company_name = '';
+if(isset($loggedin_session)){
+$userName = mysqli_fetch_assoc(mysqli_query($conn,"select name from profile where user_id = '".(string)$loggedin_session."'"))['name'];
+}
+?>
 <script>
     function logout() {
         session_destroy();
@@ -34,7 +39,7 @@ include 'checkuserlogin.php';
     <div id='dontprintnav'>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="profile.php">Akshay Coir</a>
+                <a class="navbar-brand" href="profile.php"><?php echo $userName;?></a>
                 <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fas fa-bars"></i>
