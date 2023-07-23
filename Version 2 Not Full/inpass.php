@@ -67,17 +67,7 @@ while($row = mysqli_fetch_assoc($retval4)){
     $i += 1;
 }
 
-//fetch largest ipno
-$max_ipno = 1000;
-$sql5 = "Select max(no) as mno from inpass";
-$retval5 = mysqli_query($conn, $sql5);
-if (!$retval5) {
-    echo mysqli_error($conn);
-    
-}else {
-$retmaxno = mysqli_fetch_assoc($retval5);
-$max_ipno = $retmaxno['mno'];
-}
+
 
 ?>
 
@@ -137,7 +127,7 @@ $max_ipno = $retmaxno['mno'];
                 });
             });
 
-            $('#ipno').val('<?php echo $max_ipno + 1; ?>');
+            
             $('#ipno').trigger('click');
             initilizebootstrap();
 
@@ -296,9 +286,12 @@ $max_ipno = $retmaxno['mno'];
                         <div class="row mb-2">
                             <div class="col">
                                 <div class="form-outline mb-0">
-                                    <input type="text" id='ipno' class="form-control" required name="ipno">
+                                    <input type="text" id='ipno' class="form-control" name="ipno">
                                     <label for="ipno" class="form-label">Inpass No.</label>
                                 </div>
+                                <div id="textExample1" class="form-text">
+                                        &nbsp;Leave Empty for Auto-Generation
+                                    </div>
                                 <div id='error_no'></div>
                                 <div class='mb-4'></div>
                             </div>
@@ -342,7 +335,7 @@ $max_ipno = $retmaxno['mno'];
                             <div class="col">
                                 <div class="form-outline mb-4">
                                     <input type="text" class="form-control" required name="vehicle">
-                                    <label for="vechicle" class="form-label">Vehicle No.</label>
+                                    <label for="vehicle" class="form-label">Vehicle No.</label>
                                 </div>
                             </div>
                         </div>
@@ -372,7 +365,7 @@ $max_ipno = $retmaxno['mno'];
                     $source = "";
                     $woc = "";
                     $op = "";
-                    $vechicle = "";
+                    $vehicle = "";
                     $p_name = "";
                     $p_code = "";
                     $p_bundle = "";
@@ -390,11 +383,14 @@ $max_ipno = $retmaxno['mno'];
                     $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                     if (!$conn) {
                     }
+                    
+                    
                     $tran = 'START TRANSACTION';
                     $transtart = mysqli_query($conn, $tran);
                     if (!$transtart) {
                         echo mysqli_error($conn);
                     }
+                    
                     $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras','".(string)$loggedin_session."')";
                     $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$woc','".(string)$loggedin_session."')";
                     $insert = mysqli_query($conn, $sql);
@@ -407,7 +403,7 @@ $max_ipno = $retmaxno['mno'];
                         echo "<script>alert('Some Error Occured')</script>";
                         exit;
                     } else {
-                        echo "sucess";
+                        $inpass_no = mysqli_insert_id($conn);
                     }
                     $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source' AND user_id = '".(string)$loggedin_session."'");
                     if ($result->num_rows == 0) {
@@ -495,7 +491,8 @@ $max_ipno = $retmaxno['mno'];
                                 exit;
                             }
                         }
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
+                        
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$inpass_no','$productName','$productCode','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -526,7 +523,7 @@ $max_ipno = $retmaxno['mno'];
 
                     }
                     echo "<script type='text/javascript'>
-                window.open('createpdfpass.php?no=$ipno&io=inpass');
+                window.open('createpdfpass.php?no=$inpass_no&io=inpass');
                 </script>";
                     echo "<script type='text/javascript'>
                 window.location.href = 'inpass.php?f=s';

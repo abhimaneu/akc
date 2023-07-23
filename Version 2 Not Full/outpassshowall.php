@@ -335,9 +335,7 @@ if (!$retval) {
                         <th>
                             Outpass PDF
                         </th>
-                        <th>
-                            GST Invoice
-                        </th>
+
                     </thead>
                     <tbody id='tablebody'>
                         <tr>
@@ -404,14 +402,6 @@ if (!$retval) {
                     <td>
                     <a href='createpdfpass.php?no={$row['no']}&io=outpass' target='_blank'>Download</a>
                     </td>
-                    <td>";
-                                    if (!($row['invoice_no'] == 'Not Generated')) {
-                                        echo "<p class='fw-bold mb-1'>{$row['invoice_no']}</p> <a href='createpdfgstinvoice.php?wo={$row['work_order']}&in={$row['invoice_no']}' class='fw-bold' target='_blank'>Download Invoice</a> <br>";
-                                    }
-                                    echo "<a href='creategstinvoice.php?wo={$row['work_order']}' target='_blank'>Generate New Invoice</a>";
-
-                                    echo "</td>
-                    </tr>
                     ";
                                     $cur_no = $row['no'];
                                 }
