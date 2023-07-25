@@ -735,7 +735,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 
                             $reqQty = $reqQtys[$i];
 
-                            $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$outpass_no','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                            $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$outpass_no','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
                                 echo mysqli_error($conn);

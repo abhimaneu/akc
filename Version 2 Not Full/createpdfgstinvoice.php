@@ -12,19 +12,19 @@ if (!$conn) {
     // echo "Error Occured ";
 }
 
-$sql = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '".(string)$loggedin_session."'";
+$sql = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
 
 }
 
-$sql2 = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '".(string)$loggedin_session."'";
+$sql2 = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
 
 }
 
-$sql3 = "SELECT * FROM profile WHERE user_id = '".(string)$loggedin_session."'";
+$sql3 = "SELECT * FROM profile WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
 
@@ -47,8 +47,15 @@ $less_ro = '';
 $total_amount = '';
 $mode_of_transport = '';
 
+$profile_company_name = '';
+$profile_company_phoneno = '';
+//$profile_company_address = '';
 $data3 = mysqli_fetch_assoc($retval3);
 $gstin = $data3['gstin'];
+$profile_company_name = $data3['name'];
+$profile_company_phoneno = $data3['phoneno'];
+//$profile_company_address = $company_data['address'];
+
 
 $data1 = mysqli_fetch_assoc($retval);
 $date = $data1['date'];
@@ -117,11 +124,11 @@ $pdf->SetFont('helvetica', '', 8); // Set font
 $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(0, 0, 0)));
 
 $pdf->SetFont('helvetica', 'B', 10);
-$pdf->Cell(0, 10, 'AKSHAY COIR', 0, 1, 'C');
+$pdf->Cell(0, 8, $profile_company_name, 0, 1, 'C');
 $pdf->SetFont('helvetica', '', 8);
-$pdf->Cell(0, 5, 'NC JOHN DIPPO ROAD, THUMPOLI', 0, 1, 'C');
-$pdf->Cell(0, 5, 'ALAPUZHA', 0, 1, 'C');
-$pdf->Cell(0, 5, 'PH: 9447746156', 0, 1, 'C');
+$pdf->Cell(0, 4, 'NC JOHN DIPPO ROAD, THUMPOLI', 0, 1, 'C');
+$pdf->Cell(0, 4, 'ALAPUZHA', 0, 1, 'C');
+$pdf->Cell(0, 4, 'PH: ' .$profile_company_phoneno, 0, 1, 'C');
 $pdf->Ln(10);
 $pdf->Cell(0, 5, 'GSTIN: ' . $gstin, 0, 0, 'L');
 $pdf->Cell(0, 5, 'State Code: 32', 0, 1, 'R');
@@ -195,7 +202,7 @@ for ($i = 0; $i < count($productName); $i++) {
         $pdf->Cell(12, 5, "", 'LR', 0, '');
         $pdf->Cell(17, 5, "", 'LR', 1, '');
         $product_slno_f = $product_slno[$i];
-        $k=0;
+        $k = 0;
     }
     $pdf->SetFont('helvetica', '', 7);
     $pdf->Cell(8, 5, $k + 1, 'LR', 0, 'C');

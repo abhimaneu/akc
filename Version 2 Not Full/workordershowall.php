@@ -153,6 +153,7 @@ if (!$retval) {
                         var l = productData.length;
                         $('#workOrderNo').val(workOrderNo);
                         $('#date').text(date);
+                        $('#date_of_entry').val(date);
                         $('#company').val(company);
                         $('#productStatus').val(productStatus);
                         $('#extras').val(extras);
@@ -465,6 +466,7 @@ if (!$retval) {
                                                     <span id="date" name="date">
                                                         <caption></caption>
                                                     </span>
+                                                    <input type='hidden' id='date_of_entry' name='date_of_entry'>
                                                 </div>
                                             </div>
                                             <div class="row w-75">
@@ -648,6 +650,7 @@ if (isset($_POST['save'])) {
     $company = $_POST['company'];
     $productStatus = $_POST['productStatus'];
     $extras = $_POST['extras'];
+    $date = $_POST['date_of_entry'];
     $tran = 'START TRANSACTION';
     $transtart = mysqli_query($conn, $tran);
     if (!$transtart) {
@@ -681,7 +684,7 @@ if (isset($_POST['save'])) {
         $productDesign = $productDesigns[$i];
         $productSize = $productSizes[$i];
         $productQty = $productQtys[$i];
-        $sql2 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,qty,user_id) VALUES ('$workOrderNo','$productCode','$productName','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
+        $sql2 = "INSERT INTO work_order_products(work_order_no,date_of_entry,code,name,design,size,qty,user_id) VALUES ('$workOrderNo','$date','$productCode','$productName','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
         $update2 = mysqli_query($conn, $sql2);
         if (!$update2) {
             echo mysqli_error($conn);

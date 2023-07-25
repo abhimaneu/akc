@@ -492,7 +492,7 @@ while($row = mysqli_fetch_assoc($retval4)){
                             }
                         }
                         
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$inpass_no','$productName','$productCode','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$inpass_no','$date','$productName','$productCode','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);

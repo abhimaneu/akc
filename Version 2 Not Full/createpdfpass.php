@@ -27,6 +27,17 @@ $company_op = "";
 $vehicle_no = "";
 $extras = "";
 $total_pieces = 0;
+$profile_company_name = '';
+//$profile_company_address = '';
+$sql3 = " SELECT * FROM profile WHERE user_id = '".(string)$loggedin_session."'";
+    $retval3 = mysqli_query($conn, $sql3);
+    if (!$retval3) {
+        // echo mysqli_error($conn);
+        // die($conn);
+    }
+    $company_data = mysqli_fetch_assoc($retval3);
+    $profile_company_name = $company_data['name'];
+    //$profile_company_address = $company_data['address'];
 if ($type == 'inpass') {
     $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
     $retval = mysqli_query($conn, $sql);
@@ -41,6 +52,7 @@ if ($type == 'inpass') {
         // echo mysqli_error($conn);
         // die($conn);
     }
+
     $result = mysqli_fetch_assoc($retval);
     $date = $result['date'];
     $company = $result['source'];
@@ -111,41 +123,41 @@ $pdf = new TCPDF('P', 'mm', 'A4'); // 'P' for portrait, 'mm' for millimeters, 'A
 
 //Add Later
 // $pdf->SetCreator('Your Name');
-$pdf->SetAuthor('Akshay Coir');
+$pdf->SetAuthor($profile_company_name);
 $pdf->SetTitle($no . ' ' . $title . ' PDF');
 // $pdf->SetSubject('Document Subject');
 
 $pdf->AddPage();
 
-$pdf->SetFont('helvetica', '', 12); // Set font
-$pdf->Cell(0, 10, $title, 0, 1, 'C'); // Add centered text
+$pdf->SetFont('helvetica', '', 10); // Set font
+$pdf->Cell(0, 8, $title, 0, 1, 'C'); // Add centered text
 // $pdf->Cell(0, 20, 'AKSHAY COIR', 0, 1, 'C');
 
 // $pdf->SetFont('helvetica', '', 12); // Set font
 // $pdf->Cell(0, 0, 'ALAPUZHA', 0, 1, 'C');
 
-$pdf->SetFont('helvetica', 'B', 14);
-$pdf->Cell(0, 10, 'Akshay Coir', 0, 1, 'C');
-$pdf->SetFont('helvetica', '', 12);
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(0, 8, $profile_company_name, 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 8);
 $pdf->Cell(0, 5, 'Chettikad,Alapuzha', 0, 1, 'C');
-$pdf->Ln(10); // Add some vertical spacing
+$pdf->Ln(9); // Add some vertical spacing
 
-$pdf->SetFont('helvetica', '', 12);
-$pdf->Cell(0, 10, "Date:  {$date}", 0, 1);
-$pdf->SetFont('helvetica', '', 12);
-$pdf->Cell(0, 10, "No. {$no}", 0, 1);
-$pdf->SetFont('helvetica', '', 12);
-$pdf->Cell(0, 10, "{$SorD} : {$company} {$company_woc}", 0, 1);
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 8, "Date:  {$date}", 0, 1);
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 8, "No. {$no}", 0, 1);
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 8, "{$SorD}: {$company} {$company_woc}", 0, 1);
 if($type == 'inpass') {
-$pdf->Cell(0, 10, "OP# {$source_opno}", 0, 1);
+$pdf->Cell(0, 8, "OP#: {$source_opno}", 0, 1);
 }
-$pdf->Cell(0, 10, "Vehicle No. : {$vehicle_no}", 0, 1);
+$pdf->Cell(0, 8, "Vehicle No. : {$vehicle_no}", 0, 1);
 if(!empty($extras)) {
-$pdf->Cell(0, 10, "extras : {$extras}", 0, 1);
+$pdf->Cell(0, 8, "extras : {$extras}", 0, 1);
 }
 $pdf->Ln(10);
 
-$pdf->SetFont('helvetica', 'B', 12);
+$pdf->SetFont('helvetica', 'B', 10);
 $pdf->Cell(25, 10, 'Sl No.', 1, 0, 'C');
 $pdf->Cell(90, 10, 'Particulars', 1, 0, 'C');
 $pdf->Cell(45, 10, 'Size/Description', 1, 0, 'C');
@@ -190,11 +202,24 @@ for ($i = 0; $i < count($product_code); $i++) {
 
 $pdf->Ln(5);
 
-$pdf->SetFont('helvetica', '', 12);
-$pdf->Cell(0, 10, 'Total Pieces: ' . $total_pieces, 0, 1, 'R');
-$pdf->Ln(10);
-
 $pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 10, 'Total Pieces: ' . $total_pieces, 0, 1, 'R');
+$pdf->Ln(5);
+
+$startX = $pdf->GetX();
+$startY = $pdf->GetY();
+$endX = $pdf->GetPageWidth() - $pdf->GetX();
+$endY = $startY;
+// Draw the line
+$pdf->Line($startX, $startY, $endX, $endY);
+
+$pdf->SetFont('helvetica', 'B', 8);
+$pdf->Cell(0, 5, 'FOR AKSHAY COIR', 0, 1, 'R');
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Ln(15);
+$pdf->Cell(0, 5, 'Authorised Signatory', 0, 1, 'R');
+
+$pdf->SetFont('helvetica', '', 8);
 $pdf->Cell(0, 10, 'Thank you for your business!', 0, 0, 'C');
 
 

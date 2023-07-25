@@ -310,7 +310,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         $productDesign = $productDeisgns[$i];
                         $productSize = $productSizes[$i];
                         $productQty = $productQtys[$i];
-                        $sql7 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,qty,user_id) VALUES ('$wno','$productCode','$productName','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                        $sql7 = "INSERT INTO work_order_products(work_order_no,date_of_entry,code,name,design,size,qty,user_id) VALUES ('$wno','$date','$productCode','$productName','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                         $insert2 = mysqli_query($conn, $sql7);
                         if (!$insert2) {
                             echo mysqli_error($conn);
