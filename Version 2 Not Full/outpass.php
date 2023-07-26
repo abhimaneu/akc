@@ -94,7 +94,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
-<title>Inpass</title>
+<title>Outpass</title>
 <!-- MDB icon -->
 <!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
 <!-- Font Awesome -->
@@ -680,6 +680,24 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         if (!$transtart) {
                             echo mysqli_error($conn);
                         }
+                        $outpass_flag = 0;
+                        if (!$opno) {
+                            $sql00 = "SELECT outpass_count FROM profile WHERE user_id='" . (string) $loggedin_session . "'";
+                            $result = mysqli_query($conn, $sql00);
+                            if (!$result) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e7';
+                        </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                            $retipno = mysqli_fetch_assoc($result);
+                            $opno = $retipno['outpass_count'];
+                            $outpass_flag = 1;
+                        }
+
                         $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras,user_id) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras','" . (string) $loggedin_session . "')";
                         $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$dest','$woc','" . (string) $loggedin_session . "')";
                         $insert = mysqli_query($conn, $sql);
@@ -690,9 +708,8 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         window.location.href = 'outpass.php?f=e1';
                         </script>";
                             exit;
-                        } else {
-                            $outpass_no = mysqli_insert_id($conn);
                         }
+
                         $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest' AND user_id = '" . (string) $loggedin_session . "'");
                         if ($result->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql2);
@@ -735,7 +752,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 
                             $reqQty = $reqQtys[$i];
 
-                            $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$outpass_no','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                            $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$opno','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
                                 echo mysqli_error($conn);
@@ -772,7 +789,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                     echo mysqli_error($conn);
                                     mysqli_rollback($conn);
                                     echo "<script type='text/javascript'>
-                                window.location.href = 'inpass.php?f=e4';
+                                window.location.href = 'outpass.php?f=e4';
                                 </script>";
                                     echo "<script>alert('Some Error Occured')</script>";
                                     exit;
@@ -783,37 +800,52 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                 echo "<script>alert('Not Enough Stock Avalible for Selected Products')</script>";
                             }
 
-                        }
-                        if ($flag == 0) {
-                            if ($reqQty - $productQty > 0) {
-                                $newqtywo = $reqQty - $productQty;
-                                $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode' AND user_id = '" . (string) $loggedin_session . "'";
-                                $update2 = mysqli_query($conn, $sql8);
-                                if (!$update2) {
-                                    echo mysqli_error($conn);
-                                    mysqli_rollback($conn);
-                                    $flag = 1;
-                                }
-                            } else {
-                                $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno' AND user_id = '" . (string) $loggedin_session . "'";
-                                $update2 = mysqli_query($conn, $sql8);
-                                if (!$update2) {
-                                    echo mysqli_error($conn);
-                                    mysqli_rollback($conn);
-                                    $flag = 1;
+                            if ($flag == 0) {
+                                if ($reqQty) {
+                                    if ($reqQty - $productQty > 0) {
+                                        $newqtywo = $reqQty - $productQty;
+                                        $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode' AND user_id = '" . (string) $loggedin_session . "'";
+                                        $update2 = mysqli_query($conn, $sql8);
+                                        if (!$update2) {
+                                            echo mysqli_error($conn);
+                                            mysqli_rollback($conn);
+                                            $flag = 1;
+                                        }
+                                    } else {
+                                        $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno' AND user_id = '" . (string) $loggedin_session . "'";
+                                        $update2 = mysqli_query($conn, $sql8);
+                                        if (!$update2) {
+                                            echo mysqli_error($conn);
+                                            mysqli_rollback($conn);
+                                            $flag = 1;
+                                        }
+                                    }
                                 }
                             }
                         }
 
                         if ($flag == 0) {
                             echo "<script type='text/javascript'>
-            window.open('createpdfpass.php?no=$outpass_no&io=outpass');
+            window.open('createpdfpass.php?no=$opno&io=outpass');
             </script>";
                         } else {
                             echo "<script type='text/javascript'>
                         window.location.href = 'outpass.php?f=e3';
                         </script>";
                             exit;
+                        }
+                        if ($outpass_flag == 1) {
+                            $sql01 = "UPDATE profile SET outpass_count = outpass_count + 1 where user_id='" . (string) $loggedin_session . "'";
+                            $updipno = mysqli_query($conn, $sql01);
+                            if (!$updipno) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'outpass.php?f=e8';
+                                </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
                         }
                         mysqli_commit($conn);
                         echo "<script type='text/javascript'>

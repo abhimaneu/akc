@@ -272,7 +272,7 @@ if (!$retval) {
                     {$row['extras']}
                     </td>
                     <td>
-                    <a href='createpdfpass.php?no={$row['no']}&io=inpass' target='_blank' >Download</a>
+                    <a href='createpdfpass.php?f=old&no={$row['no_year']}&io=inpass' target='_blank' >Download</a>
                     </td>
                     </tr>
                     ";

@@ -143,7 +143,7 @@ if (!$retval) {
                     <ul class="navbar-nav">
                         <div class="d-flex align-items-center">
                             <li class="nav-item">
-                                <a class="nav-link " href="profile_registeryear.php">Register New Financial Year</a>
+                                <a class="nav-link " href="profile_regfinancialyear.php">Register New Financial Year</a>
                             </li>
                         </div>
                     </ul>

@@ -3,9 +3,17 @@ include 'checkuserlogin.php.';
 
 require_once('TCPDF-main/tcpdf.php');
 
+$inpass_old = 0;
+$outpass_old = 0;
+
 $no = $_GET['no'];
 $type = $_GET['io'];
-
+if (isset($_GET['f'])) {
+    if (isset($_GET['f']) == 'old') {
+        $inpass_old = 1;
+        $outpass_old = 1;
+    }
+}
 $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
 
 if (!$conn) {
@@ -15,10 +23,9 @@ if (!$conn) {
 
 $SorD = "A/C";
 $title = "";
-if($type == 'inpass') {
+if ($type == 'inpass') {
     $title = "INPASS";
-}
-else  if($type == 'outpass') {
+} else if ($type == 'outpass') {
     $title = "OUTPASS";
 }
 $date = "";
@@ -29,28 +36,44 @@ $extras = "";
 $total_pieces = 0;
 $profile_company_name = '';
 //$profile_company_address = '';
-$sql3 = " SELECT * FROM profile WHERE user_id = '".(string)$loggedin_session."'";
-    $retval3 = mysqli_query($conn, $sql3);
-    if (!$retval3) {
-        // echo mysqli_error($conn);
-        // die($conn);
-    }
-    $company_data = mysqli_fetch_assoc($retval3);
-    $profile_company_name = $company_data['name'];
-    //$profile_company_address = $company_data['address'];
+$sql3 = " SELECT * FROM profile WHERE user_id = '" . (string) $loggedin_session . "'";
+$retval3 = mysqli_query($conn, $sql3);
+if (!$retval3) {
+    // echo mysqli_error($conn);
+    // die($conn);
+}
+$company_data = mysqli_fetch_assoc($retval3);
+$profile_company_name = $company_data['name'];
+//$profile_company_address = $company_data['address'];
 if ($type == 'inpass') {
-    $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
-    $retval = mysqli_query($conn, $sql);
-    if (!$retval) {
-        // echo mysqli_error($conn);
-        // die($conn);
-    }
+    if ($inpass_old == 1) {
+        $sql = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval = mysqli_query($conn, $sql);
+        if (!$retval) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
 
-    $sql2 = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
-    $retval2 = mysqli_query($conn, $sql2);
-    if (!$retval2) {
-        // echo mysqli_error($conn);
-        // die($conn);
+        $sql2 = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval2 = mysqli_query($conn, $sql2);
+        if (!$retval2) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
+    } else {
+        $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval = mysqli_query($conn, $sql);
+        if (!$retval) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
+
+        $sql2 = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval2 = mysqli_query($conn, $sql2);
+        if (!$retval2) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
     }
 
     $result = mysqli_fetch_assoc($retval);
@@ -78,18 +101,34 @@ if ($type == 'inpass') {
     }
 }
 if ($type == 'outpass') {
-    $sql = " SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
-    $retval = mysqli_query($conn, $sql);
-    if (!$retval) {
-        // echo mysqli_error($conn);
-        // die($conn);
-    }
+    if ($outpass_old == 1) {
+        $sql = " SELECT * FROM outpass_old,outpass_products_old WHERE outpass_old.no_year = outpass_products_old.no_year AND outpass_products_old.no_year = '$no' AND outpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval = mysqli_query($conn, $sql);
+        if (!$retval) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
 
-    $sql2 = "SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
-    $retval2 = mysqli_query($conn, $sql2);
-    if (!$retval2) {
-        // echo mysqli_error($conn);
-        // die($conn);
+        $sql2 = "SELECT * FROM outpass_old,outpass_products_old WHERE outpass_old.no_year = outpass_products_old.no_year AND outpass_products_old.no_year = '$no' AND outpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval2 = mysqli_query($conn, $sql2);
+        if (!$retval2) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
+    } else {
+        $sql = " SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval = mysqli_query($conn, $sql);
+        if (!$retval) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
+
+        $sql2 = "SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $retval2 = mysqli_query($conn, $sql2);
+        if (!$retval2) {
+            // echo mysqli_error($conn);
+            // die($conn);
+        }
     }
     $product_code = array();
     $product_name = array();
@@ -136,24 +175,24 @@ $pdf->Cell(0, 8, $title, 0, 1, 'C'); // Add centered text
 // $pdf->SetFont('helvetica', '', 12); // Set font
 // $pdf->Cell(0, 0, 'ALAPUZHA', 0, 1, 'C');
 
-$pdf->SetFont('helvetica', 'B', 12);
+$pdf->SetFont('helvetica', 'B', 14);
 $pdf->Cell(0, 8, $profile_company_name, 0, 1, 'C');
-$pdf->SetFont('helvetica', '', 8);
+$pdf->SetFont('helvetica', '', 9);
 $pdf->Cell(0, 5, 'Chettikad,Alapuzha', 0, 1, 'C');
 $pdf->Ln(9); // Add some vertical spacing
 
 $pdf->SetFont('helvetica', '', 10);
 $pdf->Cell(0, 8, "Date:  {$date}", 0, 1);
 $pdf->SetFont('helvetica', '', 10);
-$pdf->Cell(0, 8, "No. {$no}", 0, 1);
+$pdf->Cell(0, 8,  ucfirst($type)." No. {$no}", 0, 1);
 $pdf->SetFont('helvetica', '', 10);
 $pdf->Cell(0, 8, "{$SorD}: {$company} {$company_woc}", 0, 1);
-if($type == 'inpass') {
-$pdf->Cell(0, 8, "OP#: {$source_opno}", 0, 1);
+if ($type == 'inpass') {
+    $pdf->Cell(0, 8, "OP#: {$source_opno}", 0, 1);
 }
 $pdf->Cell(0, 8, "Vehicle No. : {$vehicle_no}", 0, 1);
-if(!empty($extras)) {
-$pdf->Cell(0, 8, "extras : {$extras}", 0, 1);
+if (!empty($extras)) {
+    $pdf->Cell(0, 8, "extras : {$extras}", 0, 1);
 }
 $pdf->Ln(10);
 
@@ -219,8 +258,6 @@ $pdf->SetFont('helvetica', '', 10);
 $pdf->Ln(15);
 $pdf->Cell(0, 5, 'Authorised Signatory', 0, 1, 'R');
 
-$pdf->SetFont('helvetica', '', 8);
-$pdf->Cell(0, 10, 'Thank you for your business!', 0, 0, 'C');
 
 
 

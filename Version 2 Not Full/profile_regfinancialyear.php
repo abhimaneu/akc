@@ -3,6 +3,17 @@ include 'conn.php';
 include 'nav.php';
 ?>
 
+<?php
+if (isset($_GET['f'])) {
+    if ($_GET['f'] == 's') {
+        echo "<h1 class='d-flex p-1 fs-4 text-success justify-content-center'>New Financial Year Registered<h1>";
+    }
+    if ($_GET['f'] == 'cs') {
+        echo "<h1 class='d-flex p-1 fs-4 text-success justify-content-center'>Cleared Succesfully<h1>";
+    }
+}
+?>
+
 <html>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -67,15 +78,65 @@ include 'nav.php';
                 <p class='fs-4 fw-light'>Register as New Financial Year</p>
                 <form id='regfinyear' method='POST'>
                     <h1 class="display-6">
-                        <button type='submit' class='btn btn-primary btn-lg' name='regfinyear'>Register</button>
+                        <button type='submit' onclick="return confirm('Are you sure?');" class='btn btn-primary btn-lg' name='regfinyear'>Register</button>
                     </h1>
                 </form>
             </div>
         </div>
-        <div class="row p-4 ps-2 pb-0">
+        <div class="row p-4 ps-0 pb-0">
             <div class="col">
                 <small class="lead fs-6">Registering Will Clear current Inpass, Outpass, Work Orders <br>
                     Go to Inpass/Outpass/Work Orders from Profile Section to access Old Data</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="container m-5 bg-white rounded-5 shadow-4-strong p-5">
+
+        <div class="row">
+            <div class="col">
+                <p class='fs-4 fw-light'>Clear Data</p>
+                <form id='clear_data' method='POST'>
+                    <div class="col">
+
+                        <div class="row pb-4">
+                            <div class="col">
+                                <small class='fs-6 pe-4'>Clear All Company Products</small>
+                                <button type='submit' onclick="return confirm('Are you sure?');" class='btn btn-danger shadow-3 btn-sm'
+                                    name='clear_company_products'>Clear</button>
+                            </div>
+                        </div>
+
+                        <div class="row pb-4">
+                            <div class="col">
+                                <small class='fs-6 pe-4'>Clear All Vehicle List
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</small>
+                                <button type='submit' onclick="return confirm('Are you sure?');" class='btn btn-danger shadow-3 btn-sm'
+                                    name='clear_vehicles'>Clear</button>
+                            </div>
+                        </div>
+                        <div class="row pb-4">
+                            <div class="col">
+                                <small class='fs-6 pe-4'>Clear All Saved Products &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</small>
+                                <button type='submit' onclick="return confirm('Are you sure?');" class='btn btn-danger shadow-3 btn-sm'
+                                    name='clear_saved_products'>Clear</button>
+                            </div>
+                        </div>
+                        <div class="row pb-2">
+                            <div class="col">
+                                <small class='fs-6 pe-4'>Clear All Saved Companies &nbsp;</small>
+                                <button type='submit' onclick="return confirm('Are you sure?');" class='btn btn-danger shadow-3 btn-sm'
+                                    name='clear_saved_companies'>Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row p-4 ps-0 pb-0">
+            <div class="col">
+                <small class="lead fs-6">Deletion Of any Data will Remove it Completely <br>
+                    Go to Profile Home to Add New Data</small>
             </div>
         </div>
     </div>
@@ -98,6 +159,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$insert) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "DELETE from inpass where user_id = '" . $loggedin_session . "'";
@@ -105,6 +167,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$delete) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "INSERT into inpass_products_old(inpass_no,no_year,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) select inpass_no,CONCAT(inpass_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id from inpass_products where user_id = '" . $loggedin_session . "'";
@@ -112,6 +175,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$insert2) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "DELETE from inpass_products where user_id = '" . $loggedin_session . "'";
@@ -119,6 +183,15 @@ if (isset($_POST['regfinyear'])) {
     if (!$delete2) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
+        exit;
+    }
+    $sql = "UPDATE profile SET inpass_count = 1 where user_id='" . (string) $loggedin_session . "'";
+    $update = mysqli_query($conn, $sql);
+    if (!$update) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
 
@@ -128,6 +201,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$insert3) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "DELETE from outpass where user_id = '" . $loggedin_session . "'";
@@ -135,6 +209,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$delete3) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "INSERT into outpass_products_old(outpass_no,no_year,date_of_entry,product_type,product_name,work_order,product_code,product_design,product_size,product_qty,user_id) select outpass_no,CONCAT(outpass_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,product_type,product_name,work_order,product_code,product_design,product_size,product_qty,user_id from outpass_products where user_id = '" . $loggedin_session . "'";
@@ -142,6 +217,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$insert4) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "DELETE from outpass_products where user_id = '" . $loggedin_session . "'";
@@ -149,6 +225,15 @@ if (isset($_POST['regfinyear'])) {
     if (!$delete4) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
+        exit;
+    }
+    $sql = "UPDATE profile SET outpass_count = 1 where user_id='" . (string) $loggedin_session . "'";
+    $update2 = mysqli_query($conn, $sql);
+    if (!$update2) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
 
@@ -158,6 +243,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$insert5) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "DELETE from work_orders where user_id = '" . $loggedin_session . "'";
@@ -165,6 +251,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$delete5) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "INSERT into work_order_products_old(work_order_no,no_year,date_of_entry,code,name,design,size,features,qty,user_id) select work_order_no,CONCAT(work_order_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,code,name,design,size,features,qty,user_id from work_order_products where user_id = '" . $loggedin_session . "'";
@@ -172,6 +259,7 @@ if (isset($_POST['regfinyear'])) {
     if (!$insert6) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
     $sql = "DELETE from work_order_products where user_id = '" . $loggedin_session . "'";
@@ -179,9 +267,73 @@ if (isset($_POST['regfinyear'])) {
     if (!$delete6) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
 
     mysqli_commit($conn);
+    echo "<script type='text/javascript'>
+            window.location.href = 'profile_regfinancialyear.php?f=s';
+            </script>";
+}
+
+//Delete Company Products
+if (isset($_POST['clear_company_products'])) {
+    $sql = "DELETE from company_products where user_id = '" . $loggedin_session . "'";
+    $delete7 = mysqli_query($conn, $sql);
+    if (!$delete7) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
+        exit;
+    }
+    echo "<script type='text/javascript'>
+            window.location.href = 'profile_regfinancialyear.php?f=cs';
+            </script>";
+}
+
+//Delete Vehicle List
+if (isset($_POST['clear_vehicles'])) {
+    $sql = "DELETE from vehicles where user_id = '" . $loggedin_session . "'";
+    $delete8 = mysqli_query($conn, $sql);
+    if (!$delete8) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
+        exit;
+    }
+    echo "<script type='text/javascript'>
+            window.location.href = 'profile_regfinancialyear.php?f=cs';
+            </script>";
+}
+
+//Delte Saved Products
+if (isset($_POST['clear_saved_products'])) {
+    $sql = "DELETE from products where user_id = '" . $loggedin_session . "'";
+    $delete9 = mysqli_query($conn, $sql);
+    if (!$delete9) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
+        exit;
+    }
+    echo "<script type='text/javascript'>
+            window.location.href = 'profile_regfinancialyear.php?f=cs';
+            </script>";
+}
+
+//Delete Saved Companies
+if (isset($_POST['clear_saved_companies'])) {
+    $sql = "DELETE from company where user_id = '" . $loggedin_session . "'";
+    $delete10 = mysqli_query($conn, $sql);
+    if (!$delete10) {
+        echo mysqli_error($conn);
+        mysqli_rollback($conn);
+        echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
+        exit;
+    }
+    echo "<script type='text/javascript'>
+            window.location.href = 'profile_regfinancialyear.php?f=cs';
+            </script>";
 }
 ?>

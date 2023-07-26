@@ -9,19 +9,18 @@ if (!$conn) {
 }
 
 $msgcolor = 'text-danger';
-if(isset($_GET['f'])){
+if (isset($_GET['f'])) {
     $f = $_GET['f'];
-    if($f == 's'){
+    if ($f == 's') {
         $msg = "Inpass Succesfully Generated";
         $msgcolor = 'text-success';
-    }
-    else {
+    } else {
         $msg = "Error Occured... Could Not Complete the Process";
     }
 }
 
 //fetch product data for dropdown
-$sql = "Select * from products WHERE user_id = '".(string)$loggedin_session."'";
+$sql = "Select * from products WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
@@ -29,7 +28,7 @@ if (!$retval) {
 }
 
 //fetch company data for dropdown
-$sql = "Select * from company WHERE user_id = '".(string)$loggedin_session."'";
+$sql = "Select * from company WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
     echo mysqli_error($conn);
@@ -37,7 +36,7 @@ if (!$retval2) {
 }
 
 //fetch inpass data for table
-$sql3 = "Select * from inpass WHERE user_id = '".(string)$loggedin_session."' ORDER BY no DESC";
+$sql3 = "Select * from inpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -45,7 +44,7 @@ if (!$retval3) {
 }
 
 //fetch inpass data for table
-$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '".(string)$loggedin_session."' order by timestamp DESC LIMIT 5";
+$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '" . (string) $loggedin_session . "' order by timestamp DESC LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -62,7 +61,7 @@ if (!$retval4) {
 }
 $exist_ipnos = array();
 $i = 0;
-while($row = mysqli_fetch_assoc($retval4)){
+while ($row = mysqli_fetch_assoc($retval4)) {
     $exist_ipnos[$i] = $row['no'];
     $i += 1;
 }
@@ -127,7 +126,7 @@ while($row = mysqli_fetch_assoc($retval4)){
                 });
             });
 
-            
+
             $('#ipno').trigger('click');
             initilizebootstrap();
 
@@ -135,10 +134,10 @@ while($row = mysqli_fetch_assoc($retval4)){
             $('#ipno').on('keyup', function () {
                 var user_ipno = $(this).val();
                 var exist_ipnos = <?php echo json_encode($exist_ipnos); ?>;
-                if(exist_ipnos.includes(user_ipno)){
+                if (exist_ipnos.includes(user_ipno)) {
                     $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Inpass No. Already Exists</h1>");
                 }
-                else{
+                else {
                     $('#error_no').html("");
                 }
                 initilizebootstrap();
@@ -279,7 +278,7 @@ while($row = mysqli_fetch_assoc($retval4)){
             <div class='row justify-content'>
                 <div class="col-xl-10">
                     <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>
-                <div class='text-center' id='confirm_msg'></div>
+                    <div class='text-center' id='confirm_msg'></div>
                     <br>
                     <form name="ip" class="bg-white rounded-5 shadow-5-strong p-5" method="post" action="">
                         <h4>Enter Details Below</h4> <br>
@@ -290,8 +289,8 @@ while($row = mysqli_fetch_assoc($retval4)){
                                     <label for="ipno" class="form-label">Inpass No.</label>
                                 </div>
                                 <div id="textExample1" class="form-text">
-                                        &nbsp;Leave Empty for Auto-Generation
-                                    </div>
+                                    &nbsp;Leave Empty for Auto-Generation
+                                </div>
                                 <div id='error_no'></div>
                                 <div class='mb-4'></div>
                             </div>
@@ -383,16 +382,33 @@ while($row = mysqli_fetch_assoc($retval4)){
                     $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                     if (!$conn) {
                     }
-                    
-                    
+
+
                     $tran = 'START TRANSACTION';
                     $transtart = mysqli_query($conn, $tran);
                     if (!$transtart) {
                         echo mysqli_error($conn);
                     }
-                    
-                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras','".(string)$loggedin_session."')";
-                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$woc','".(string)$loggedin_session."')";
+                    $inpass_flag = 0;
+                    if (!$ipno) {
+                        $sql00 = "SELECT inpass_count FROM profile WHERE user_id='" . (string) $loggedin_session . "'";
+                        $result = mysqli_query($conn, $sql00);
+                        if (!$result) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                        window.location.href = 'inpass.php?f=e7';
+                        </script>";
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+                        $retipno = mysqli_fetch_assoc($result);
+                        $ipno = $retipno['inpass_count'];
+                        $inpass_flag = 1;
+                    }
+
+                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
+                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$woc','" . (string) $loggedin_session . "')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
@@ -402,10 +418,8 @@ while($row = mysqli_fetch_assoc($retval4)){
                         </script>";
                         echo "<script>alert('Some Error Occured')</script>";
                         exit;
-                    } else {
-                        $inpass_no = mysqli_insert_id($conn);
                     }
-                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source' AND user_id = '".(string)$loggedin_session."'");
+                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source' AND user_id = '" . (string) $loggedin_session . "'");
                     if ($result->num_rows == 0) {
                         $insert2 = mysqli_query($conn, $sql2);
                     }
@@ -423,8 +437,8 @@ while($row = mysqli_fetch_assoc($retval4)){
                         $productSize = $productSizes[$i];
                         $productQty = $productQtys[$i];
 
-                        $sql7 = "INSERT INTO stock(item,design,size,qty,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
-                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND user_id = '".(string)$loggedin_session."'");
+                        $sql7 = "INSERT INTO stock(item,design,size,qty,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND user_id = '" . (string) $loggedin_session . "'");
                         $flag_stock1 = 0;
                         if ($result2->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql7);
@@ -438,7 +452,7 @@ while($row = mysqli_fetch_assoc($retval4)){
                                 exit;
                             }
                         } else {
-                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND user_id = '".(string)$loggedin_session."'";
+                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo "Error Occured";
@@ -454,23 +468,23 @@ while($row = mysqli_fetch_assoc($retval4)){
                             $newqty = $oldqty + $productQty;
                             echo $oldqty;
                             echo $newqty;
-                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND user_id = '".(string)$loggedin_session."'";
+                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND user_id = '" . (string) $loggedin_session . "'";
                             $update = mysqli_query($conn, $sql9);
                             if (!$update) {
                                 echo mysqli_error($conn);
-                                mysqli_rollback($conn); 
+                                mysqli_rollback($conn);
                                 echo "<script type='text/javascript'>
                                 window.location.href = 'inpass.php?f=e4';
                                 </script>";
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass','".(string)$loggedin_session."')";
-                            $update92 = mysqli_query($conn,$sql92);
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass','" . (string) $loggedin_session . "')";
+                            $update92 = mysqli_query($conn, $sql92);
                             $flag_stock1 = 1;
                             if (!$update92) {
                                 echo mysqli_error($conn);
-                                mysqli_rollback($conn); 
+                                mysqli_rollback($conn);
                                 echo "<script type='text/javascript'>
                                 window.location.href = 'inpass.php?f=e4';
                                 </script>";
@@ -478,12 +492,12 @@ while($row = mysqli_fetch_assoc($retval4)){
                                 exit;
                             }
                         }
-                        if($flag_stock1 != 1) {
-                        $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass','".(string)$loggedin_session."')";
-                            $update92 = mysqli_query($conn,$sql92);
+                        if ($flag_stock1 != 1) {
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass','" . (string) $loggedin_session . "')";
+                            $update92 = mysqli_query($conn, $sql92);
                             if (!$update92) {
                                 echo mysqli_error($conn);
-                                mysqli_rollback($conn); 
+                                mysqli_rollback($conn);
                                 echo "<script type='text/javascript'>
                                 window.location.href = 'inpass.php?f=e4';
                                 </script>";
@@ -491,8 +505,8 @@ while($row = mysqli_fetch_assoc($retval4)){
                                 exit;
                             }
                         }
-                        
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$inpass_no','$date','$productName','$productCode','$productDesign','$productSize','$productQty','".(string)$loggedin_session."')";
+
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date','$productName','$productCode','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -505,8 +519,8 @@ while($row = mysqli_fetch_assoc($retval4)){
                             exit;
                         }
 
-                        $sql3 = "INSERT INTO products(name,code,design,size,user_id) VALUES ('$productName','$productCode','$productDesign','$productSize','".(string)$loggedin_session."')";
-                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode' AND user_id = '".(string)$loggedin_session."'");
+                        $sql3 = "INSERT INTO products(name,code,design,size,user_id) VALUES ('$productName','$productCode','$productDesign','$productSize','" . (string) $loggedin_session . "')";
+                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode' AND user_id = '" . (string) $loggedin_session . "'");
                         if ($result->num_rows == 0) {
                             $insert3 = mysqli_query($conn, $sql3);
                             if (!$insert3) {
@@ -519,11 +533,26 @@ while($row = mysqli_fetch_assoc($retval4)){
                                 exit;
                             }
                         }
-                        mysqli_commit($conn);
+
 
                     }
+                    if ($inpass_flag == 1) {
+                        $sql01 = "UPDATE profile SET inpass_count = inpass_count + 1 where user_id='".(string)$loggedin_session."'";
+                        $updipno = mysqli_query($conn, $sql01);
+                        if (!$updipno) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                            window.location.href = 'inpass.php?f=e8';
+                            </script>";
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+                    }
+                    mysqli_commit($conn);
+                    
                     echo "<script type='text/javascript'>
-                window.open('createpdfpass.php?no=$inpass_no&io=inpass');
+                window.open('createpdfpass.php?no=$ipno&io=inpass');
                 </script>";
                     echo "<script type='text/javascript'>
                 window.location.href = 'inpass.php?f=s';
@@ -586,22 +615,21 @@ while($row = mysqli_fetch_assoc($retval4)){
                                     $table_active = 'table-active';
                                 }
                             }
-                            $time=strtotime($row['date']);
+                            $time = strtotime($row['date']);
                             $inpass_short_date = '';
-                            if(date('n',$time) > 4) {
-                                $temp_date = date('y',$time);
-                                $inpass_short_date =  $temp_date . ($temp_date + 1) ;
+                            if (date('n', $time) > 4) {
+                                $temp_date = date('y', $time);
+                                $inpass_short_date = $temp_date . ($temp_date + 1);
+                            } else {
+                                $temp_date = date('y', $time);
+                                $inpass_short_date = ($temp_date - 1) . $temp_date;
                             }
-                            else {
-                                $temp_date = date('y',$time);
-                                $inpass_short_date =  ($temp_date-1) . $temp_date ;
-                            }
-                            
+
                             if (!empty($row)) {
                                 echo "
                     <tr class='$table_active'>
                     <td>
-                    {$row['no']}/". $inpass_short_date ."
+                    {$row['no']}/" . $inpass_short_date . "
                     </td>
                     <td>
                     {$row['date']}

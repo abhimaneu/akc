@@ -66,6 +66,12 @@ $userName = mysqli_fetch_assoc(mysqli_query($conn,"select name from profile wher
                         </li>
                     </ul>
                 </div>
+                <?php
+                if((date('m') >= 3 && date('d') >= 24 ) && (date('m') <= 4 && date('d') < 7 ))
+                echo "<div class='text-danger pe-5'>
+                    Dont Forget To Register for New Financial Year if Not Done
+                </div>"
+                ?>
                 <ul class="navbar-nav">
                     <div class="d-flex align-items-center">
                         <li class="nav-item">
