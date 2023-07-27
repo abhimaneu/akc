@@ -155,6 +155,15 @@ if (!$retval) {
     <div class="container-fluid">
         <div class='row justify-content'>
             <div class="col">
+                <?php
+                if (isset($_GET['e'])) {
+                    if ($_GET['e'] == 'e1' || $_GET['e'] == 'e2') {
+                        echo "<center><small class='fs-5 p-2 text-danger'>Some Error Occurred</small></center>";
+                    } elseif ($_GET['e'] == 's') {
+                        echo "<center><small class='fs-5 p-2 text-success'>Deleted Successfully</small></center>";
+                    }
+                }
+                ?>
                 <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
                     <h4 class='mb-4'>Filter</h4>
                     <div class="row ms-1 justify-content w-50">
@@ -188,6 +197,23 @@ if (!$retval) {
                 </form>
             </div>
         </div>
+
+        <form method="post">
+            <div class='d-flex pb-2 rounded-5 shadow-0-strong justify-content-end dontprintarea'>
+                <div class="row">
+                    <div class="col p-0 m-0">
+                        <div class="form-outline">
+                            <input type="number" class="form-control" name="year_delete" placeholder="2010">
+                            <label class="form-label" for="form">Year</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <button onclick="return confirm('Are You Sure?')" id='delete' name='delete_data'
+                            class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         <div class="container-fluid mt-1 mb-2 bg-white rounded-5 shadow-5-strong p-4">
             <table class="table">
@@ -305,5 +331,35 @@ if (isset($_POST['filter'])) {
     echo "<script type='text/javascript'>
             window.location.href = 'profile_workorder.php?f=1&start=$start_date&end=$end_date';
             </script>";
+}
+
+if (isset($_POST['delete_data'])) {
+    $year_delete = $_POST['year_delete'];
+    $year_start_date = $year_delete . '-04' . '-01';
+    $year_end_date = ($year_delete + 1) . '-03' . '-31';
+
+    $sql = "DELETE from work_orders_old where date BETWEEN '$year_start_date' AND '$year_end_date' AND user_id ='" . (string) $loggedin_session . "'";
+    $delete = mysqli_query($conn, $sql);
+    if (!$delete) {
+        echo "Error Occured";
+        echo "<script type='text/javascript'>
+        window.location.href = 'profile_inpass.php?e=e1';
+        </script>";
+        exit;
+    }
+
+    $sql = "DELETE from work_order_products_old where date_of_entry BETWEEN '$year_start_date' AND '$year_end_date' AND user_id ='" . (string) $loggedin_session . "'";
+    $delete = mysqli_query($conn, $sql);
+    if (!$delete) {
+        echo mysqli_error($conn);
+        echo "<script type='text/javascript'>
+        window.location.href = 'profile_workorder.php?e=e2';
+        </script>";
+        exit;
+    }
+
+    echo "<script type='text/javascript'>
+        window.location.href = 'profile_workorder.php?e=s';
+        </script>";
 }
 ?>

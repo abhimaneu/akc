@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 26, 2023 at 07:31 PM
+-- Generation Time: Jul 27, 2023 at 08:12 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -99,8 +99,8 @@ CREATE TABLE IF NOT EXISTS `inpass` (
 --
 
 INSERT INTO `inpass` (`no`, `no_year`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`, `type`, `timestamp`, `user_id`) VALUES
-(1, '', '2023-07-26', 'Company MAIN', 'cm', '123', 'KL 33 BC 1920', 'test', 'inpass', '2023-07-26 14:59:41', 'akshaycoir'),
-(2, '', '2023-07-26', 'Company MAIN', 'cm', '123', 'KL 23 BC 2983', '', 'inpass', '2023-07-26 15:00:14', 'akshaycoir');
+(1, '', '2022-02-28', 'Company 3', 'c3', '123', 'KL 23 BC 2982', '', 'inpass', '2023-07-27 20:06:59', 'akshaycoir'),
+(2, '', '2023-07-28', 'Company MAIN', 'cm', '123', 'KL 33 BC 1921', '', 'inpass', '2023-07-27 20:07:20', 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -122,6 +122,14 @@ CREATE TABLE IF NOT EXISTS `inpass_old` (
   `timestamp` timestamp NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `inpass_old`
+--
+
+INSERT INTO `inpass_old` (`no`, `no_year`, `date`, `source`, `woc`, `op`, `vehicleno`, `extras`, `type`, `timestamp`, `user_id`) VALUES
+('1', '1/2324', '2023-07-26', 'Company MAIN', 'cm', '123', 'KL 33 BC 1920', 'test', 'inpass', '2023-07-26 14:59:41', 'akshaycoir'),
+('2', '2/2324', '2023-07-26', 'Company MAIN', 'cm', '123', 'KL 23 BC 2983', '', 'inpass', '2023-07-26 15:00:14', 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -147,10 +155,8 @@ CREATE TABLE IF NOT EXISTS `inpass_products` (
 --
 
 INSERT INTO `inpass_products` (`inpass_no`, `no_year`, `date_of_entry`, `product_name`, `product_code`, `product_design`, `product_size`, `product_qty`, `user_id`) VALUES
-(1, '', '2023-07-26', 'Black Rubber 15mm', 'TUF059', 'plain', '40x120cm', 100, 'akshaycoir'),
-(1, '', '2023-07-26', 'test', 'COP900', 'test1', 'twa x tes', 1, 'akshaycoir'),
-(2, '', '2023-07-26', 'Black Rubber 15mm', 'TUF059', 'plain', '40x120cm', 100, 'akshaycoir'),
-(2, '', '2023-07-26', 'Vinyl Back 15mm Natural', 'ACP050', 'Plain', '40x120cm', 1, 'akshaycoir');
+(1, '', '2022-02-28', 'Vinyl Back 15mm Natural', 'ACP050', 'Plain', '40x120cm', 122, 'akshaycoir'),
+(2, '', '2023-07-28', 'Vinyl Back 15mm Natural', 'ACP050', 'Plain', '40x120cm', 1, 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -170,6 +176,16 @@ CREATE TABLE IF NOT EXISTS `inpass_products_old` (
   `product_qty` varchar(15) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `inpass_products_old`
+--
+
+INSERT INTO `inpass_products_old` (`inpass_no`, `no_year`, `date_of_entry`, `product_name`, `product_code`, `product_design`, `product_size`, `product_qty`, `user_id`) VALUES
+('1', '1/2324', '2023-07-26', 'Black Rubber 15mm', 'TUF059', 'plain', '40x120cm', '100', 'akshaycoir'),
+('1', '1/2324', '2023-07-26', 'test', 'COP900', 'test1', 'twa x tes', '1', 'akshaycoir'),
+('2', '2/2324', '2023-07-26', 'Black Rubber 15mm', 'TUF059', 'plain', '40x120cm', '100', 'akshaycoir'),
+('2', '2/2324', '2023-07-26', 'Vinyl Back 15mm Natural', 'ACP050', 'Plain', '40x120cm', '1', 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -262,7 +278,6 @@ CREATE TABLE IF NOT EXISTS `outpass` (
   `woc` varchar(125) NOT NULL,
   `vehicleno` varchar(50) NOT NULL,
   `extras` varchar(125) NOT NULL,
-  `invoice_no` varchar(20) NOT NULL DEFAULT 'Not Generated',
   `type` varchar(10) NOT NULL DEFAULT 'outpass',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` varchar(50) NOT NULL
@@ -284,11 +299,17 @@ CREATE TABLE IF NOT EXISTS `outpass_old` (
   `woc` varchar(125) NOT NULL,
   `vehicleno` varchar(50) NOT NULL,
   `extras` varchar(125) NOT NULL,
-  `invoice_no` varchar(20) NOT NULL,
   `type` varchar(10) NOT NULL,
   `timestamp` timestamp NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `outpass_old`
+--
+
+INSERT INTO `outpass_old` (`no`, `no_year`, `date`, `work_order_no`, `dest`, `woc`, `vehicleno`, `extras`, `type`, `timestamp`, `user_id`) VALUES
+('2', '2/2324', '2023-07-28', 'AKC001', 'Company 1', 'C1', 'KL 23 BC 2982', '', 'outpass', '2023-07-27 20:00:26', 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -331,6 +352,13 @@ CREATE TABLE IF NOT EXISTS `outpass_products_old` (
   `product_qty` varchar(15) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `outpass_products_old`
+--
+
+INSERT INTO `outpass_products_old` (`outpass_no`, `no_year`, `date_of_entry`, `product_type`, `product_name`, `work_order`, `product_code`, `product_design`, `product_size`, `product_qty`, `user_id`) VALUES
+('2', '2/2324', '2023-07-28', 'Finished', 'Vinyl back 15mm Natural', 'AKC001', 'ACP050', 'Plain', '40 X 120 cm', '4', 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -396,8 +424,6 @@ INSERT INTO `profile` (`name`, `wo`, `gstin`, `phoneno`, `inpass_count`, `outpas
 DROP TABLE IF EXISTS `stock`;
 CREATE TABLE IF NOT EXISTS `stock` (
   `index` int NOT NULL AUTO_INCREMENT,
-  `grade` varchar(25) NOT NULL,
-  `code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NULL',
   `item` varchar(50) NOT NULL,
   `design` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NULL',
   `size` varchar(25) NOT NULL,
@@ -405,16 +431,16 @@ CREATE TABLE IF NOT EXISTS `stock` (
   `default` int NOT NULL DEFAULT '1',
   `user_id` varchar(50) NOT NULL,
   PRIMARY KEY (`index`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `stock`
 --
 
-INSERT INTO `stock` (`index`, `grade`, `code`, `item`, `design`, `size`, `qty`, `default`, `user_id`) VALUES
-(4, '', 'NULL', 'Black Rubber 15mm', 'plain', '40x120cm', 200, 1, 'akshaycoir'),
-(5, '', 'NULL', 'test', 'test1', 'twa x tes', 1, 1, 'akshaycoir'),
-(6, '', 'NULL', 'Vinyl Back 15mm Natural', 'Plain', '40x120cm', 1, 1, 'akshaycoir');
+INSERT INTO `stock` (`index`, `item`, `design`, `size`, `qty`, `default`, `user_id`) VALUES
+(4, 'Black Rubber 15mm', 'plain', '40x120cm', 205, 1, 'akshaycoir'),
+(5, 'test', 'test1', 'twa x tes', 950, 1, 'akshaycoir'),
+(6, 'Vinyl Back 15mm Natural', 'Plain', '40x120cm', 123, 1, 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -441,7 +467,25 @@ INSERT INTO `stock_data` (`timestamp`, `product_name`, `product_size`, `product_
 ('2023-07-26 20:29:41', 'Black Rubber 15mm', '40x120cm', 100, 100, 'Inpass', 'akshaycoir'),
 ('2023-07-26 20:29:41', 'test', 'twa x tes', 1, 1, 'Inpass', 'akshaycoir'),
 ('2023-07-26 20:30:14', 'Black Rubber 15mm', '40x120cm', 100, 200, 'Inpass', 'akshaycoir'),
-('2023-07-26 20:30:14', 'Vinyl Back 15mm Natural', '40x120cm', 1, 1, 'Inpass', 'akshaycoir');
+('2023-07-26 20:30:14', 'Vinyl Back 15mm Natural', '40x120cm', 1, 1, 'Inpass', 'akshaycoir'),
+('2023-07-27 22:21:40', 'test', 'twa x tes', 5, 6, 'Inpass', 'akshaycoir'),
+('2023-07-28 00:10:11', 'Vback 15', '45 X 90 cm', 100, 100, 'Inpass', 'akshaycoir'),
+('2023-07-28 00:10:24', 'Vback 156', '45 X 95 cm', 1000, 1000, 'Manual', 'akshaycoir'),
+('2023-07-28 00:10:43', 'Vback 156', '45 X 95 cm', 0, 0, 'Manual', 'akshaycoir'),
+('2023-07-28 00:12:08', 'a', 'a', 900, 900, 'Inpass', 'akshaycoir'),
+('2023-07-28 00:12:12', 'a', 'a', 9000, 9000, 'Manual', 'akshaycoir'),
+('2023-07-28 00:12:23', 'a', 'a', 0, 0, 'Delete', 'akshaycoir'),
+('2023-07-28 01:21:45', 'test', 'twa x tes', 600, 606, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:21:45', 'Black Rubber 15mm', '40x120cm', 5, 205, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:22:05', 'Vinyl Back 15mm Natural', '40x120cm', 5, 6, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:22:25', 'test', 'twa x tes', 344, 950, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:22:55', 'Vinyl Back 15mm Natural', '40x120cm', 34, 40, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:29:45', 'Vinyl Back 15mm Natural', '40x120cm', 40, 0, 'Outpass', 'akshaycoir'),
+('2023-07-28 01:30:26', 'Black Rubber 15mm', '40x120cm', 4, 201, 'Outpass', 'akshaycoir'),
+('2023-07-28 01:36:59', 'Vinyl Back 15mm Natural', '40x120cm', 122, 122, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:37:20', 'Vinyl Back 15mm Natural', '40x120cm', 1, 123, 'Inpass', 'akshaycoir'),
+('2023-07-28 01:39:48', 'Black Rubber 15mm', '40x120cm', 200, 200, 'Manual', 'akshaycoir'),
+('2023-07-28 01:41:05', 'Black Rubber 15mm', '40x120cm', 205, 205, 'Manual', 'akshaycoir');
 
 -- --------------------------------------------------------
 
@@ -462,10 +506,6 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
 --
 
 INSERT INTO `vehicles` (`type`, `number`, `owner`, `user_id`) VALUES
-('Pick-Up', 'KL 33 BC 1920', 'Company', 'akshaycoir'),
-('Pick-Up', 'KL 33 BC 1921', 'Others', 'akshaycoir'),
-('Pick-Up', 'KL 33 BC 1923', 'Others', 'akshaycoir'),
-('Pick-up', 'KL 05 B 2834', 'Others', 'akshaycoir'),
 ('Pick-up', 'KL 00 BC 0000', 'Company', 'new');
 
 -- --------------------------------------------------------
@@ -486,7 +526,7 @@ CREATE TABLE IF NOT EXISTS `work_orders` (
   `user_id` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `work_order_no` (`work_order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -520,7 +560,6 @@ CREATE TABLE IF NOT EXISTS `work_order_products` (
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `design` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `size` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `features` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `qty` int NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -540,7 +579,6 @@ CREATE TABLE IF NOT EXISTS `work_order_products_old` (
   `name` varchar(50) NOT NULL,
   `design` varchar(50) NOT NULL,
   `size` varchar(25) NOT NULL,
-  `features` varchar(50) NOT NULL,
   `qty` varchar(10) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

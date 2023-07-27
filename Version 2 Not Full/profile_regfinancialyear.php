@@ -196,7 +196,7 @@ if (isset($_POST['regfinyear'])) {
     }
 
     //OUTPASS
-    $sql = "INSERT into outpass_old(no,no_year,date,work_order_no,dest,woc,vehicleno,extras,invoice_no,type,timestamp,user_id) select no,CONCAT(no, '/', SUBSTRING(date,3,2),SUBSTRING(date,3,2)+1),date,work_order_no,dest,woc,vehicleno,extras,invoice_no,type,timestamp,user_id from outpass where user_id = '" . $loggedin_session . "'";
+    $sql = "INSERT into outpass_old(no,no_year,date,work_order_no,dest,woc,vehicleno,extras,type,timestamp,user_id) select no,CONCAT(no, '/', SUBSTRING(date,3,2),SUBSTRING(date,3,2)+1),date,work_order_no,dest,woc,vehicleno,extras,type,timestamp,user_id from outpass where user_id = '" . $loggedin_session . "'";
     $insert3 = mysqli_query($conn, $sql);
     if (!$insert3) {
         echo mysqli_error($conn);
@@ -254,7 +254,7 @@ if (isset($_POST['regfinyear'])) {
         echo "<h1 class='d-flex p-1 fs-4text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
-    $sql = "INSERT into work_order_products_old(work_order_no,no_year,date_of_entry,code,name,design,size,features,qty,user_id) select work_order_no,CONCAT(work_order_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,code,name,design,size,features,qty,user_id from work_order_products where user_id = '" . $loggedin_session . "'";
+    $sql = "INSERT into work_order_products_old(work_order_no,no_year,date_of_entry,code,name,design,size,qty,user_id) select work_order_no,CONCAT(work_order_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,code,name,design,size,qty,user_id from work_order_products where user_id = '" . $loggedin_session . "'";
     $insert6 = mysqli_query($conn, $sql);
     if (!$insert6) {
         echo mysqli_error($conn);

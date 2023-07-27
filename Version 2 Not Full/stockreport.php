@@ -29,7 +29,6 @@ if (!$retval) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
-<title>Inpass Generated</title>
 <!-- MDB icon -->
 <!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
 <!-- Font Awesome -->
@@ -168,9 +167,6 @@ if (!$retval) {
                     <th>
                         Total Quantity
                     </th>
-                    <th>
-                        Type
-                    </th>
                 </thead>
                 <tbody id="tablebody">
                     <?php
@@ -183,12 +179,14 @@ if (!$retval) {
                          <td>";
                         if ($row['type'] == 'Inpass') {
                             echo "+ ";
-                        } else {
+                        } else if($row['type'] == 'Outpass' || $row['type'] == 'Delete') {
                             echo "- ";
+                        }
+                        else {
+                            echo "";
                         }
                         echo "{$row['product_qty']}</td>
                         <td>{$row['total_qty']}</td>
-                        <td>{$row['type']}</td>
                         </tr>";
                     }
                     ?>

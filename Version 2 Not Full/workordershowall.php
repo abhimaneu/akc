@@ -6,8 +6,8 @@ include 'checkuserlogin.php';
 <?php
 
 $f = $_GET['f'];
-$start = '1990-01-31';
-$end = '2099-12-31';
+$start = date('Y') . '-04' . '-01';
+$end = (date('Y')+1) . '-03' . '-31' ;
 $company = 'All';
 $p_name = 'All';
 $size = 'All';
@@ -20,7 +20,6 @@ if ($f != 0) {
     $company = $_GET['cmp'];
     $p_name = $_GET['in'];
     $size = $_GET['is'];
-    $wno = $_GET['wno'];
     $p_code = $_GET['ic'];
     $status = $_GET['st'];
 
@@ -354,7 +353,7 @@ if (!$retval) {
                         <h4 class='mb-4'>Filter</h4>
                         <div class="row ms-1 justify-content w-50">
                             <div class="form-outline col">
-                                <input type="date" class="form-control" value="1990-01-01" id='start' required
+                                <input type="date" class="form-control" value="<?php echo $start;?>" id='start' required
                                     name="start">
                                 <label for="start" class='form-label'>Start</label>
                             </div>
@@ -362,7 +361,7 @@ if (!$retval) {
                                 <center>to</center>
                             </div>
                             <div class="form-outline col">
-                                <input name="end" class="form-control" value="2099-12-31" id='end' required type="date">
+                                <input name="end" class="form-control" value="<?php echo $end;?>" id='end' required type="date">
                                 <label for="end" class="form-label">End</label>
                             </div>
                         </div>
@@ -732,7 +731,7 @@ if (isset($_POST['filter'])) {
     $st = $_POST['status'];
 
     echo "<script type='text/javascript'>
-            window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&wno=$wno&ic=$ic&st=$st';
+            window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&ic=$ic&st=$st';
             </script>";
 }
 ?>

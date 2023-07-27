@@ -4,8 +4,8 @@ include 'nav.php';
 ?>
 
 <?php
-$start = '1990-01-31';
-$end = '2099-12-31';
+$start = date('Y') . '-04' . '-01';
+$end = (date('Y')+1) . '-03' . '-31' ;
 $company = 'All';
 $product = 'All';
 $size = 'All';
@@ -23,7 +23,6 @@ $sql = "SELECT no, date, dest AS company, woc, product_name,work_order as produc
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
 WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
-
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";
 }
@@ -197,7 +196,7 @@ $retval3 = mysqli_query($conn, $sql3);
 
                         <div class="row ms-1 justify-content w-50">
                             <div class="form-outline col">
-                                <input type="date" value="1990-01-01" class="form-control" id='start' required
+                                <input type="date" value="<?php echo $start;?>" class="form-control" id='start' required
                                     name="start">
                                 <label for="start" class='form-label'>Start</label>
                             </div>
@@ -205,7 +204,7 @@ $retval3 = mysqli_query($conn, $sql3);
                                 <center>to</center>
                             </div>
                             <div class="form-outline col">
-                                <input name="end" value="2099-12-31" class="form-control" id='end' required type="date">
+                                <input name="end" value="<?php echo $end;?>" class="form-control" id='end' required type="date">
                                 <label for="end" class='form-label'>End</label>
                             </div>
                         </div>
