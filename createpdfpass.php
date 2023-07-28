@@ -252,7 +252,7 @@ $endY = $startY;
 $pdf->Line($startX, $startY, $endX, $endY);
 
 $pdf->SetFont('helvetica', 'B', 8);
-$pdf->Cell(0, 5, 'FOR AKSHAY COIR', 0, 1, 'R');
+$pdf->Cell(0, 5, 'FOR '.strtoupper($profile_company_name), 0, 1, 'R');
 $pdf->SetFont('helvetica', '', 10);
 $pdf->Ln(15);
 $pdf->Cell(0, 5, 'Authorised Signatory', 0, 1, 'R');

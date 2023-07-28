@@ -112,7 +112,7 @@ $pdf = new TCPDF('P', 'mm', 'A4'); // 'P' for portrait, 'mm' for millimeters, 'A
 
 //Add Later
 // $pdf->SetCreator('Your Name');
-$pdf->SetAuthor('Akshay Coir');
+$pdf->SetAuthor($profile_company_name);
 $pdf->SetTitle($invoice_no . ' ' . 'GST Invoice');
 // $pdf->SetSubject('Document Subject');
 
@@ -259,7 +259,7 @@ $pdf->Line($startX, $startY, $endX, $endY);
 
 $pdf->SetFont('helvetica', 'B', 8);
 $pdf->Cell(0, 5, 'Terms & Conditions', 0, 0, 'L');
-$pdf->Cell(0, 5, 'FOR AKSHAY COIR', 0, 1, 'R');
+$pdf->Cell(0, 5, 'FOR '.strtoupper($profile_company_name), 0, 1, 'R');
 $pdf->SetFont('helvetica', '', 8);
 $pdf->Cell(0, 5, '1 E & O.E', 0, 1, 'L');
 $pdf->Cell(0, 5, '2 All Disputes are subject to Alapuzha Jurisdiction only', 0, 1, 'L');
