@@ -299,10 +299,13 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     success: function (response) {
                         if (response == 'Closed') {
                             alert("This work Order has already been Completed");
+                            $('.work_order').val('');
                             stopExecution = true;
                         }
                         if (!response) {
-                            alert("A Work Order with this No. has not been generated yet")
+                            alert("A Work Order with this No. has not been generated yet");
+                            $('.work_order').val('');
+                            stopExecution = true;
                         }
                     },
                     error: function (xhr, status, error) {
