@@ -47,7 +47,7 @@ $date = $row2['date'];
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
 <title>Generate GST Invoice</title>
 <!-- MDB icon -->
-<!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
+<link rel="icon" href="img/icon.png" type="image/x-icon" />
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 <!-- Google Fonts Roboto -->
