@@ -4,7 +4,7 @@ include 'nav.php';
 ?>
 
 <?php
-// $conn = mysqli_connect('localhost','root','','akcdb');
+
 if (!$conn) {
     echo "Error Occured";
     die($conn);

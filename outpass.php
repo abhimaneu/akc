@@ -696,7 +696,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         //capitalise vehicle no
                         $vehicle = strtoupper($vehicle);
 
-                        $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
+                        
                         if (!$conn) {
                         }
                         $tran = 'START TRANSACTION';

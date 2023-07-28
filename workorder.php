@@ -273,7 +273,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     $date = $_POST['date'];
                     $company_name = $_POST['company_name'];
                     $extras = $_POST['extras'];
-                    $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
+                    
                     if (!$conn) {
                     }
                     $tran = 'START TRANSACTION';

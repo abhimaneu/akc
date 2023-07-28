@@ -6,7 +6,6 @@ require_once('TCPDF-main/tcpdf.php');
 $workOrderNo = $_GET['wo'];
 $invoice_no = $_GET['in'];
 
-$conn = mysqli_connect('localhost', 'root', '', 'akcdb');
 
 if (!$conn) {
     // echo "Error Occured ";

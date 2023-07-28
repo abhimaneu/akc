@@ -384,7 +384,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     $p_code = $_POST['product_code'];
                     $p_design = $_POST['product_design'];
                     $extras = $_POST['extras'];
-                    $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
+                    
                     if (!$conn) {
                     }
 

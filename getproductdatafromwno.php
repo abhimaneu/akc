@@ -1,8 +1,6 @@
 <?php
 include 'checkuserlogin.php';
 
-$conn = mysqli_connect('localhost', 'root', '', 'akcdb');
-
 $wno = $_POST["workorder_no"];
 $sql = "SELECT * FROM work_order_products WHERE work_order_no = '$wno' AND user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);

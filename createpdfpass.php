@@ -14,7 +14,6 @@ if (isset($_GET['f'])) {
         $outpass_old = 1;
     }
 }
-$conn = mysqli_connect('localhost', 'root', '', 'akcdb');
 
 if (!$conn) {
     // echo "Error Occured ";
