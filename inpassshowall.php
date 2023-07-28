@@ -52,7 +52,7 @@ if (!$retval6) {
 }
 
 //for table
-$sql = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '".(string)$loggedin_session."'";
+$sql = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '".(string)$loggedin_session."' AND inpass_products.user_id = '".(string)$loggedin_session."'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";

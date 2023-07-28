@@ -32,7 +32,7 @@ if (!$retval) {
     die($conn);
 }
 //fetch workorder data for table
-$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '" . (string) $loggedin_session . "' order by timestamp desc LIMIT 5";
+$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '" . (string) $loggedin_session . "' AND work_order_products.user_id = '" . (string) $loggedin_session . "' order by timestamp desc LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);

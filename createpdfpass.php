@@ -46,28 +46,28 @@ $profile_company_name = $company_data['name'];
 //$profile_company_address = $company_data['address'];
 if ($type == 'inpass') {
     if ($inpass_old == 1) {
-        $sql = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' AND inpass_products_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval = mysqli_query($conn, $sql);
         if (!$retval) {
             // echo mysqli_error($conn);
             // die($conn);
         }
 
-        $sql2 = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql2 = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' AND inpass_products_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval2 = mysqli_query($conn, $sql2);
         if (!$retval2) {
             // echo mysqli_error($conn);
             // die($conn);
         }
     } else {
-        $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '" . (string) $loggedin_session . "' AND inpass_products.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval = mysqli_query($conn, $sql);
         if (!$retval) {
             // echo mysqli_error($conn);
             // die($conn);
         }
 
-        $sql2 = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql2 = " SELECT * FROM inpass,inpass_products WHERE inpass.no = inpass_products.inpass_no AND inpass_products.inpass_no = '$no' AND inpass.user_id = '" . (string) $loggedin_session . "' AND inpass_products.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval2 = mysqli_query($conn, $sql2);
         if (!$retval2) {
             // echo mysqli_error($conn);
@@ -101,28 +101,28 @@ if ($type == 'inpass') {
 }
 if ($type == 'outpass') {
     if ($outpass_old == 1) {
-        $sql = " SELECT * FROM outpass_old,outpass_products_old WHERE outpass_old.no_year = outpass_products_old.no_year AND outpass_products_old.no_year = '$no' AND outpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql = " SELECT * FROM outpass_old,outpass_products_old WHERE outpass_old.no_year = outpass_products_old.no_year AND outpass_products_old.no_year = '$no' AND outpass_old.user_id = '" . (string) $loggedin_session . "' AND outpass_products_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval = mysqli_query($conn, $sql);
         if (!$retval) {
             // echo mysqli_error($conn);
             // die($conn);
         }
 
-        $sql2 = "SELECT * FROM outpass_old,outpass_products_old WHERE outpass_old.no_year = outpass_products_old.no_year AND outpass_products_old.no_year = '$no' AND outpass_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql2 = "SELECT * FROM outpass_old,outpass_products_old WHERE outpass_old.no_year = outpass_products_old.no_year AND outpass_products_old.no_year = '$no' AND outpass_old.user_id = '" . (string) $loggedin_session . "' AND outpass_products_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval2 = mysqli_query($conn, $sql2);
         if (!$retval2) {
             // echo mysqli_error($conn);
             // die($conn);
         }
     } else {
-        $sql = " SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql = " SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval = mysqli_query($conn, $sql);
         if (!$retval) {
             // echo mysqli_error($conn);
             // die($conn);
         }
 
-        $sql2 = "SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+        $sql2 = "SELECT * FROM outpass,outpass_products WHERE outpass.no = outpass_products.outpass_no AND outpass_products.outpass_no = '$no' AND outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
         $retval2 = mysqli_query($conn, $sql2);
         if (!$retval2) {
             // echo mysqli_error($conn);

@@ -15,7 +15,7 @@ if (isset($_GET['in'])) {
     $ino = $_GET['in'];
 }
 
-$sql = " select * from work_orders inner join work_order_products on work_orders.work_order_no = work_order_products.work_order_no where work_orders.work_order_no = '$workOrderNo' AND work_orders.user_id = '" . (string) $loggedin_session . "'";
+$sql = " select * from work_orders inner join work_order_products on work_orders.work_order_no = work_order_products.work_order_no where work_orders.work_order_no = '$workOrderNo' AND work_orders.user_id = '" . (string) $loggedin_session . "' AND work_order_products.user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);

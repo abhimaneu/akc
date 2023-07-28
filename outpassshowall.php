@@ -68,7 +68,7 @@ if (!$retval7) {
 }
 
 //for table
-$sql = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '" . (string) $loggedin_session . "'";
+$sql = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "'";
 
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";

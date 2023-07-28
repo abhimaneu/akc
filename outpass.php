@@ -34,15 +34,15 @@ if (!$retval2) {
     die($conn);
 }
 
-$sql3 = "Select * from outpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
-$retval3 = mysqli_query($conn, $sql3);
-if (!$retval3) {
-    echo mysqli_error($conn);
-    die($conn);
-}
+// $sql3 = "Select * from outpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+// $retval3 = mysqli_query($conn, $sql3);
+// if (!$retval3) {
+//     echo mysqli_error($conn);
+//     die($conn);
+// }
 
 //for table
-$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '" . (string) $loggedin_session . "' ORDER BY timestamp DESC LIMIT 5";
+$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "' ORDER BY timestamp DESC LIMIT 5";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
@@ -57,14 +57,14 @@ if (!$retval6) {
 }
 
 //only for dropdown menu
-$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '" . (string) $loggedin_session . "' GROUP BY work_order_no";
+$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '" . (string) $loggedin_session . "' AND work_order_products.user_id = '" . (string) $loggedin_session . "' GROUP BY work_order_no";
 $retval7 = mysqli_query($conn, $sql7);
 if (!$retval7) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '" . (string) $loggedin_session . "'";
+$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '" . (string) $loggedin_session . "' AND work_order_products.user_id = '" . (string) $loggedin_session . "'";
 $retval8 = mysqli_query($conn, $sql8);
 if (!$retval8) {
     echo mysqli_error($conn);

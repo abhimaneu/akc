@@ -67,7 +67,7 @@ if (!$retval7) {
 }
 
 //for table
-$sql = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '" . (string) $loggedin_session . "'";
+$sql = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '" . (string) $loggedin_session . "' AND work_order_products.user_id = '" . (string) $loggedin_session . "'";
 
 if ($company != 'All') {
     $sql .= " AND company = '$company'";

@@ -35,16 +35,16 @@ if (!$retval2) {
     die($conn);
 }
 
-//fetch inpass data for table
-$sql3 = "Select * from inpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
-$retval3 = mysqli_query($conn, $sql3);
-if (!$retval3) {
-    echo mysqli_error($conn);
-    die($conn);
-}
+// //fetch inpass data for table
+// $sql3 = "Select * from inpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
+// $retval3 = mysqli_query($conn, $sql3);
+// if (!$retval3) {
+//     echo mysqli_error($conn);
+//     die($conn);
+// }
 
 //fetch inpass data for table
-$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '" . (string) $loggedin_session . "' order by timestamp DESC LIMIT 5";
+$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '" . (string) $loggedin_session . "' AND inpass_products.user_id='" . (string) $loggedin_session . "' order by timestamp DESC LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);

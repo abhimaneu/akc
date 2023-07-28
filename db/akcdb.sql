@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 28, 2023 at 12:36 PM
+-- Generation Time: Jul 28, 2023 at 05:21 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -311,7 +311,8 @@ CREATE TABLE IF NOT EXISTS `profile` (
 --
 
 INSERT INTO `profile` (`name`, `wo`, `gstin`, `phoneno`, `inpass_count`, `outpass_count`, `user_id`, `password`) VALUES
-('Akshay Coir', 'akc', 'GSTIN0000001', '9000000001', 1, 1, 'akshaycoir', '$2y$10$qHN0ldGy/uQ3yG6MV7RSkuFXtM9W/WwltD1MPWVUS7ykkDgrYkTBC');
+('Akshay Coir', 'akc', 'GSTIN0000001', '9000000001', 5, 4, 'akshaycoir', '$2y$10$qHN0ldGy/uQ3yG6MV7RSkuFXtM9W/WwltD1MPWVUS7ykkDgrYkTBC'),
+('New', 'AK123', 'GSTIN2392039', '9000000000', 10, 7, 'new', '$2y$10$dovaSN.Ey8WV7l0gT5Ew4.T0.nvv4PyA2/nCHT5p0.//T2i.owICW');
 
 -- --------------------------------------------------------
 

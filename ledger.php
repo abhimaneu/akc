@@ -22,7 +22,7 @@ if ($f != 0) {
 $sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type,timestamp
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
-WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
+WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";
 }
@@ -41,7 +41,7 @@ $sql .= " UNION
 SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type,timestamp
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
-WHERE inpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
+WHERE inpass.user_id = '" . (string) $loggedin_session . "' AND inpass_products.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";
@@ -313,9 +313,9 @@ $retval3 = mysqli_query($conn, $sql3);
                                     }
                                 }
                                 if ($row['type'] == 'inpass') {
-                                    $table_color = 'table-info';
+                                    $table_color = 'bg-info text-dark bg-opacity-50';
                                 } else {
-                                    $table_color = 'table-danger';
+                                    $table_color = 'bg-danger text-dark bg-opacity-50';
                                 }
                                 $time = strtotime($row['date']);
                                 $pass_short_date = '';

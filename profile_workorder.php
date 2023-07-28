@@ -17,9 +17,9 @@ if (!$conn) {
 }
 
 //for table
-$sql = "select * from work_orders_old,work_order_products_old where work_orders_old.no_year = work_order_products_old.no_year AND work_orders_old.user_id = '" . (string) $loggedin_session . "'";
+$sql = "select * from work_orders_old,work_order_products_old where work_orders_old.no_year = work_order_products_old.no_year AND work_orders_old.user_id = '" . (string) $loggedin_session . "' AND work_order_products_old.user_id = '" . (string) $loggedin_session . "'";
 
-$sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
+$sql .= "  AND date BETWEEN '$start' AND '$end' ORDER BY timestamp DESC LIMIT 10000";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);

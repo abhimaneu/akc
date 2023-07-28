@@ -610,6 +610,24 @@ if (!$retval5) {
                 </tbody>
             </table>
         </div>
+
+        <!-- <div class="container m-5 bg-white rounded-5 shadow-4-strong p-5">
+            <div class="row-md-4">
+                <div>
+                    
+
+                </div>
+            </div>
+            <div class="row">
+               <h1 class="Display-6">Contact for Support</h1>
+            </div>
+            <br>
+            <div class="row">
+                <small>abhimaneu2001@gmail.com</small>
+                <small>bijoyanil74@gmail.com</small>
+            </div>
+        </div> -->
+
         <script>
             function initilizebootstrap() {
                 document.querySelectorAll('.form-outline').forEach((formOutline) => {

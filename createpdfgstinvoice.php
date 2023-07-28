@@ -11,13 +11,13 @@ if (!$conn) {
     // echo "Error Occured ";
 }
 
-$sql = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '" . (string) $loggedin_session . "'";
+$sql = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '" . (string) $loggedin_session . "' AND b.user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
 
 }
 
-$sql2 = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '" . (string) $loggedin_session . "'";
+$sql2 = "SELECT * FROM invoice a inner join invoice_data b on a.invoice_no=b.invoice_no where a.invoice_no='$invoice_no' AND a.user_id = '" . (string) $loggedin_session . "'  AND b.user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
 
