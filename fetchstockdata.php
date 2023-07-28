@@ -1,7 +1,9 @@
 <?php
+include 'checkuserlogin.php';
+
 $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
 
-$sql = "SELECT * FROM stock";
+$sql = "SELECT * FROM stock where user_id = '".(string)$loggedin_session."'";
 $retval = mysqli_query($conn, $sql);
 // if(!$retval){
 //     echo mysqli_error($conn);
@@ -12,9 +14,9 @@ if (!$retval) {
 } else {
     while ($row = $retval->fetch_assoc()) {
         $product_data[] = array(
-            'code' => $row['code'],
+            
             'name' => $row['item'],
-            'design' => $row['design'],
+            
             'size' => $row['size'],
             'qty' => $row['qty']
         );

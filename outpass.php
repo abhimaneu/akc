@@ -20,21 +20,21 @@ if (isset($_GET['f'])) {
     }
 }
 
-$sql = "Select * from products";
+$sql = "Select * from products WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql = "Select * from company";
+$sql = "Select * from company WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql3 = "Select * from outpass ORDER BY no DESC";
+$sql3 = "Select * from outpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -42,14 +42,14 @@ if (!$retval3) {
 }
 
 //for table
-$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no ORDER BY timestamp DESC LIMIT 5";
+$sql4 = "select * from outpass,outpass_products where outpass.no = outpass_products.outpass_no AND outpass.user_id = '" . (string) $loggedin_session . "' ORDER BY timestamp DESC LIMIT 5";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql6 = "Select * from vehicles";
+$sql6 = "Select * from vehicles WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
     echo mysqli_error($conn);
@@ -57,14 +57,14 @@ if (!$retval6) {
 }
 
 //only for dropdown menu
-$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' GROUP BY work_order_no";
+$sql7 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '" . (string) $loggedin_session . "' GROUP BY work_order_no";
 $retval7 = mysqli_query($conn, $sql7);
 if (!$retval7) {
     echo mysqli_error($conn);
     die($conn);
 }
 
-$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open'";
+$sql8 = "SELECT work_order_products.* from work_order_products join work_orders on work_order_products.work_order_no=work_orders.work_order_no where work_orders.status = 'open' AND work_orders.user_id = '" . (string) $loggedin_session . "'";
 $retval8 = mysqli_query($conn, $sql8);
 if (!$retval8) {
     echo mysqli_error($conn);
@@ -85,17 +85,6 @@ while ($row = mysqli_fetch_assoc($retval5)) {
     $i += 1;
 }
 
-//fetch largest opno
-$max_opno = 1000;
-$sql10 = "Select max(no) as mno from outpass";
-$retval10 = mysqli_query($conn, $sql10);
-if (!$retval10) {
-    echo mysqli_error($conn);
-    
-}else {
-$retmaxno = mysqli_fetch_assoc($retval10);
-$max_opno = $retmaxno['mno'];
-}
 ?>
 
 <html>
@@ -105,7 +94,7 @@ $max_opno = $retmaxno['mno'];
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
-<title>Inpass</title>
+<title>Outpass</title>
 <!-- MDB icon -->
 <!-- <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" /> -->
 <!-- Font Awesome -->
@@ -121,7 +110,15 @@ $max_opno = $retmaxno['mno'];
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
     <script>
+
+        function capitalizeWords(str) {
+            return str.replace(/\b\w/g, (c) => c.toUpperCase());
+        }
         $(document).ready(function () {
+
+
+
+
             $(function () {
                 // $('#watchButton').click();
                 //$('#add_product_field').click();
@@ -134,8 +131,6 @@ $max_opno = $retmaxno['mno'];
                 var productNameField = $(this).closest(".product_field").find(".product_name");
                 var productDesignField = $(this).closest(".product_field").find(".product_design");
                 var productSizeField = $(this).closest(".product_field").find(".product_size");
-                var productFeatureField = $(this).closest(".product_field").find(".product_feature");
-
 
                 $.ajax({
                     method: "POST",
@@ -152,10 +147,10 @@ $max_opno = $retmaxno['mno'];
 
                             if (productData) {
                                 product = productData[0]
-                                productNameField.val(product.name)
+                                productNameField.val(capitalizeWords(product.name))
                                 productDesignField.val(product.design)
                                 productSizeField.val(product.size)
-                                productFeatureField.val(product.features)
+
                                 $(productNameField).trigger("change");
                                 initilizebootstrap();
                             }
@@ -194,7 +189,6 @@ $max_opno = $retmaxno['mno'];
                 });
             });
 
-            $('#opno').val('<?php echo $max_opno + 1; ?>');
             $('#opno').trigger('click');
             initilizebootstrap();
 
@@ -217,12 +211,15 @@ $max_opno = $retmaxno['mno'];
                 var productQtyField = $(this).closest(".product_field").find(".product_qty");
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
                 var productCustomField = $(this).closest(".product_field").find(".custom_field");
+                var productCustomRowField = $(this).closest(".product_field").find(".custom_field_row");
                 if (productStockField.val() == 'custom') {
+                    productCustomRowField.attr('style', 'display:block');
                     productCustomField.removeAttr('hidden', true);
                     productCustomField.attr("required", true);
                     initilizebootstrap();
                 }
                 else {
+                    productCustomRowField.attr('style', 'display:none');
                     productCustomField.attr("hidden", true);
                     productCustomField.removeAttr('required', true);
                     initilizebootstrap();
@@ -273,7 +270,7 @@ $max_opno = $retmaxno['mno'];
                             if (l > 0)
                                 for (i = 0; i < l; i++) {
 
-                                    options += '<option selected value="' + productData[i].code + '" data-qty="' + productData[i].qty + '">' + productData[i].code + '&nbsp;' + productData[i].name + '&nbsp;' + productData[i].design + '&nbsp;' + productData[i].size + '</option>';
+                                    options += '<option selected value="' + productData[i].name + "||" + productData[i].size + '" data-qty="' + productData[i].qty + '">' + "" + '' + capitalizeWords(productData[i].name) + '&nbsp;' + "" + '' + productData[i].size + '</option>';
                                 }
                             options += "<option value='custom'>Custom</option>";
                             productStockField.html(options);
@@ -340,15 +337,13 @@ $max_opno = $retmaxno['mno'];
                                     var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
                                     var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
                                     var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
-                                    var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
                                     var productReqQtyField = $(".product_field:eq(" + i + ")").find(".req_qty");
                                     var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
                                     productCodeField.val(productData[i].code);
-                                    productNameField.val(productData[i].name);
+                                    productNameField.val(capitalizeWords(productData[i].name));
                                     $(productNameField).trigger("change");
-                                    productDesignField.val(productData[i].design);
+                                    productDesignField.val(capitalizeWords(productData[i].design));
                                     productSizeField.val(productData[i].size);
-                                    productFeatureField.val(productData[i].feature);
                                     productReqQtyField.val(productData[i].qty)
                                     initilizebootstrap();
 
@@ -401,20 +396,20 @@ $max_opno = $retmaxno['mno'];
                             tableBody.innerHTML = '';
                             for (var i = 0; i < response.length; i++) {
                                 var row = document.createElement('tr');
-                                var cell1 = document.createElement('td');
-                                cell1.textContent = response[i].code;
+                                // var cell1 = document.createElement('td');
+                                // cell1.textContent = response[i].code;
                                 var cell2 = document.createElement('td');
-                                cell2.textContent = response[i].name;
-                                var cell3 = document.createElement('td');
-                                cell3.textContent = response[i].design;
+                                cell2.textContent = capitalizeWords(response[i].name);
+                                // var cell3 = document.createElement('td');
+                                // cell3.textContent = response[i].design;
                                 var cell4 = document.createElement('td');
                                 cell4.textContent = response[i].size;
                                 var cell5 = document.createElement('td');
                                 cell5.textContent = response[i].qty;
 
-                                row.appendChild(cell1);
+                                // row.appendChild(cell1);
                                 row.appendChild(cell2);
-                                row.appendChild(cell3);
+                                // row.appendChild(cell3);
                                 row.appendChild(cell4);
                                 row.appendChild(cell5);
 
@@ -500,14 +495,11 @@ $max_opno = $retmaxno['mno'];
           </div>
           &nbsp;
           <div class='form-outline mb-1 col'>
-          <input name="product_size[]" id='psize' required class="product_size form-control">
+          <input name="product_size[]"  onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" id='psize' required class="product_size form-control">
           <label for="psize" class='form-label'>Size</label>
           </div>
           &nbsp;
-          <div class='form-outline mb-1 col'>
-          <input name="product_feature[]" id='pfeat' required class="product_feature form-control">
-          <label for="pfeat" class='form-label'>Features</label>
-          </div>
+          
           </div>
 
           <div class=' d-flex align-items-start bg-light mb-3 w-25'>
@@ -518,14 +510,23 @@ $max_opno = $retmaxno['mno'];
           </div>
 
           <caption>The product will be taken from the following stock:</caption> <br>
-          <select name='product_stock[]' class='product_stock'>
+          <select name='product_stock[]' class='product_stock mb-4'>
           <option selected>None</option>
           <option value='custom'>Custom</option>
           </select>
           <br>
-          <div class='form-outline mb-3 mt-2 col'>
-          <input type='text' hidden class='custom_field w-100' name='custom_field[]' placeholder='Enter Product Code Here (Refer to Stock Data)' >
+
+          <div class='custom_field_row' style='display:none'>
+          <div class='form-outline mb-3 col w-50'>
+          <input type='text' hidden class='custom_field w-100 form-control' name='custom_field_name[]'>
+          <label class='form-label'>Custom Product Name</label>
           </div>
+          <div class='form-outline mb-3 mt-2 col w-50'>
+          <input type='text' hidden class='custom_field w-100 form-control' name='custom_field_size[]'>
+          <label class='form-label'>Custom Product Size</label>
+          </div>
+          </div>
+          
            <caption name='product_cap' class='product_cap'></caption>
 
            <div class=' d-flex align-items-start bg-light mb-3 w-25'>
@@ -581,8 +582,11 @@ $max_opno = $retmaxno['mno'];
                             <div class="row mb-2">
                                 <div class="col">
                                     <div class="form-outline">
-                                        <input type="text" id='opno' class="form-control" required name="opno">
+                                        <input type="text" id='opno' class="form-control" name="opno">
                                         <label for="opno" class="form-label">Outpass No.</label>
+                                    </div>
+                                    <div id="textExample1" class="form-text">
+                                        &nbsp;Leave Empty for Auto-Generation
                                     </div>
                                     <div id='error_no'></div>
                                     <div class='mb-4'></div>
@@ -688,6 +692,10 @@ $max_opno = $retmaxno['mno'];
                         $vehicle = $_POST['vehicle'];
                         $wno = $_POST['work_order'];
                         $extras = $_POST['extras'];
+
+                        //capitalise vehicle no
+                        $vehicle = strtoupper($vehicle);
+
                         $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                         if (!$conn) {
                         }
@@ -696,8 +704,26 @@ $max_opno = $retmaxno['mno'];
                         if (!$transtart) {
                             echo mysqli_error($conn);
                         }
-                        $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras')";
-                        $sql2 = "INSERT INTO company(name,code) VALUES ('$dest','$woc')";
+                        $outpass_flag = 0;
+                        if (!$opno) {
+                            $sql00 = "SELECT outpass_count FROM profile WHERE user_id='" . (string) $loggedin_session . "'";
+                            $result = mysqli_query($conn, $sql00);
+                            if (!$result) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e7';
+                        </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                            $retipno = mysqli_fetch_assoc($result);
+                            $opno = $retipno['outpass_count'];
+                            $outpass_flag = 1;
+                        }
+
+                        $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras,user_id) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras','" . (string) $loggedin_session . "')";
+                        $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$dest','$woc','" . (string) $loggedin_session . "')";
                         $insert = mysqli_query($conn, $sql);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -705,9 +731,10 @@ $max_opno = $retmaxno['mno'];
                             echo "<script type='text/javascript'>
                         window.location.href = 'outpass.php?f=e1';
                         </script>";
-                        exit;
+                            exit;
                         }
-                        $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest'");
+
+                        $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest' AND user_id = '" . (string) $loggedin_session . "'");
                         if ($result->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql2);
                         }
@@ -717,10 +744,10 @@ $max_opno = $retmaxno['mno'];
                         $productCodes = $_POST['product_code'];
                         $productDesigns = $_POST['product_design'];
                         $productSizes = $_POST['product_size'];
-                        $productFeatures = $_POST['product_feature'];
                         $productQtys = $_POST['product_qty'];
-                        $productCodes_stock = $_POST['product_stock'];
-                        $productCodes_customstock = $_POST['custom_field'];
+                        $productDatas_stock = $_POST['product_stock'];
+                        $productCodes_customstockName = $_POST['custom_field_name'];
+                        $productCodes_customstockSize = $_POST['custom_field_size'];
                         $reqQtys = $_POST['req_qty'];
 
                         for ($i = 0; $i < count($products); $i++) {
@@ -729,46 +756,84 @@ $max_opno = $retmaxno['mno'];
                             $productType = $productTypes[$i];
                             $productDesign = $productDesigns[$i];
                             $productSize = $productSizes[$i];
-                            $productFeature = $productFeatures[$i];
                             $productQty = $productQtys[$i];
-                            $productCode_stock = $productCodes_stock[$i];
-                            $productCode_customstock = $productCodes_customstock[$i];
-                            $productName_bill = $productName . ' ' . $productFeature;
-                            if ($productCode_stock == 'custom') {
-                                $productCode_stock = $productCode_customstock;
+                            $productData_stock = $productDatas_stock[$i];
+                            $productCode_customstockName = $productCodes_customstockName[$i];
+                            $productCode_customstockSize = $productCodes_customstockSize[$i];
+                            $productName_bill = $productName;
+
+                            if ($productData_stock == 'custom') {
+                                //$productData_stock = $productCode_customstock;
+                                $productName_stock = $productCode_customstockName;
+                                $productSize_stock = $productCode_customstockSize;
+                            } else {
+                                $productName_stock = '';
+                                $productSize_stock = '';
+                                $parts = explode('||', $productData_stock);
+                                if ($parts) {
+                                    $productName_stock = $parts[0];
+                                    $productSize_stock = $parts[1];
+                                } else {
+                                    // Handle the case when '||' is not found in the string
+                                }
                             }
+
+                            //converting to lowercase
+                            $productName = strtolower($productName);
+                            $productName_bill = strtolower($productName_bill);
+                            $productDesign = strtolower($productDesign);
+                            $productSize = strtolower($productSize);
+                            $productName_stock = strtolower($productName_stock);
+                            $productSize_stock = strtolower($productSize_stock);
+
+
                             $reqQty = $reqQtys[$i];
 
-                            $sql4 = "INSERT INTO outpass_products(outpass_no,product_type,product_name,product_code,work_order,product_design,product_size,product_qty) VALUES ('$opno','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty')";
+                            $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$opno','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
                                 echo mysqli_error($conn);
+                                mysqli_rollback($conn);
                                 echo "<script type='text/javascript'>
                         window.location.href = 'outpass.php?f=e2';
                         </script>";
-                        exit;
+                                exit;
                             }
 
                             //updating quantity in stock
-                            $sql8 = "Select qty from stock where code = '$productCode_stock'";
+                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
                                 echo "<script type='text/javascript'>
                         window.location.href = 'outpass.php?f=e3';
                         </script>";
-                        exit;
+                                exit;
                             }
                             $row8 = mysqli_fetch_array($retval4);
                             $oldqty = $row8[0];
                             $newqty = $oldqty - $productQty;
                             if (!($newqty < 0)) {
-                                $sql9 = "UPDATE stock SET qty = '$newqty' where code = '$productCode_stock'";
+                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock' AND user_id = '" . (string) $loggedin_session . "'";
                                 $update = mysqli_query($conn, $sql9);
                                 if (!$update) {
                                     echo mysqli_error($conn);
+                                    mysqli_rollback($conn);
                                     echo "<script type='text/javascript'>
                         window.location.href = 'outpass.php?f=e4';
                         </script>";
+                                }
+                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','Outpass','" . (string) $loggedin_session . "')";
+                                $update92 = mysqli_query($conn, $sql92);
+                                if (!$update92) {
+                                    echo mysqli_error($conn);
+                                    mysqli_rollback($conn);
+                                    echo "<script type='text/javascript'>
+                                window.location.href = 'outpass.php?f=e4';
+                                </script>";
+                                    echo "<script>alert('Some Error Occured')</script>";
+                                    exit;
                                 }
                             } else {
                                 mysqli_rollback($conn);
@@ -776,25 +841,39 @@ $max_opno = $retmaxno['mno'];
                                 echo "<script>alert('Not Enough Stock Avalible for Selected Products')</script>";
                             }
 
+                            if ($flag == 0) {
+                                if ($reqQty) {
+                                    if ($reqQty - $productQty >= 0) {
+                                        $newqtywo = $reqQty - $productQty;
+                                        $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode' AND user_id = '" . (string) $loggedin_session . "'";
+                                        $update2 = mysqli_query($conn, $sql8);
+                                        if (!$update2) {
+                                            echo mysqli_error($conn);
+                                            mysqli_rollback($conn);
+                                            $flag = 1;
+                                        }
+                                    } else {
+
+                                    }
+                                }
+                            }
                         }
-                        if ($flag == 0) {
-                            if ($reqQty - $productQty > 0) {
-                                $newqtywo = $reqQty - $productQty;
-                                $sql8 = "UPDATE `work_order_products` SET `qty`=$newqtywo WHERE code='$productCode'";
-                                $update2 = mysqli_query($conn, $sql8);
-                                if (!$update2) {
-                                    echo mysqli_error($conn);
-                                    mysqli_rollback($conn);
-                                    $flag = 1;
-                                }
-                            } else {
-                                $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno'";
-                                $update2 = mysqli_query($conn, $sql8);
-                                if (!$update2) {
-                                    echo mysqli_error($conn);
-                                    mysqli_rollback($conn);
-                                    $flag = 1;
-                                }
+                        $flag_qty_count = 0;
+                        $sqlcheck = "SELECT qty from work_order_products where work_order_no = '$wno' AND user_id = '" . (string) $loggedin_session . "'";
+                        $qtycheck = mysqli_query($conn, $sqlcheck);
+                        while ($row = mysqli_fetch_assoc($qtycheck)) {
+                            if ($row['qty'] != 0) {
+                                $flag_qty_count = 1;
+                            }
+                        }
+
+                        if ($flag_qty_count == 0) {
+                            $sql8 = "UPDATE `work_orders` SET `status`='Closed',timestamp = CURRENT_TIME() WHERE work_order_no='$wno' AND user_id = '" . (string) $loggedin_session . "'";
+                            $update2 = mysqli_query($conn, $sql8);
+                            if (!$update2) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                $flag = 1;
                             }
                         }
 
@@ -802,19 +881,31 @@ $max_opno = $retmaxno['mno'];
                             echo "<script type='text/javascript'>
             window.open('createpdfpass.php?no=$opno&io=outpass');
             </script>";
-                        }
-                        else {
+                        } else {
                             echo "<script type='text/javascript'>
                         window.location.href = 'outpass.php?f=e3';
                         </script>";
-                        exit;
+                            exit;
+                        }
+                        if ($outpass_flag == 1) {
+                            $sql01 = "UPDATE profile SET outpass_count = outpass_count + 1 where user_id='" . (string) $loggedin_session . "'";
+                            $updipno = mysqli_query($conn, $sql01);
+                            if (!$updipno) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'outpass.php?f=e8';
+                                </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
                         }
                         mysqli_commit($conn);
                         echo "<script type='text/javascript'>
             window.location.href = 'outpass.php?f=s';
             </script>";
                     }
-                    
+
                     ?>
 
                     <div id="stockdata" class="col bg-white rounded-5 shadow-5-strong pt-5 pb-1" style="
@@ -840,9 +931,7 @@ $max_opno = $retmaxno['mno'];
                                 <div class="table-responsive" style="max-height:500px;">
                                     <table class='table table-sm'>
                                         <thead class="table-light">
-                                            <th>Code</th>
                                             <th>Name</th>
-                                            <th>Design</th>
                                             <th>Size</th>
                                             <th>Available. Qty</th>
                                         </thead>
@@ -912,11 +1001,20 @@ $max_opno = $retmaxno['mno'];
                                     $table_active = 'table-active';
                                 }
                             }
+                            $time = strtotime($row['date']);
+                            $outpass_short_date = '';
+                            if (date('n', $time) > 4) {
+                                $temp_date = date('y', $time);
+                                $outpass_short_date = $temp_date . ($temp_date + 1);
+                            } else {
+                                $temp_date = date('y', $time);
+                                $outpass_short_date = ($temp_date - 1) . $temp_date;
+                            }
                             if (!empty($row)) {
                                 echo "
                     <tr class='$table_active'>
                     <td>
-                    {$row['no']}
+                    {$row['no']}/" . $outpass_short_date . "
                     </td>
                     <td>
                     {$row['date']}
@@ -930,11 +1028,11 @@ $max_opno = $retmaxno['mno'];
                     {$row['work_order']}
                     </td>
                     <td>
-                    {$row['product_name']}
+                    " . ucwords($row['product_name']) . "
                     &nbsp;
                     {$row['product_code']}
                     &nbsp;
-                    {$row['product_design']}
+                    " . ucwords($row['product_design']) . "
                     &nbsp;
                     {$row['product_size']}
                     </td>

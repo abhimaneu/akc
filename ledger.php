@@ -4,8 +4,8 @@ include 'nav.php';
 ?>
 
 <?php
-$start = '1990-01-31';
-$end = '2099-12-31';
+$start = date('Y') . '-04' . '-01';
+$end = (date('Y')+1) . '-03' . '-31' ;
 $company = 'All';
 $product = 'All';
 $size = 'All';
@@ -22,8 +22,7 @@ if ($f != 0) {
 $sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type,timestamp
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
-WHERE date BETWEEN '$start' AND '$end'";
-
+WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
 if ($company != 'All') {
     $sql .= " AND dest = '$company'";
 }
@@ -42,7 +41,7 @@ $sql .= " UNION
 SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type,timestamp
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
-WHERE date BETWEEN '$start' AND '$end'";
+WHERE inpass.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";
@@ -64,9 +63,9 @@ if (!$retval) {
 
 }
 
-$sql2 = "select * from company";
+$sql2 = "select * from company WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql2);
-$sql3 = "select * from products";
+$sql3 = "select * from products WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval3 = mysqli_query($conn, $sql3);
 
 
@@ -144,20 +143,60 @@ $retval3 = mysqli_query($conn, $sql3);
             }
         });
     });
+
+    function printTable() {
+        document.getElementById('tablehead').classList.remove('sticky-top')
+        print();
+    }
 </script>
+
+<style>
+    @media print {
+        body {
+            padding: 20px;
+            /* Add padding to provide margin around the content */
+        }
+
+        #dontprint {
+            display: none;
+        }
+
+        #dontprintbtn {
+            display: none;
+        }
+
+        #dontprintnav {
+            display: none;
+        }
+
+        #printbody {
+            padding-top: 0;
+            /* Remove padding at the top of the printed content */
+        }
+
+        #myTable td {
+            page-break-inside: avoid;
+            /* Prevent table cells from breaking across pages */
+        }
+
+        /* #printbody * {
+            display: block;
+        } */
+    }
+</style>
 
 <body>
     <main> <br>
         <h1 class="mt-2 ms-4">Ledger</h1>
         <div class="container-fluid">
             <div class="row justify-content">
-                <div class="col">
+                <div class="col" id='dontprint'>
                     <form name="filter-date" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
                         <h4 class='mb-4'>Filter</h4>
 
                         <div class="row ms-1 justify-content w-50">
                             <div class="form-outline col">
-                                <input type="date" value="1990-01-01" class="form-control" id='start' required
+                                <input type="date" value="<?php echo $start;?>" class="form-control" id='start' required
                                     name="start">
                                 <label for="start" class='form-label'>Start</label>
                             </div>
@@ -165,7 +204,7 @@ $retval3 = mysqli_query($conn, $sql3);
                                 <center>to</center>
                             </div>
                             <div class="form-outline col">
-                                <input name="end" value="2099-12-31" class="form-control" id='end' required type="date">
+                                <input name="end" value="<?php echo $end;?>" class="form-control" id='end' required type="date">
                                 <label for="end" class='form-label'>End</label>
                             </div>
                         </div>
@@ -189,7 +228,7 @@ $retval3 = mysqli_query($conn, $sql3);
                                 mysqli_data_seek($retval3, 0);
                                 while ($row = mysqli_fetch_assoc($retval3)) {
                                     echo "
-            <option>{$row['name']}</option>
+            <option> " . ucwords($row['name']) . "</option>
             ";
                                 }
                                 ?>
@@ -230,10 +269,12 @@ $retval3 = mysqli_query($conn, $sql3);
                         </div>
                     </form>
                 </div>
-
-                <div class="container-fluid mt-1 mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4">
-                    <table class="table table-sm">
-                        <thead class="table-dark sticky-top">
+                <div class='p-1 d-flex justify-content-end'>
+                    <button onclick="printTable()" class="btn btn-primary " id='dontprintbtn'>Print Ledger</button>
+                </div>
+                <div class="container-fluid mt-1 mb-2 p-2 bg-white rounded-5 shadow-5-strong p-4" id='printbody'>
+                    <table class="table table-sm" id='myTable'>
+                        <thead class="table-light sticky-top" id='tablehead'>
                             <th>
                                 Date
                             </th>
@@ -271,18 +312,26 @@ $retval3 = mysqli_query($conn, $sql3);
                                         $table_active = 'table-active';
                                     }
                                 }
-                                if($row['type'] == 'inpass'){
+                                if ($row['type'] == 'inpass') {
                                     $table_color = 'table-info';
-                                }
-                                else {
+                                } else {
                                     $table_color = 'table-danger';
+                                }
+                                $time = strtotime($row['date']);
+                                $pass_short_date = '';
+                                if (date('n', $time) > 4) {
+                                    $temp_date = date('y', $time);
+                                    $pass_short_date = $temp_date . ($temp_date + 1);
+                                } else {
+                                    $temp_date = date('y', $time);
+                                    $pass_short_date = ($temp_date - 1) . $temp_date;
                                 }
                                 echo "<tr  class='$table_active $table_color'>
                 <td>
                 {$row['date']}
                 </td>
                 <td>
-                {$row['no']}
+                {$row['no']}/". $pass_short_date ."
                 </td>
                 <td>
                 {$row['company']}
@@ -293,17 +342,17 @@ $retval3 = mysqli_query($conn, $sql3);
                 {$row['product_code']}
                 </td>
                 <td>
-                {$row['product_name']}
+                " . ucwords($row['product_name']) . "
                 &nbsp;
-                {$row['product_design']}
+                " . ucwords($row['product_design']) . "
                 &nbsp;
                 {$row['product_size']}
                 </td>
                 <td>
                 {$row['product_qty']}
                 </td>
-                <td>
-                {$row['type']}
+                <td>"
+                                    . ucfirst($row['type']) . "
                 </td>
                 </tr>";
                                 $cur_no = $row['no'];

@@ -1,12 +1,13 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
 
 $f = $_GET['f'];
-$start = '1990-01-31';
-$end = '2099-12-31';
+$start = date('Y') . '-04' . '-01';
+$end = (date('Y')+1) . '-03' . '-31' ;
 $company = 'All';
 $p_name = 'All';
 $size = 'All';
@@ -25,25 +26,25 @@ if (!$conn) {
 }
 
 //for dropdowns
-$sql2 = "SELECT source from inpass where 1=1";
+$sql2 = "SELECT source from inpass WHERE user_id = '".(string)$loggedin_session."'";
 $sql2 .= " GROUP BY source";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
-$sql3 = "SELECT product_name from inpass_products where 1=1";
+$sql3 = "SELECT product_name from inpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql3 .= " GROUP BY product_name";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
 }
-$sql4 = "SELECT product_size from inpass_products where 1=1";
+$sql4 = "SELECT product_size from inpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql4 .= " GROUP BY product_size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
 }
-$sql6 = "SELECT product_code from inpass_products where 1=1";
+$sql6 = "SELECT product_code from inpass_products WHERE user_id = '".(string)$loggedin_session."'";
 $sql6 .= " GROUP BY product_code";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
@@ -51,7 +52,7 @@ if (!$retval6) {
 }
 
 //for table
-$sql = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no";
+$sql = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '".(string)$loggedin_session."'";
 
 if ($company != 'All') {
     $sql .= " AND source = '$company'";
@@ -173,7 +174,7 @@ if (!$retval) {
                         <h4 class='mb-4'>Filter</h4>
                         <div class="row ms-1 justify-content w-50">
                             <div class="form-outline col">
-                                <input type="date" class="form-control" value="1990-01-01" id='start' required
+                                <input type="date" class="form-control" value="<?php echo $start;?>" id='start' required
                                     name="start">
                                 <label for="start" class="form-label">Start</label>
                             </div>
@@ -181,7 +182,7 @@ if (!$retval) {
                                 <center>to</center>
                             </div>
                             <div class="form-outline col">
-                                <input name="end" class="form-control" value="2099-12-31" id='end' required type="date">
+                                <input name="end" class="form-control" value="<?php echo $end;?>" id='end' required type="date">
                                 <label for="end" class='form-label'>End</label>
                             </div>
                         </div>
@@ -206,7 +207,7 @@ if (!$retval) {
                                 <?php
                                 while ($row = mysqli_fetch_assoc($retval3)) {
                                     echo "
-            <option>{$row['product_name']}</option>
+            <option> " .ucfirst($row['product_name']) ."</option>
             ";
                                 }
                                 ?>
@@ -294,11 +295,21 @@ if (!$retval) {
                                     $table_active = 'table-active';
                                 }
                             }
+                            $time=strtotime($row['date']);
+                            $inpass_short_date = '';
+                            if(date('n',$time) > 4) {
+                                $temp_date = date('y',$time);
+                                $inpass_short_date =  $temp_date . ($temp_date + 1) ;
+                            }
+                            else {
+                                $temp_date = date('y',$time);
+                                $inpass_short_date =  ($temp_date-1) . $temp_date ;
+                            }
                             if (!empty($row)) {
                                 echo "
                     <tr class='$table_active'>
                     <td>
-                    {$row['no']}
+                    {$row['no']}/". $inpass_short_date ."
                     </td>
                     <td>
                     {$row['date']}
@@ -309,11 +320,11 @@ if (!$retval) {
                     {$row['woc']}
                     </td>
                     <td>
-                    {$row['product_name']}
+                    ".ucwords($row['product_name'])."
                     &nbsp;
                     {$row['product_code']}
                     &nbsp;
-                    {$row['product_design']}
+                    ".ucwords($row['product_design'])."
                     &nbsp;
                     {$row['product_size']}
                     </td>

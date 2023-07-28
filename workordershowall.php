@@ -1,12 +1,13 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
 
 $f = $_GET['f'];
-$start = '1990-01-31';
-$end = '2099-12-31';
+$start = date('Y') . '-04' . '-01';
+$end = (date('Y') + 1) . '-03' . '-31';
 $company = 'All';
 $p_name = 'All';
 $size = 'All';
@@ -19,7 +20,6 @@ if ($f != 0) {
     $company = $_GET['cmp'];
     $p_name = $_GET['in'];
     $size = $_GET['is'];
-    $wno = $_GET['wno'];
     $p_code = $_GET['ic'];
     $status = $_GET['st'];
 
@@ -29,37 +29,37 @@ if (!$conn) {
 }
 
 //for dropdowns
-$sql2 = "SELECT company from work_orders where 1=1";
+$sql2 = "SELECT company from work_orders WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql2 .= " GROUP BY company";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
 }
-$sql3 = "SELECT name from work_order_products where 1=1";
+$sql3 = "SELECT name from work_order_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql3 .= " GROUP BY name";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
 }
-$sql4 = "SELECT size from work_order_products where 1=1";
+$sql4 = "SELECT size from work_order_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
     echo mysqli_error($conn);
 }
-$sql5 = "SELECT work_order_no from work_orders where 1=1";
+$sql5 = "SELECT work_order_no from work_orders WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql5 .= " GROUP BY work_order_no";
 $retval5 = mysqli_query($conn, $sql5);
 if (!$retval5) {
     echo mysqli_error($conn);
 }
-$sql6 = "SELECT code from work_order_products where 1=1";
+$sql6 = "SELECT code from work_order_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql6 .= " GROUP BY code";
 $retval6 = mysqli_query($conn, $sql6);
 if (!$retval6) {
     echo mysqli_error($conn);
 }
-$sql7 = "SELECT status from work_orders where 1=1";
+$sql7 = "SELECT status from work_orders WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql7 .= " GROUP BY status";
 $retval7 = mysqli_query($conn, $sql7);
 if (!$retval7) {
@@ -67,7 +67,7 @@ if (!$retval7) {
 }
 
 //for table
-$sql = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no";
+$sql = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '" . (string) $loggedin_session . "'";
 
 if ($company != 'All') {
     $sql .= " AND company = '$company'";
@@ -152,6 +152,7 @@ if (!$retval) {
                         var l = productData.length;
                         $('#workOrderNo').val(workOrderNo);
                         $('#date').text(date);
+                        $('#date_of_entry').val(date);
                         $('#company').val(company);
                         $('#productStatus').val(productStatus);
                         $('#extras').val(extras);
@@ -161,13 +162,11 @@ if (!$retval) {
                             var productNameField = $(".product_field:eq(" + i + ")").find(".product_name");
                             var productDesignField = $(".product_field:eq(" + i + ")").find(".product_design");
                             var productSizeField = $(".product_field:eq(" + i + ")").find(".product_size");
-                            var productFeatureField = $(".product_field:eq(" + i + ")").find(".product_feature");
                             var productQtyField = $(".product_field:eq(" + i + ")").find(".product_qty");
                             productCodeField.val(productData[i].code);
-                            productNameField.val(productData[i].name);
+                            productNameField.val(capitalizeWords(productData[i].name));
                             productDesignField.val(productData[i].design);
                             productSizeField.val(productData[i].size);
-                            productFeatureField.val(productData[i].feature);
                             productQtyField.val(productData[i].qty)
                             initilizebootstrap();
 
@@ -179,6 +178,11 @@ if (!$retval) {
                     alert(message);
                 }
             });
+
+            function capitalizeWords(str) {
+                return str.replace(/\b\w/g, (c) => c.toUpperCase());
+            }
+
 
             $.ajax({
                 method: "POST",
@@ -243,15 +247,12 @@ if (!$retval) {
 &nbsp;
 
 <div class="form-outline mb-1 col " >
-<input name="product_size[]" required class="product_size form-control" id='psize'>
+<input name="product_size[]" onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" required class="product_size form-control" id='psize'>
 <label for="psize" class='form-label'>Size</label>
 </div>
 &nbsp;
 
-<div class="form-outline mb-1 col " >
-<input name="product_feature[]" required class="product_feature form-control" id='pfeat'>
-<label for="pfeat" class='form-label'>Features</label>
-</div>
+
 &nbsp;
 <div class="form-outline mb-1 col " >
 <input name="product_qty[]" required class="product_qty form-control" id='pqty'>
@@ -343,6 +344,7 @@ if (!$retval) {
 
 
 
+
 </script>
 
 <body>
@@ -356,7 +358,7 @@ if (!$retval) {
                         <h4 class='mb-4'>Filter</h4>
                         <div class="row ms-1 justify-content w-50">
                             <div class="form-outline col">
-                                <input type="date" class="form-control" value="1990-01-01" id='start' required
+                                <input type="date" class="form-control" value="<?php echo $start; ?>" id='start' required
                                     name="start">
                                 <label for="start" class='form-label'>Start</label>
                             </div>
@@ -364,7 +366,8 @@ if (!$retval) {
                                 <center>to</center>
                             </div>
                             <div class="form-outline col">
-                                <input name="end" class="form-control" value="2099-12-31" id='end' required type="date">
+                                <input name="end" class="form-control" value="<?php echo $end; ?>" id='end' required
+                                    type="date">
                                 <label for="end" class="form-label">End</label>
                             </div>
                         </div>
@@ -388,7 +391,7 @@ if (!$retval) {
                                 <?php
                                 while ($row = mysqli_fetch_assoc($retval3)) {
                                     echo "
-            <option>{$row['name']}</option>
+            <option> " . ucwords($row['name']) . "</option>
             ";
                                 }
                                 ?>
@@ -468,6 +471,7 @@ if (!$retval) {
                                                     <span id="date" name="date">
                                                         <caption></caption>
                                                     </span>
+                                                    <input type='hidden' id='date_of_entry' name='date_of_entry'>
                                                 </div>
                                             </div>
                                             <div class="row w-75">
@@ -511,8 +515,8 @@ if (!$retval) {
 
                                             <input type="submit" class="btn btn-success" id='bsave' name="save"
                                                 value="Save">
-                                            <input type="submit" onclick="return confirm('Are you sure?');" class="btn btn-danger" id='del' name="delete"
-                                                value="Delete">
+                                            <input type="submit" onclick="return confirm('Are you sure?');"
+                                                class="btn btn-danger" id='del' name="delete" value="Delete">
                                             <!-- <input type='submit' class='btn btn-danger' name='delete' id='delete' value='Are You Sure?'> -->
 
                                         </form>
@@ -549,10 +553,10 @@ if (!$retval) {
 
                                 </th>
                                 <th>
-
+                                    Product Org. Quantity
                                 </th>
                                 <th>
-                                    Product Desp. Quantity
+                                    Product Remaining Quantity
                                 </th>
                                 <th>
                                     Product Status
@@ -595,16 +599,16 @@ if (!$retval) {
                     {$row['code']}
                     </td>
                     <td>
-                    {$row['name']}
+                    " . ucwords($row['name']) . "
                     </td>
                     <td>
-                    {$row['design']}
+                    " . ucwords($row['design']) . "
                     </td>
                     <td>
                     {$row['size']}
                     </td>
                     <td>
-                    {$row['features']}
+                    {$row['org_qty']}
                     </td>
                     <td>
                     {$row['qty']}
@@ -657,12 +661,13 @@ if (isset($_POST['save'])) {
     $company = $_POST['company'];
     $productStatus = $_POST['productStatus'];
     $extras = $_POST['extras'];
+    $date = $_POST['date_of_entry'];
     $tran = 'START TRANSACTION';
     $transtart = mysqli_query($conn, $tran);
     if (!$transtart) {
         echo mysqli_error($conn);
     }
-    $sql = "UPDATE `work_orders` SET `company`='$company',`extras`='$extras',`status`='$productStatus' WHERE work_order_no = '$workOrderNo'";
+    $sql = "UPDATE `work_orders` SET `company`='$company',`extras`='$extras',`status`='$productStatus' WHERE work_order_no = '$workOrderNo' AND user_id = '" . (string) $loggedin_session . "'";
     $update1 = mysqli_query($conn, $sql);
     if (!$update1) {
         echo mysqli_error($conn);
@@ -674,10 +679,9 @@ if (isset($_POST['save'])) {
     $productCodes = $_POST['product_code'];
     $productDesigns = $_POST['product_design'];
     $productSizes = $_POST['product_size'];
-    $productFeatures = $_POST['product_feature'];
     $productQtys = $_POST['product_qty'];
 
-    $sql3 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
+    $sql3 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo' AND user_id = '" . (string) $loggedin_session . "'";
     $update3 = mysqli_query($conn, $sql3);
     if (!$update3) {
         echo mysqli_error($conn);
@@ -690,9 +694,14 @@ if (isset($_POST['save'])) {
         $productCode = $productCodes[$i];
         $productDesign = $productDesigns[$i];
         $productSize = $productSizes[$i];
-        $productFeature = $productFeatures[$i];
         $productQty = $productQtys[$i];
-        $sql2 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,features,qty) VALUES ('$workOrderNo','$productCode','$productName','$productDesign','$productSize','$productFeature','$productQty')";
+
+        //converting to lowercase
+        $productName = strtolower($productName);
+        $productDesign = strtolower($productDesign);
+        $productSize = strtolower($productSize);
+
+        $sql2 = "INSERT INTO work_order_products(work_order_no,date_of_entry,code,name,design,size,org_qty,qty,user_id) VALUES ('$workOrderNo','$date','$productCode','$productName','$productDesign','$productSize','$productQty','$productQty','" . (string) $loggedin_session . "')";
         $update2 = mysqli_query($conn, $sql2);
         if (!$update2) {
             echo mysqli_error($conn);
@@ -710,12 +719,12 @@ if (isset($_POST['save'])) {
 if (isset($_POST['delete'])) {
     $workOrderNo = $_POST['workOrderNo'];
 
-    $sql = "DELETE FROM `work_orders` WHERE work_order_no = '$workOrderNo'";
+    $sql = "DELETE FROM `work_orders` WHERE work_order_no = '$workOrderNo' AND user_id = '" . (string) $loggedin_session . "'";
     $update1 = mysqli_query($conn, $sql);
     if (!$update1) {
         echo mysqli_error($conn);
     }
-    $sql2 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo'";
+    $sql2 = "DELETE FROM `work_order_products` WHERE work_order_no = '$workOrderNo' AND user_id = '" . (string) $loggedin_session . "'";
     $update2 = mysqli_query($conn, $sql2);
     if (!$update2) {
         echo mysqli_error($conn);
@@ -740,7 +749,7 @@ if (isset($_POST['filter'])) {
     $st = $_POST['status'];
 
     echo "<script type='text/javascript'>
-            window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&wno=$wno&ic=$ic&st=$st';
+            window.location.href = 'workordershowall.php?f=1&start=$start_date&end=$end_date&in=$in&cmp=$cmp&is=$is&ic=$ic&st=$st';
             </script>";
 }
 ?>

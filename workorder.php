@@ -7,33 +7,32 @@ include 'nav.php';
 <?php
 
 $msgcolor = 'text-danger';
-if(isset($_GET['f'])){
+if (isset($_GET['f'])) {
     $f = $_GET['f'];
-    if($f == 's'){
+    if ($f == 's') {
         $msg = "Work Order Succesfully Generated";
         $msgcolor = 'text-success';
-    }
-    else {
+    } else {
         $msg = "Error Occured... Could Not Complete the Process";
     }
 }
 
 //fetch company data for dropdown
-$sql2 = "Select * from company";
+$sql2 = "Select * from company WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
     echo mysqli_error($conn);
     die($conn);
 }
 //fetch product data for company_products
-$sql = "Select * from company_products";
+$sql = "Select * from company_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
     die($conn);
 }
 //fetch workorder data for table
-$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no order by timestamp desc LIMIT 5";
+$sql4 = "select * from work_orders,work_order_products where work_orders.work_order_no = work_order_products.work_order_no AND work_orders.user_id = '" . (string) $loggedin_session . "' order by timestamp desc LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -41,7 +40,7 @@ if (!$retval3) {
 }
 
 //fetch workorders data for wno
-$sql5 = "Select work_order_no from work_orders";
+$sql5 = "Select work_order_no from work_orders WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval5 = mysqli_query($conn, $sql5);
 if (!$retval5) {
     echo mysqli_error($conn);
@@ -49,7 +48,7 @@ if (!$retval5) {
 }
 $exist_wnos = array();
 $i = 0;
-while($row = mysqli_fetch_assoc($retval5)){
+while ($row = mysqli_fetch_assoc($retval5)) {
     $exist_wnos[$i] = $row['work_order_no'];
     $i += 1;
 }
@@ -72,16 +71,16 @@ while($row = mysqli_fetch_assoc($retval5)){
 
         //check if outpass exist
         $('#workorderno').on('keyup', function () {
-                var user_wno = $(this).val();
-                var exist_wnos = <?php echo json_encode($exist_wnos); ?>;
-                if(exist_wnos.includes(user_wno)){
-                    $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Work Order Already Exists</h1>");
-                }
-                else{
-                    $('#error_no').html("");
-                }
-                initilizebootstrap();
-            });
+            var user_wno = $(this).val();
+            var exist_wnos = <?php echo json_encode($exist_wnos); ?>;
+            if (exist_wnos.includes(user_wno)) {
+                $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Work Order Already Exists</h1>");
+            }
+            else {
+                $('#error_no').html("");
+            }
+            initilizebootstrap();
+        });
 
 
         //for Product Data
@@ -90,7 +89,6 @@ while($row = mysqli_fetch_assoc($retval5)){
             var productNameField = $(this).closest(".product_field").find(".product_name");
             var productDesignField = $(this).closest(".product_field").find(".product_design");
             var productSizeField = $(this).closest(".product_field").find(".product_size");
-            var productFeatureField = $(this).closest(".product_field").find(".product_feature");
 
 
             $.ajax({
@@ -111,7 +109,6 @@ while($row = mysqli_fetch_assoc($retval5)){
                             productNameField.val(product.name)
                             productDesignField.val(product.design)
                             productSizeField.val(product.size)
-                            productFeatureField.val(product.features)
                             initilizebootstrap();
                         }
                     }
@@ -159,14 +156,11 @@ while($row = mysqli_fetch_assoc($retval5)){
         </div>
         &nbsp;
         <div class="form-outline mb-1 col ">
-          <input name="product_size[]" id='psize' required class="product_size form-control">
+          <input name="product_size[]" id='psize' required  onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" class="product_size form-control">
           <label for="psize" class='form-label'>Size</label>
         </div>
         &nbsp;
-          <div class="form-outline mb-1 col ">
-          <input name="product_feature[]" id='pfeat' required class="product_feature form-control">
-          <label for="pfeat" class='form-label'>Features</label>
-            </div>
+          
         </div>
         <div class=' d-flex align-items-start bg-light mb-1 w-25'>
             <div class="form-outline mb-1 col ">
@@ -212,15 +206,16 @@ while($row = mysqli_fetch_assoc($retval5)){
         <div class="container">
             <div class='row justify-content'>
                 <div class="col-xl-10">
-                <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>    
-                <br>
+                    <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>
+                    <br>
                     <form name='work_orders' class="bg-white rounded-5 shadow-5-strong p-5" method="POST">
                         <h4>Enter Details Below</h4> <br>
                         <div class="row mb-2">
                             <div class="col">
                                 <div class="form-outline">
 
-                                    <input type="text" id="workorderno" class="form-control" required name='work_order_no'>
+                                    <input type="text" id="workorderno" class="form-control" required
+                                        name='work_order_no'>
                                     <label for='workorderno' class='form-label'>Work Order No.</label>
                                 </div>
                                 <div id='error_no'></div>
@@ -281,11 +276,17 @@ while($row = mysqli_fetch_assoc($retval5)){
                     $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                     if (!$conn) {
                     }
-                    $sql = "INSERT INTO work_orders(work_order_no,date,company,extras) VALUES ('$wno','$date','$company_name','$extras')";
+                    $tran = 'START TRANSACTION';
+                    $transtart = mysqli_query($conn, $tran);
+                    if (!$transtart) {
+                        echo mysqli_error($conn);
+                    }
+                    $sql = "INSERT INTO work_orders(work_order_no,date,company,extras,user_id) VALUES ('$wno','$date','$company_name','$extras','" . (string) $loggedin_session . "')";
                     //$sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
+                        mysqli_rollback($conn);
                         echo "<script type='text/javascript'>
                         window.location.href = 'workorder.php?f=e1';
                         </script>";
@@ -301,7 +302,6 @@ while($row = mysqli_fetch_assoc($retval5)){
                     $productCodes = $_POST['product_code'];
                     $productDeisgns = $_POST['product_design'];
                     $productSizes = $_POST['product_size'];
-                    $productFeatures = $_POST['product_feature'];
                     $productQtys = $_POST['product_qty'];
 
                     for ($i = 0; $i < count($products); $i++) {
@@ -309,20 +309,25 @@ while($row = mysqli_fetch_assoc($retval5)){
                         $productCode = $productCodes[$i];
                         $productDesign = $productDeisgns[$i];
                         $productSize = $productSizes[$i];
-                        $productFeature = $productFeatures[$i];
                         $productQty = $productQtys[$i];
-                        $sql7 = "INSERT INTO work_order_products(work_order_no,code,name,design,size,features,qty) VALUES ('$wno','$productCode','$productName','$productDesign','$productSize','$productFeature','$productQty')";
-                        //$result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
+
+                        //converting to lowercase
+                        $productName = strtolower($productName);
+                        $productDesign = strtolower($productDesign);
+                        $productSize = strtolower($productSize);
+
+                        $sql7 = "INSERT INTO work_order_products(work_order_no,date_of_entry,code,name,design,size,org_qty,qty,user_id) VALUES ('$wno','$date','$productCode','$productName','$productDesign','$productSize','$productQty','$productQty','" . (string) $loggedin_session . "')";
                         $insert2 = mysqli_query($conn, $sql7);
                         if (!$insert2) {
                             echo mysqli_error($conn);
+                            mysqli_rollback($conn);
                             echo "<script type='text/javascript'>
                             window.location.href = 'workorder.php?f=e2';
                             </script>";
                             exit;
                         }
                     }
-
+                    mysqli_commit($conn);
                     echo "<script type='text/javascript'>
         window.location.href = 'workorder.php?f=s';
         </script>";
@@ -393,13 +398,11 @@ while($row = mysqli_fetch_assoc($retval5)){
             <td>
             {$row['code']}
             &nbsp;
-            {$row['name']}
+            " . ucwords($row['name']) . "
             &nbsp;
-            {$row['design']}
+            " . ucwords($row['design']) . "
             &nbsp;
             {$row['size']}
-            &nbsp;
-            {$row['features']}
             </td>
             <td>
             {$row['qty']}
@@ -412,7 +415,7 @@ while($row = mysqli_fetch_assoc($retval5)){
             </td>
             </tr>
             ";
-            $cur_no = $row['work_order_no'];
+                                $cur_no = $row['work_order_no'];
                             }
                         }
                         ?>

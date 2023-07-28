@@ -9,19 +9,18 @@ if (!$conn) {
 }
 
 $msgcolor = 'text-danger';
-if(isset($_GET['f'])){
+if (isset($_GET['f'])) {
     $f = $_GET['f'];
-    if($f == 's'){
+    if ($f == 's') {
         $msg = "Inpass Succesfully Generated";
         $msgcolor = 'text-success';
-    }
-    else {
+    } else {
         $msg = "Error Occured... Could Not Complete the Process";
     }
 }
 
 //fetch product data for dropdown
-$sql = "Select * from products";
+$sql = "Select * from products WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
@@ -29,7 +28,7 @@ if (!$retval) {
 }
 
 //fetch company data for dropdown
-$sql = "Select * from company";
+$sql = "Select * from company WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval2 = mysqli_query($conn, $sql);
 if (!$retval2) {
     echo mysqli_error($conn);
@@ -37,7 +36,7 @@ if (!$retval2) {
 }
 
 //fetch inpass data for table
-$sql3 = "Select * from inpass ORDER BY no DESC";
+$sql3 = "Select * from inpass WHERE user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -45,7 +44,7 @@ if (!$retval3) {
 }
 
 //fetch inpass data for table
-$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no order by timestamp DESC LIMIT 5";
+$sql4 = "select * from inpass,inpass_products where inpass.no = inpass_products.inpass_no AND inpass.user_id = '" . (string) $loggedin_session . "' order by timestamp DESC LIMIT 5";
 $retval3 = mysqli_query($conn, $sql4);
 if (!$retval3) {
     echo mysqli_error($conn);
@@ -62,22 +61,12 @@ if (!$retval4) {
 }
 $exist_ipnos = array();
 $i = 0;
-while($row = mysqli_fetch_assoc($retval4)){
+while ($row = mysqli_fetch_assoc($retval4)) {
     $exist_ipnos[$i] = $row['no'];
     $i += 1;
 }
 
-//fetch largest ipno
-$max_ipno = 1000;
-$sql5 = "Select max(no) as mno from inpass";
-$retval5 = mysqli_query($conn, $sql5);
-if (!$retval5) {
-    echo mysqli_error($conn);
-    
-}else {
-$retmaxno = mysqli_fetch_assoc($retval5);
-$max_ipno = $retmaxno['mno'];
-}
+
 
 ?>
 
@@ -106,6 +95,11 @@ $max_ipno = $retmaxno['mno'];
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
     <script>
+
+        function capitalizeWords(str) {
+            return str.replace(/\b\w/g, (c) => c.toUpperCase());
+        }
+
         $(document).ready(function () {
 
             $(function () {
@@ -137,7 +131,7 @@ $max_ipno = $retmaxno['mno'];
                 });
             });
 
-            $('#ipno').val('<?php echo $max_ipno + 1; ?>');
+
             $('#ipno').trigger('click');
             initilizebootstrap();
 
@@ -145,10 +139,10 @@ $max_ipno = $retmaxno['mno'];
             $('#ipno').on('keyup', function () {
                 var user_ipno = $(this).val();
                 var exist_ipnos = <?php echo json_encode($exist_ipnos); ?>;
-                if(exist_ipnos.includes(user_ipno)){
+                if (exist_ipnos.includes(user_ipno)) {
                     $('#error_no').html("<h1 class='fs-6 pt-1 fw-normal text-danger'>&nbsp;Inpass No. Already Exists</h1>");
                 }
-                else{
+                else {
                     $('#error_no').html("");
                 }
                 initilizebootstrap();
@@ -177,8 +171,8 @@ $max_ipno = $retmaxno['mno'];
 
                             if (productData) {
                                 product = productData[0]
-                                productNameField.val(product.name)
-                                productDesignField.val(product.design)
+                                productNameField.val(capitalizeWords(product.name))
+                                productDesignField.val(capitalizeWords(product.design))
                                 productSizeField.val(product.size)
                                 initilizebootstrap();
                             }
@@ -230,7 +224,7 @@ $max_ipno = $retmaxno['mno'];
         </div>
         &nbsp;
         <div class="form-outline mb-1 col">
-          <input name="product_size[]" required class="product_size form-control">
+          <input name="product_size[]" onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" required class="product_size form-control">
           <label for="product_size" class='form-label'>Size</label>
         </div>
         &nbsp;
@@ -289,15 +283,18 @@ $max_ipno = $retmaxno['mno'];
             <div class='row justify-content'>
                 <div class="col-xl-10">
                     <h1 class='fs-6 text-center <?php echo $msgcolor; ?>'><?php echo $msg; ?></h1>
-                <div class='text-center' id='confirm_msg'></div>
+                    <div class='text-center' id='confirm_msg'></div>
                     <br>
                     <form name="ip" class="bg-white rounded-5 shadow-5-strong p-5" method="post" action="">
                         <h4>Enter Details Below</h4> <br>
                         <div class="row mb-2">
                             <div class="col">
                                 <div class="form-outline mb-0">
-                                    <input type="text" id='ipno' class="form-control" required name="ipno">
+                                    <input type="text" id='ipno' class="form-control" name="ipno">
                                     <label for="ipno" class="form-label">Inpass No.</label>
+                                </div>
+                                <div id="textExample1" class="form-text">
+                                    &nbsp;Leave Empty for Auto-Generation
                                 </div>
                                 <div id='error_no'></div>
                                 <div class='mb-4'></div>
@@ -342,7 +339,7 @@ $max_ipno = $retmaxno['mno'];
                             <div class="col">
                                 <div class="form-outline mb-4">
                                     <input type="text" class="form-control" required name="vehicle">
-                                    <label for="vechicle" class="form-label">Vehicle No.</label>
+                                    <label for="vehicle" class="form-label">Vehicle No.</label>
                                 </div>
                             </div>
                         </div>
@@ -372,7 +369,7 @@ $max_ipno = $retmaxno['mno'];
                     $source = "";
                     $woc = "";
                     $op = "";
-                    $vechicle = "";
+                    $vehicle = "";
                     $p_name = "";
                     $p_code = "";
                     $p_bundle = "";
@@ -390,13 +387,36 @@ $max_ipno = $retmaxno['mno'];
                     $conn = mysqli_connect('localhost', 'root', '', 'akcdb');
                     if (!$conn) {
                     }
+
+
                     $tran = 'START TRANSACTION';
                     $transtart = mysqli_query($conn, $tran);
                     if (!$transtart) {
                         echo mysqli_error($conn);
                     }
-                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras')";
-                    $sql2 = "INSERT INTO company(name,code) VALUES ('$source','$woc')";
+                    $inpass_flag = 0;
+                    if (!$ipno) {
+                        $sql00 = "SELECT inpass_count FROM profile WHERE user_id='" . (string) $loggedin_session . "'";
+                        $result = mysqli_query($conn, $sql00);
+                        if (!$result) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                        window.location.href = 'inpass.php?f=e7';
+                        </script>";
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+                        $retipno = mysqli_fetch_assoc($result);
+                        $ipno = $retipno['inpass_count'];
+                        $inpass_flag = 1;
+                    }
+
+                    //converting to uppercase
+                    $vehicle = strtoupper($vehicle);
+
+                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
+                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$woc','" . (string) $loggedin_session . "')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
@@ -406,10 +426,8 @@ $max_ipno = $retmaxno['mno'];
                         </script>";
                         echo "<script>alert('Some Error Occured')</script>";
                         exit;
-                    } else {
-                        echo "sucess";
                     }
-                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source'");
+                    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$source' AND user_id = '" . (string) $loggedin_session . "'");
                     if ($result->num_rows == 0) {
                         $insert2 = mysqli_query($conn, $sql2);
                     }
@@ -427,8 +445,14 @@ $max_ipno = $retmaxno['mno'];
                         $productSize = $productSizes[$i];
                         $productQty = $productQtys[$i];
 
-                        $sql7 = "INSERT INTO stock(code,item,design,size,qty) VALUES ('$productCode','$productName','$productDesign','$productSize','$productQty')";
-                        $result2 = mysqli_query($conn, "SELECT code FROM stock WHERE code = '$productCode'");
+                        //converting to lowercase
+                        $productName = strtolower($productName);
+                        $productDesign = strtolower($productDesign);
+                        $productSize = strtolower($productSize);
+
+                        $sql7 = "INSERT INTO stock(item,design,size,qty,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND user_id = '" . (string) $loggedin_session . "'");
+                        $flag_stock1 = 0;
                         if ($result2->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql7);
                             if (!$insert2) {
@@ -441,7 +465,7 @@ $max_ipno = $retmaxno['mno'];
                                 exit;
                             }
                         } else {
-                            $sql8 = "Select qty from stock where code = '$productCode'";
+                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo "Error Occured";
@@ -457,7 +481,7 @@ $max_ipno = $retmaxno['mno'];
                             $newqty = $oldqty + $productQty;
                             echo $oldqty;
                             echo $newqty;
-                            $sql9 = "UPDATE stock SET qty = '$newqty' where code='$productCode'";
+                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND user_id = '" . (string) $loggedin_session . "'";
                             $update = mysqli_query($conn, $sql9);
                             if (!$update) {
                                 echo mysqli_error($conn);
@@ -468,8 +492,34 @@ $max_ipno = $retmaxno['mno'];
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass','" . (string) $loggedin_session . "')";
+                            $update92 = mysqli_query($conn, $sql92);
+                            $flag_stock1 = 1;
+                            if (!$update92) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e4';
+                                </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
                         }
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,product_name,product_code,product_design,product_size,product_qty) VALUES ('$ipno','$productName','$productCode','$productDesign','$productSize','$productQty')";
+                        if ($flag_stock1 != 1) {
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass','" . (string) $loggedin_session . "')";
+                            $update92 = mysqli_query($conn, $sql92);
+                            if (!$update92) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e4';
+                                </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                        }
+
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date','$productName','$productCode','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -482,8 +532,8 @@ $max_ipno = $retmaxno['mno'];
                             exit;
                         }
 
-                        $sql3 = "INSERT INTO products(name,code,design,size) VALUES ('$productName','$productCode','$productDesign','$productSize')";
-                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode'");
+                        $sql3 = "INSERT INTO products(name,code,design,size,user_id) VALUES ('$productName','$productCode','$productDesign','$productSize','" . (string) $loggedin_session . "')";
+                        $result = mysqli_query($conn, "SELECT code FROM products WHERE code = '$productCode' AND user_id = '" . (string) $loggedin_session . "'");
                         if ($result->num_rows == 0) {
                             $insert3 = mysqli_query($conn, $sql3);
                             if (!$insert3) {
@@ -496,9 +546,24 @@ $max_ipno = $retmaxno['mno'];
                                 exit;
                             }
                         }
-                        mysqli_commit($conn);
+
 
                     }
+                    if ($inpass_flag == 1) {
+                        $sql01 = "UPDATE profile SET inpass_count = inpass_count + 1 where user_id='" . (string) $loggedin_session . "'";
+                        $updipno = mysqli_query($conn, $sql01);
+                        if (!$updipno) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                            window.location.href = 'inpass.php?f=e8';
+                            </script>";
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+                    }
+                    mysqli_commit($conn);
+
                     echo "<script type='text/javascript'>
                 window.open('createpdfpass.php?no=$ipno&io=inpass');
                 </script>";
@@ -563,11 +628,21 @@ $max_ipno = $retmaxno['mno'];
                                     $table_active = 'table-active';
                                 }
                             }
+                            $time = strtotime($row['date']);
+                            $inpass_short_date = '';
+                            if (date('n', $time) > 4) {
+                                $temp_date = date('y', $time);
+                                $inpass_short_date = $temp_date . ($temp_date + 1);
+                            } else {
+                                $temp_date = date('y', $time);
+                                $inpass_short_date = ($temp_date - 1) . $temp_date;
+                            }
+
                             if (!empty($row)) {
                                 echo "
                     <tr class='$table_active'>
                     <td>
-                    {$row['no']}
+                    {$row['no']}/" . $inpass_short_date . "
                     </td>
                     <td>
                     {$row['date']}
@@ -579,11 +654,11 @@ $max_ipno = $retmaxno['mno'];
                     {$row['woc']}
                     </td>
                     <td>
-                    {$row['product_name']}
+                    " . ucwords($row['product_name']) . "
                     &nbsp;
                     {$row['product_code']}
                     &nbsp;
-                    {$row['product_design']}
+                    " . ucwords($row['product_design']) . "
                     &nbsp;
                     {$row['product_size']}
                     </td>

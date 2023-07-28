@@ -1,5 +1,6 @@
 <?php
 include 'conn.php';
+include 'checkuserlogin.php';
 ?>
 
 <?php
@@ -7,7 +8,6 @@ include 'conn.php';
 $p_name = 'All';
 $design = 'All';
 $size = 'All';
-$feature = 'All';
 $f = $_GET['f'];
 if ($f != 0) {
     $p_name = $_GET['i'];
@@ -16,7 +16,7 @@ if ($f != 0) {
 }
 
 //for item filter
-$sql2 = "SELECT name from company_products where 1=1";
+$sql2 = "SELECT name from company_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql2 .= " GROUP BY name";
 $retval2 = mysqli_query($conn, $sql2);
 if (!$retval2) {
@@ -24,7 +24,7 @@ if (!$retval2) {
 }
 
 //for design filter
-$sql3 = "SELECT design from company_products where 1=1";
+$sql3 = "SELECT design from company_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql3 .= " GROUP BY design";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
@@ -32,7 +32,7 @@ if (!$retval3) {
 }
 
 //for size filter
-$sql4 = "SELECT size from company_products where 1=1";
+$sql4 = "SELECT size from company_products WHERE user_id = '" . (string) $loggedin_session . "'";
 $sql4 .= " GROUP BY size";
 $retval4 = mysqli_query($conn, $sql4);
 if (!$retval4) {
@@ -40,7 +40,7 @@ if (!$retval4) {
 }
 
 //for table
-$sql = "SELECT * from company_products where 1=1";
+$sql = "SELECT * from company_products WHERE user_id = '" . (string) $loggedin_session . "'";
 
 if ($p_name != 'All') {
     $sql .= " AND name = '$p_name'";
@@ -142,16 +142,13 @@ if (!$retval) {
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id='sizefield' class="form-control" required name="size">
+                                <input type="text" id='sizefield'
+                                    onkeydown="if(['Space'].includes(arguments[0].code)){return false;};"
+                                    class="form-control" required name="size">
                                 <label for="sizefield" class='form-label'>Size</label>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="form-outline">
-                                <input type="text" id='featfield' class="form-control" name="features">
-                                <label for="featfield" class='form-label'>Features</label>
-                            </div>
-                        </div>
+
                         <div class="col">
                             <button name="add_company_product" class="btn btn-outline-secondary text-nowrap"
                                 data-mdb-ripple-color="dark">Add Product</button>
@@ -171,7 +168,7 @@ if (!$retval) {
                                 <?php
                                 while ($row = mysqli_fetch_assoc($retval2)) {
                                     echo "
-            <option>{$row['name']}</option>
+            <option> " . ucwords($row['name']) . "</option>
             ";
                                 }
                                 ?>
@@ -184,7 +181,7 @@ if (!$retval) {
                                 mysqli_data_seek($retval3, 0);
                                 while ($row = mysqli_fetch_assoc($retval3)) {
                                     echo "
-            <option>{$row['design']}</option>
+            <option> " . ucwords($row['design']) . "</option>
             ";
                                 }
                                 ?>
@@ -240,9 +237,7 @@ if (!$retval) {
                         <th>
                             Size
                         </th>
-                        <th>
-                            Feature
-                        </th>
+
                         <th>
 
                         </th>
@@ -260,16 +255,13 @@ if (!$retval) {
                     {$row['code']}
                 </td>
                 <td>
-                    {$row['name']}
+                " . ucwords($row['name']) . "
                 </td>
                 <td>
-                    {$row['design']}
+                " . ucwords($row['design']) . "
                 </td>
                 <td>
                     {$row['size']}
-                </td>
-                <td>
-                    {$row['features']}
                 </td>
                 <td>
                     <form method='post' id='delete_company_product' name='delete_company_product'>
@@ -304,7 +296,7 @@ if (!$retval) {
 if (isset($_POST['delete_company_product'])) {
 
     $delete_code = $_POST['id'];
-    $sql = "DELETE from company_products where code = '$delete_code'";
+    $sql = "DELETE from company_products where code = '$delete_code' AND user_id = '" . (string) $loggedin_session . "'";
     $retval7 = mysqli_query($conn, $sql);
     if (!$retval7) {
         echo "Error Occured";
@@ -323,13 +315,18 @@ if (isset($_POST['add_company_product'])) {
     $product_code = '';
     $product_size = '';
     $product_design = '';
-    $product_features = '';
+
     $product_name = $_POST['name'];
     $product_code = $_POST['code'];
     $product_size = $_POST['size'];
     $product_design = $_POST['design'];
-    $product_features = $_POST['features'];
-    $sql = "INSERT into company_products(code,name,design,size,features) VALUES ('$product_code','$product_name','$product_design','$product_size','$product_features')";
+
+    //converting to lowercase
+    $product_name = strtolower($product_name);
+    $product_design = strtolower($product_design);
+    $product_size = strtolower($product_size);
+
+    $sql = "INSERT into company_products(code,name,design,size,user_id) VALUES ('$product_code','$product_name','$product_design','$product_size','" . (string) $loggedin_session . "')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";
