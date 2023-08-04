@@ -247,9 +247,12 @@ while ($row = mysqli_fetch_assoc($retval5)) {
             });
             var productData;
 
+
+
             //for Product Code
             $(document).on("change", ".product_name", function () {
                 var productName = $(this).val();
+                var productSize = $(this).closest(".product_field").find(".product_size").val();
                 var productStockField = $(this).closest(".product_field").find(".product_stock");
                 var options = "<option selected value=''>None</option>";
 
@@ -257,7 +260,8 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     method: "POST",
                     url: "getstockdata.php",
                     data: {
-                        product_name: productName
+                        product_name: productName,
+                        product_size: productSize
                     },
                     success: function (response) {
                         if (response === "FALSE") {
@@ -270,7 +274,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             if (l > 0)
                                 for (i = 0; i < l; i++) {
 
-                                    options += '<option selected value="' + productData[i].name + "||" + productData[i].size + '" data-qty="' + productData[i].qty + '">' + "" + '' + capitalizeWords(productData[i].name) + '&nbsp;' + "" + '' + productData[i].size + '</option>';
+                                    options += '<option selected value="' + productData[i].name + "||" + productData[i].size + "||" + productData[i].wgs + '" data-qty="' + productData[i].qty + '">' + "" + '' + capitalizeWords(productData[i].name) + '&nbsp;' + "" + '' + productData[i].size + '&nbsp;' + "" + '' + productData[i].wgs + '</option>';
                                 }
                             options += "<option value='custom'>Custom</option>";
                             productStockField.html(options);
@@ -283,6 +287,10 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         alert(message);
                     }
                 });
+            });
+
+            $(document).on("keyup", ".product_size", function () {
+                $(".product_name").trigger("change");
             });
 
             //for Product Data from work order no
@@ -303,8 +311,8 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             stopExecution = true;
                         }
                         if (!response) {
-                            alert("A Work Order with this No. has not been generated yet");
-                            $('.work_order').val('');
+                            alert("WARNING: This Work Order with this No. has not been generated yet");
+                            // $('.work_order').val('');
                             stopExecution = true;
                         }
                     },
@@ -347,6 +355,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                     $(productNameField).trigger("change");
                                     productDesignField.val(capitalizeWords(productData[i].design));
                                     productSizeField.val(productData[i].size);
+                                    $(productNameField).trigger("change");
                                     productReqQtyField.val(productData[i].qty)
                                     initilizebootstrap();
 
@@ -399,8 +408,8 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             tableBody.innerHTML = '';
                             for (var i = 0; i < response.length; i++) {
                                 var row = document.createElement('tr');
-                                // var cell1 = document.createElement('td');
-                                // cell1.textContent = response[i].code;
+                                var cell1 = document.createElement('td');
+                                cell1.textContent = response[i].wgs;
                                 var cell2 = document.createElement('td');
                                 cell2.textContent = capitalizeWords(response[i].name);
                                 // var cell3 = document.createElement('td');
@@ -410,7 +419,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                 var cell5 = document.createElement('td');
                                 cell5.textContent = response[i].qty;
 
-                                // row.appendChild(cell1);
+                                row.appendChild(cell1);
                                 row.appendChild(cell2);
                                 // row.appendChild(cell3);
                                 row.appendChild(cell4);
@@ -528,6 +537,10 @@ while ($row = mysqli_fetch_assoc($retval5)) {
           <input type='text' hidden class='custom_field w-100 form-control' name='custom_field_size[]'>
           <label class='form-label'>Custom Product Size</label>
           </div>
+          <div class='form-outline mb-3 col w-50'>
+          <input type='text' hidden class='custom_field w-100 form-control' name='custom_field_wgs[]'>
+          <label class='form-label'>Custom Product A/C WGS WO#</label>
+          </div>
           </div>
           
            <caption name='product_cap' class='product_cap'></caption>
@@ -604,6 +617,20 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             <div class="row mb-2">
                                 <div class="col">
                                     <div class="form-outline mb-4">
+                                        <input type="text" list="wnolist" id="worder" required name="work_order"
+                                            class="work_order form-control">
+                                        <datalist id="wnolist">
+                                            <?php
+                                            while ($row = mysqli_fetch_assoc($retval7)) {
+                                                echo "<option>{$row['work_order_no']}</option>";
+                                            }
+                                            ?>
+                                        </datalist>
+                                        <label for="worder" class="form-label">Work Order No.</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-outline mb-4">
                                         <input list="companylist" class="form-control" required type="text"
                                             id="dest_name" name="dest_name">
                                         <datalist id="companylist">
@@ -616,12 +643,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                         <label for="dest_name" class='form-label'>Dest. Company</label>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="form-outline mb-4">
-                                        <input type="text" class="form-control" required name="woc" id="company_code">
-                                        <label for="company_code" class="form-label">A/C of WGD WO#</label>
-                                    </div>
-                                </div>
+
                             </div>
                             <div class="row mb-2">
                                 <div class="col">
@@ -639,24 +661,15 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <!-- Dummy -->
+                                    <!-- <div class="form-outline mb-4">
+                                        <input type="text" class="form-control" required name="woc" id="company_code">
+                                        <label for="company_code" class="form-label">A/C of WGD WO#</label>
+                                    </div> -->
                                 </div>
+
                             </div>
                             <div class="row mb-2">
-                                <div class="col">
-                                    <div class="form-outline mb-4">
-                                        <input type="text" list="wnolist" id="worder" required name="work_order"
-                                            class="work_order form-control">
-                                        <datalist id="wnolist">
-                                            <?php
-                                            while ($row = mysqli_fetch_assoc($retval7)) {
-                                                echo "<option>{$row['work_order_no']}</option>";
-                                            }
-                                            ?>
-                                        </datalist>
-                                        <label for="worder" class="form-label">Work Order No.</label>
-                                    </div>
-                                </div>
+
                                 <div class="col">
                                     <!-- Dummy -->
                                 </div>
@@ -684,14 +697,14 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         $opno = "";
                         $date = "";
                         $dest = "";
-                        $woc = "";
+                        //$woc = "";
                         $vechicle = "";
                         $wno = "";
                         $extras = "";
                         $opno = $_POST['opno'];
                         $date = $_POST['date'];
                         $dest = $_POST['dest_name'];
-                        $woc = $_POST['woc'];
+                        $woc = "none";
                         $vehicle = $_POST['vehicle'];
                         $wno = $_POST['work_order'];
                         $extras = $_POST['extras'];
@@ -699,7 +712,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         //capitalise vehicle no
                         $vehicle = strtoupper($vehicle);
 
-                        
+
                         if (!$conn) {
                         }
                         $tran = 'START TRANSACTION';
@@ -725,7 +738,35 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $outpass_flag = 1;
                         }
 
-                        $sql = "INSERT INTO outpass(no,date,dest,woc,vehicleno,work_order_no,extras,user_id) VALUES ('$opno','$date','$dest','$woc','$vehicle','$wno','$extras','" . (string) $loggedin_session . "')";
+
+                        //CHECK ID WORK ORDER ALREADY EXISTS
+                        $wno_exists = 1;
+                        $sql = "SELECT work_order_no FROM work_orders where work_order_no = '$wno' AND user_id='" . (string) $loggedin_session . "'";
+                        $wnocheck = mysqli_query($conn, $sql);
+                        if (!$wnocheck) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e9';
+                        </script>";
+                            exit;
+                        }
+                        if ($wnocheck->num_rows == 0) {
+                            $wno_exists = 0;
+                            //ADDING TO WORK ORDERS
+                            $sql = "INSERT INTO work_orders(work_order_no,date,company,extras,status,user_id) VALUES ('$wno','$date','$dest','$extras','Closed','" . (string) $loggedin_session . "')";
+                            $insert9 = mysqli_query($conn, $sql);
+                            if (!$insert9) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                        window.location.href = 'outpass.php?f=e8';
+                        </script>";
+                                exit;
+                            }
+                        }
+
+                        $sql = "INSERT INTO outpass(no,date,dest,vehicleno,work_order_no,extras,user_id) VALUES ('$opno','$date','$dest','$vehicle','$wno','$extras','" . (string) $loggedin_session . "')";
                         $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$dest','$woc','" . (string) $loggedin_session . "')";
                         $insert = mysqli_query($conn, $sql);
                         if (!$insert) {
@@ -739,7 +780,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 
                         $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$dest' AND user_id = '" . (string) $loggedin_session . "'");
                         if ($result->num_rows == 0) {
-                            $insert2 = mysqli_query($conn, $sql2);
+                            //$insert2 = mysqli_query($conn, $sql2);
                         }
                         $ino = "";
                         $products = $_POST['products'];
@@ -751,6 +792,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         $productDatas_stock = $_POST['product_stock'];
                         $productCodes_customstockName = $_POST['custom_field_name'];
                         $productCodes_customstockSize = $_POST['custom_field_size'];
+                        $productCodes_customstockWgs = $_POST['custom_field_wgs'];
                         $reqQtys = $_POST['req_qty'];
 
                         for ($i = 0; $i < count($products); $i++) {
@@ -763,19 +805,23 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $productData_stock = $productDatas_stock[$i];
                             $productCode_customstockName = $productCodes_customstockName[$i];
                             $productCode_customstockSize = $productCodes_customstockSize[$i];
+                            $productCode_customstockWgs = $productCodes_customstockWgs[$i];
                             $productName_bill = $productName;
 
                             if ($productData_stock == 'custom') {
                                 //$productData_stock = $productCode_customstock;
                                 $productName_stock = $productCode_customstockName;
                                 $productSize_stock = $productCode_customstockSize;
+                                $productWgs_stock = $productCode_customstockWgs;
                             } else {
                                 $productName_stock = '';
                                 $productSize_stock = '';
+                                $productWgs_stock = '';
                                 $parts = explode('||', $productData_stock);
                                 if ($parts) {
                                     $productName_stock = $parts[0];
                                     $productSize_stock = $parts[1];
+                                    $productWgs_stock = $parts[2];
                                 } else {
                                     // Handle the case when '||' is not found in the string
                                 }
@@ -792,6 +838,21 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 
                             $reqQty = $reqQtys[$i];
 
+                            //ADDDING TO WORK ORDER PRODUCTS
+                            if ($wno_exists == 0) {
+                                $sql7 = "INSERT INTO work_order_products(work_order_no,date_of_entry,code,name,design,size,org_qty,qty,user_id) VALUES ('$wno','$date','$productCode','$productName_bill','$productDesign','$productSize','$productQty','$productQty','" . (string) $loggedin_session . "')";
+                                $insert2 = mysqli_query($conn, $sql7);
+                                if (!$insert2) {
+                                    echo mysqli_error($conn);
+                                    mysqli_rollback($conn);
+                                    echo "<script type='text/javascript'>
+                            window.location.href = 'workorder.php?f=e2';
+                            </script>";
+                                    exit;
+                                }
+                            }
+
+
                             $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$opno','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
@@ -804,7 +865,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             }
 
                             //updating quantity in stock
-                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock' AND user_id = '" . (string) $loggedin_session . "'";
+                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock' AND wgs = '$productWgs_stock' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo mysqli_error($conn);
@@ -818,7 +879,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $oldqty = $row8[0];
                             $newqty = $oldqty - $productQty;
                             if (!($newqty < 0)) {
-                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock' AND user_id = '" . (string) $loggedin_session . "'";
+                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock' AND wgs = '$productWgs_stock' AND user_id = '" . (string) $loggedin_session . "'";
                                 $update = mysqli_query($conn, $sql9);
                                 if (!$update) {
                                     echo mysqli_error($conn);
@@ -827,7 +888,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         window.location.href = 'outpass.php?f=e4';
                         </script>";
                                 }
-                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','Outpass','" . (string) $loggedin_session . "')";
+                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','$productWgs_stock','Outpass','" . (string) $loggedin_session . "')";
                                 $update92 = mysqli_query($conn, $sql92);
                                 if (!$update92) {
                                     echo mysqli_error($conn);
@@ -934,6 +995,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                 <div class="table-responsive" style="max-height:500px;">
                                     <table class='table table-sm'>
                                         <thead class="table-light">
+                                            <th>A/C WGS WO#</th>
                                             <th>Name</th>
                                             <th>Size</th>
                                             <th>Available. Qty</th>
@@ -986,7 +1048,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         Vehicle No.
                     </th>
                     <th>
-                        Extras
+                        Note
                     </th>
                 </thead>
                 <tbody>
@@ -1024,8 +1086,6 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     </td>
                     <td>
                     {$row['dest']}
-                    &nbsp;
-                    {$row['woc']}
                     </td>
                     <td>
                     {$row['work_order']}

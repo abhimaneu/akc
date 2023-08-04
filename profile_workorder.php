@@ -246,7 +246,7 @@ if (!$retval) {
                         Product Status
                     </th>
                     <th>
-                        Extras
+                        Note
                     </th>
                 </thead>
                 <tbody id='tablebody'>

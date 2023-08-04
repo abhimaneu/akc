@@ -20,13 +20,19 @@ if (!$conn) {
 }
 
 
-$SorD = "A/C";
+$SorD = "";
 $title = "";
+$filename = $no;
 if ($type == 'inpass') {
     $title = "INPASS";
+    $SorD = "From";
+    $filename .= ' INPASS';
 } else if ($type == 'outpass') {
     $title = "OUTPASS";
+    $SorD = "To";
+    $filename .= ' OUTPASS';
 }
+
 $date = "";
 $company = "";
 $company_op = "";
@@ -34,7 +40,7 @@ $vehicle_no = "";
 $extras = "";
 $total_pieces = 0;
 $profile_company_name = '';
-//$profile_company_address = '';
+$profile_company_address = '';
 $sql3 = " SELECT * FROM profile WHERE user_id = '" . (string) $loggedin_session . "'";
 $retval3 = mysqli_query($conn, $sql3);
 if (!$retval3) {
@@ -43,7 +49,7 @@ if (!$retval3) {
 }
 $company_data = mysqli_fetch_assoc($retval3);
 $profile_company_name = $company_data['name'];
-//$profile_company_address = $company_data['address'];
+$profile_company_address = $company_data['address'];
 if ($type == 'inpass') {
     if ($inpass_old == 1) {
         $sql = " SELECT * FROM inpass_old,inpass_products_old WHERE inpass_old.no_year = inpass_products_old.no_year AND inpass_products_old.no_year = '$no' AND inpass_old.user_id = '" . (string) $loggedin_session . "' AND inpass_products_old.user_id = '" . (string) $loggedin_session . "' ORDER BY no DESC";
@@ -82,6 +88,9 @@ if ($type == 'inpass') {
     $source_opno = $result['op'];
     $vehicle_no = $result['vehicleno'];
     $extras = $result['extras'];
+    $timestamp = $result['timestamp'];
+    $datetime = explode(" ",$timestamp);
+    $time = $datetime[1];
     $product_code = array();
     $product_name = array();
     $product_design = array();
@@ -137,13 +146,12 @@ if ($type == 'outpass') {
     $result = mysqli_fetch_assoc($retval);
     $date = $result['date'];
     $company = $result['dest'];
-    $company_woc = $result['woc'];
-    $vehicle_no = $result['vehicleno'];
-    if ($type == 'inpass') {
-        $company_op = $result['op'];
-    }
+    $company_woc = $result['work_order_no'];
     $vehicle_no = $result['vehicleno'];
     $extras = $result['extras'];
+    $timestamp = $result['timestamp'];
+    $datetime = explode(" ",$timestamp);
+    $time = $datetime[1];
     mysqli_data_seek($retval2, 0);
     $i = 0;
     while ($row = mysqli_fetch_assoc($retval2)) {
@@ -177,22 +185,33 @@ $pdf->Cell(0, 8, $title, 0, 1, 'C'); // Add centered text
 $pdf->SetFont('helvetica', 'B', 14);
 $pdf->Cell(0, 8, $profile_company_name, 0, 1, 'C');
 $pdf->SetFont('helvetica', '', 9);
-$pdf->Cell(0, 5, 'NC John Dippo Road Thumpoli, Alapuzha', 0, 1, 'C');
+$pdf->Cell(0, 5, $profile_company_address, 0, 1, 'C');
 $pdf->Ln(9); // Add some vertical spacing
 
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(0, 8, "{$SorD}: {$company}", 0, 0);
 $pdf->SetFont('helvetica', '', 10);
-$pdf->Cell(0, 8, "Date:  {$date}", 0, 1);
-$pdf->SetFont('helvetica', '', 10);
-$pdf->Cell(0, 8,  ucfirst($type)." No.: {$no}", 0, 1);
-$pdf->SetFont('helvetica', '', 10);
-$pdf->Cell(0, 8, "{$SorD}: {$company} {$company_woc}", 0, 1);
+$pdf->Cell(0, 8, "Date:  {$date}", 0, 1, 'R');
 if ($type == 'inpass') {
-    $pdf->Cell(0, 8, "OP#: {$source_opno}", 0, 1);
+    $pdf->Cell(0, 8, "WO#: {$company_woc}", 0, 0, 'L');
 }
-$pdf->Cell(0, 8, "Vehicle No. : {$vehicle_no}", 0, 1);
+if ($type == 'outpass') {
+    $pdf->Cell(0, 8, "WO#: {$company_woc}", 0, 0, 'L');
+}
+$pdf->Cell(0, 8, "Time: " . date('g:i A' , strtotime($time)), 0, 1, 'R');
+if($type == 'inpass'){
+    $pdf->Cell(0, 8, "OP#: {$source_opno}", 0, 0, 'L');
+}
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 8,  ucfirst($type)." No.: {$no}", 0, 1 , 'R');
+
 if (!empty($extras)) {
-    $pdf->Cell(0, 8, "extras : {$extras}", 0, 1);
+    $pdf->Cell(0, 8, "Note: {$extras}", 0, 0);
 }
+$pdf->SetFont('helvetica', '', 10);
+// $pdf->Cell(0, 8, "{$SorD}: {$company} {$company_woc}", 0, 1);
+$pdf->Cell(0, 8, "Vehicle No.: {$vehicle_no}", 0, 1, 'R');
+
 $pdf->Ln(10);
 
 $pdf->SetFont('helvetica', 'B', 10);
@@ -262,7 +281,8 @@ $pdf->Cell(0, 5, 'Authorised Signatory', 0, 1, 'R');
 
 $pdf->SetFillColor(240, 240, 240);
 
-$pdf->Output('output.pdf', 'I'); // 'D' to force download, or 'I' to display in the browser
+
+$pdf->Output($filename . '.pdf', 'I'); // 'D' to force download, or 'I' to display in the browser
 
 
 ?>

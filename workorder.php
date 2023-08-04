@@ -257,7 +257,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             data-mdb-ripple-color="dark">Add Product</button> <br>
                         <div class="form-outline mb-4 mt-4">
                             <textarea name='extras' id='extras' class='form-control'></textarea>
-                            <label for='extras' class='form-label'>Extras</label>
+                            <label for='extras' class='form-label'>Note</label>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block" name="work_orders">Generate Work
                             Order</button>
@@ -365,7 +365,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         Status
                     </th>
                     <th>
-                        Extras
+                        Note
                     </th>
                 </thead>
                 <tbody>

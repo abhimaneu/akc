@@ -119,7 +119,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             var message = "ERROR: something went wrong on the MYSQL side";
                             alert(message);
                         } else {
-                            $("#company_code").val(response);
+                            //$("#company_code").val(response);
                             initilizebootstrap();
 
                         }
@@ -188,6 +188,31 @@ while ($row = mysqli_fetch_assoc($retval4)) {
 
         });
 
+        $(document).ready(function () {
+            // Add product field
+            $("#add_extras_field").click(function () {
+                var extrasfield = `<div class='extras_field p-4 pt-1'>
+                <div class='form-text d-flex justify-content-end pb-2'>Remember Not to Add Products With Extras</div>
+                <div class='col p-2'>
+                <div class="form-outline">
+                    <textarea class="form-control" id="extras_name_field" name='extras_name_field' rows="4"></textarea>
+                        <label class="form-label" for="extras_name_field">Extras Name</label>
+                </div>
+                </div>
+                <div class='col p-2'>
+                <div class="form-outline">
+                    <input type='text' class="form-control" id="extras_qty_field" name='extras_qty_field'>
+                        <label class="form-label" for="extras_qty_field">Extras Qty</label>
+                        </div>
+                </div>
+                </div>`
+                $("#product_fields").html(extrasfield);
+                $("#add_product_field").prop('disabled', true)
+                initilizebootstrap();
+            })
+        })
+
+        //Adding Product Field
         $(document).ready(function () {
             // Add product field
             $("#add_product_field").click(function () {
@@ -323,8 +348,8 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             </div>
                             <div class="col">
                                 <div class="form-outline mb-4">
-                                    <input type="text" class="form-control" required name="woc" id="company_code">
-                                    <label for="woc" class="form-label">A/C of WGD WO#</label>
+                                    <input type="text" class="form-control" required name="wgs" id="company_code">
+                                    <label for="wgs" class="form-label">A/C of WGS WO#</label>
                                 </div>
                             </div>
                         </div>
@@ -343,7 +368,12 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                                 </div>
                             </div>
                         </div>
-
+                        <div class="form-check">
+                            <input class="form-check-input add_extras_field" name='add_extras' type="checkbox"
+                                id="add_extras_field" />
+                            <label class="form-check-label" for="add_extras_field">Add Extras</label>
+                        </div>
+                        <br>
                         <label class="form-check-label">
                             <h5>Products</h5>
                         </label> <br>
@@ -351,12 +381,17 @@ while ($row = mysqli_fetch_assoc($retval4)) {
 
                         </div>
 
+
                         <button type="button" id="add_product_field" class="btn btn-outline-secondary"
                             data-mdb-ripple-color="dark">Add Product</button>
+
+
+
                         <br>
+
                         <div class="form-outline mb-4 mt-4">
                             <textarea id="extras" class="form-control" name="extras"></textarea>
-                            <label for="extras" class="form-label">Extras</label>
+                            <label for="extras" class="form-label">Note</label>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block" name="ip">Generate InPass</button>
                     </form>
@@ -364,10 +399,11 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                 <br><br>
                 <?php
                 if (isset($_POST['ip'])) {
+                    $add_extras = 0;
                     $ipno = "";
                     $date = "";
                     $source = "";
-                    $woc = "";
+                    $wgs = "";
                     $op = "";
                     $vehicle = "";
                     $p_name = "";
@@ -377,14 +413,17 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     $ipno = $_POST['ipno'];
                     $date = $_POST['date'];
                     $source = $_POST['source'];
-                    $woc = $_POST['woc'];
+                    $wgs = $_POST['wgs'];
                     $op = $_POST['opno'];
                     $vehicle = $_POST['vehicle'];
-                    $p_name = $_POST['products'];
-                    $p_code = $_POST['product_code'];
-                    $p_design = $_POST['product_design'];
+
+
+
+                    // $p_name = $_POST['products'];
+                    // $p_code = $_POST['product_code'];
+                    // $p_design = $_POST['product_design'];
                     $extras = $_POST['extras'];
-                    
+
                     if (!$conn) {
                     }
 
@@ -415,8 +454,63 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     //converting to uppercase
                     $vehicle = strtoupper($vehicle);
 
-                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$woc','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
-                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$woc','" . (string) $loggedin_session . "')";
+                    //ADDING EXTRAS
+                    if (isset($_POST['add_extras'])) {
+
+                        $add_extras = 1;
+                        $extras_name = $_POST['extras_name_field'];
+                        $extras_qty = $_POST['extras_qty_field'];
+                        $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$wgs','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
+                        $insert9 = mysqli_query($conn, $sql);
+                        if (!$insert9) {
+                            echo mysqli_error($conn);
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                        window.location.href = 'inpass.php?f=e1';
+                        </script>";
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date','$extras_name',' ',' ',' ','$extras_qty','" . (string) $loggedin_session . "')";
+                        $insert10 = mysqli_query($conn, $sql4);
+                        if (!$insert10) {
+                            echo mysqli_error($conn);
+                            echo "Error Occured";
+                            mysqli_rollback($conn);
+                            echo "<script type='text/javascript'>
+                            window.location.href = 'inpass.php?f=e5';
+                            </script>";
+                            echo "<script>alert('Some Error Occured')</script>";
+                            exit;
+                        }
+
+                        if ($inpass_flag == 1) {
+                            $sql01 = "UPDATE profile SET inpass_count = inpass_count + 1 where user_id='" . (string) $loggedin_session . "'";
+                            $updipno = mysqli_query($conn, $sql01);
+                            if (!$updipno) {
+                                echo mysqli_error($conn);
+                                mysqli_rollback($conn);
+                                echo "<script type='text/javascript'>
+                                window.location.href = 'inpass.php?f=e8';
+                                </script>";
+                                echo "<script>alert('Some Error Occured')</script>";
+                                exit;
+                            }
+                        }
+                        mysqli_commit($conn);
+                        echo "<script type='text/javascript'>
+                window.open('createpdfpass.php?no=$ipno&io=inpass');
+                </script>";
+                        echo "<script type='text/javascript'>
+                window.location.href = 'inpass.php?f=s';
+                </script>";
+                        exit;
+                    }
+
+
+                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$wgs','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
+                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$wgs','" . (string) $loggedin_session . "')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
@@ -450,8 +544,8 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                         $productDesign = strtolower($productDesign);
                         $productSize = strtolower($productSize);
 
-                        $sql7 = "INSERT INTO stock(item,design,size,qty,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
-                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND user_id = '" . (string) $loggedin_session . "'");
+                        $sql7 = "INSERT INTO stock(item,design,size,qty,wgs,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','$wgs','" . (string) $loggedin_session . "')";
+                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND wgs = '$wgs' AND user_id = '" . (string) $loggedin_session . "'");
                         $flag_stock1 = 0;
                         if ($result2->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql7);
@@ -465,7 +559,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                                 exit;
                             }
                         } else {
-                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND user_id = '" . (string) $loggedin_session . "'";
+                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND wgs = '$wgs' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo "Error Occured";
@@ -481,7 +575,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             $newqty = $oldqty + $productQty;
                             echo $oldqty;
                             echo $newqty;
-                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND user_id = '" . (string) $loggedin_session . "'";
+                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND wgs = '$wgs' AND user_id = '" . (string) $loggedin_session . "'";
                             $update = mysqli_query($conn, $sql9);
                             if (!$update) {
                                 echo mysqli_error($conn);
@@ -492,7 +586,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','Inpass','" . (string) $loggedin_session . "')";
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','$wgs','Inpass','" . (string) $loggedin_session . "')";
                             $update92 = mysqli_query($conn, $sql92);
                             $flag_stock1 = 1;
                             if (!$update92) {
@@ -506,7 +600,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             }
                         }
                         if ($flag_stock1 != 1) {
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','Inpass','" . (string) $loggedin_session . "')";
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','$wgs','Inpass','" . (string) $loggedin_session . "')";
                             $update92 = mysqli_query($conn, $sql92);
                             if (!$update92) {
                                 echo mysqli_error($conn);
@@ -595,7 +689,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                         Source Company
                     </th>
                     <th>
-                        WOC
+                        A/C WGS WO#
                     </th>
                     <th>
                         Product Description/Size
@@ -610,7 +704,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                         Vehicle No.
                     </th>
                     <th>
-                        Extras
+                        Note
                     </th>
                 </thead>
                 <tbody>

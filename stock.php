@@ -8,11 +8,13 @@ include 'nav.php';
 $item = 'All';
 $design = 'All';
 $size = 'All';
+$wgs_fill = 'All';
 $f = $_GET['f'];
 if ($f != 0) {
     $item = $_GET['i'];
     $design = $_GET['d'];
     $size = $_GET['s'];
+    $wgs_fill = $_GET['w'];
 }
 
 //for item filter
@@ -39,6 +41,14 @@ if (!$retval4) {
     echo mysqli_error($conn);
 }
 
+//for wgs filter
+$sql5 = "SELECT wgs from stock WHERE user_id = '" . (string) $loggedin_session . "'";
+$sql5 .= " GROUP BY wgs";
+$retval5 = mysqli_query($conn, $sql5);
+if (!$retval5) {
+    echo mysqli_error($conn);
+}
+
 //for table
 $sql = "SELECT * from stock WHERE user_id = '" . (string) $loggedin_session . "'";
 
@@ -52,6 +62,10 @@ if ($design != 'All') {
 
 if ($size != 'All') {
     $sql .= " AND size = '$size'";
+}
+
+if ($wgs_fill != 'All') {
+    $sql .= " AND wgs = '$wgs_fill'";
 }
 
 $retval = mysqli_query($conn, $sql);
@@ -107,16 +121,18 @@ if (!$retval) {
         $('.edit-btn').click(function (e) {
             e.preventDefault(); // Prevent the default form submission
 
-            var index_editpopup = $(this).closest('tr').find('td:eq(5)').text().trim();
-            var name_editpopup = $(this).closest('tr').find('td:eq(1)').text().trim();
-            var design_editpopup = $(this).closest('tr').find('td:eq(2)').text().trim();
-            var size_editpopup = $(this).closest('tr').find('td:eq(3)').text().trim();
-            var qty_editpopup = $(this).closest('tr').find('td:eq(4)').text().trim();
+            var index_editpopup = $(this).closest('tr').find('td:eq(6)').text().trim();
+            var wgs_editpopup = $(this).closest('tr').find('td:eq(1)').text().trim();
+            var name_editpopup = $(this).closest('tr').find('td:eq(2)').text().trim();
+            var design_editpopup = $(this).closest('tr').find('td:eq(3)').text().trim();
+            var size_editpopup = $(this).closest('tr').find('td:eq(4)').text().trim();
+            var qty_editpopup = $(this).closest('tr').find('td:eq(5)').text().trim();
 
             $('#name_edit').val(name_editpopup);
             $('#design_edit').val(design_editpopup);
             $('#size_edit').val(size_editpopup);
             $('#qty_edit').val(qty_editpopup);
+            $('#wgs_edit').val(wgs_editpopup);
             $('#index_edit').val(index_editpopup);
             initilizebootstrap();
         });
@@ -198,6 +214,13 @@ if (!$retval) {
                                 <div class='row pb-4'>
                                     <div class="col">
                                         <div class="form-outline">
+                                            <input type="text" id='wgs_edit' class="form-control" required
+                                                name="wgs_edit">
+                                            <label for="wgseditfield" class='form-label'>A/C WGS WO#</label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-outline">
                                             <input type="text" id='name_edit' class="form-control" required
                                                 name="name_edit">
                                             <label for="nameeditfield" class='form-label'>Name of Item</label>
@@ -254,6 +277,12 @@ if (!$retval) {
                 <div class='row'>
                     <div class="col">
                         <div class="form-outline">
+                            <input type="text" id='wgsaddfield' class="form-control" required name="wgs_add">
+                            <label for="wgsaddfield" class='form-label'>A/C WGS WO#</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-outline">
                             <input type="text" id='nameaddfield' class="form-control" required name="name_add">
                             <label for="nameaddfield" class='form-label'>Name of Item</label>
                         </div>
@@ -266,7 +295,9 @@ if (!$retval) {
                     </div>
                     <div class="col">
                         <div class="form-outline">
-                            <input type="text" id='sizeaddfield' class="form-control"  onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" required name="size_add">
+                            <input type="text" id='sizeaddfield' class="form-control"
+                                onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" required
+                                name="size_add">
                             <label for="sizeaddfield" class='form-label'>Size</label>
                         </div>
                     </div>
@@ -289,6 +320,19 @@ if (!$retval) {
                 <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
                     <h4 class='mb-4'>Filter</h4>
                     <div class="col justify-content">
+
+                        <label>A/C WGS WO#</label>
+                        <select name='wgs'>
+                            <option selected>All</option>
+                            <?php
+                            while ($row = mysqli_fetch_assoc($retval5)) {
+                                echo "
+            <option> " . ucwords($row['wgs']) . "</option>
+            ";
+                            }
+                            ?>
+                        </select>
+                        &nbsp;
 
                         <label>Item</label>
                         <select name='item'>
@@ -360,6 +404,9 @@ if (!$retval) {
                         No.
                     </th>
                     <th>
+                        A/C WGS WO#
+                    </th>
+                    <th>
                         Item
                     </th>
                     <th>
@@ -383,6 +430,9 @@ if (!$retval) {
                 <tr>
                 <td>
                     $i
+                </td>
+                <td>
+                " . ucwords($row['wgs']) . "
                 </td>
                 <td>
                 " . ucwords($row['item']) . "
@@ -430,9 +480,10 @@ if (isset($_POST['filter'])) {
     $item_fil = $_POST['item'];
     $design_fil = $_POST['design'];
     $size_fil = $_POST['size'];
+    $wgs_fil = $_POST['wgs'];
 
     echo "<script type='text/javascript'>
-            window.location.href = 'stock.php?f=1&i=$item_fil&d=$design_fil&s=$size_fil';
+            window.location.href = 'stock.php?f=1&i=$item_fil&d=$design_fil&s=$size_fil&w=$wgs_fil';
             </script>";
 }
 
@@ -445,11 +496,13 @@ if (isset($_POST['add_stock'])) {
     $design_add = '';
     $size_add = '';
     $qty_add = '';
+    $wgs_add = '';
 
     $name_add = $_POST['name_add'];
     $design_add = $_POST['design_add'];
     $size_add = $_POST['size_add'];
     $qty_add = $_POST['qty_add'];
+    $wgs_add = $_POST['wgs_add'];
 
     //converting to lowercase
     $name_add = strtolower($name_add);
@@ -463,7 +516,7 @@ if (isset($_POST['add_stock'])) {
         exit;
     }
 
-    $sql = "INSERT into stock(item,design,size,qty,user_id) VALUES ('$name_add','$design_add','$size_add','$qty_add','" . (string) $loggedin_session . "')";
+    $sql = "INSERT into stock(item,design,size,qty,wgs,user_id) VALUES ('$name_add','$design_add','$size_add','$qty_add','$wgs_add','" . (string) $loggedin_session . "')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";
@@ -475,7 +528,7 @@ if (isset($_POST['add_stock'])) {
         echo "<script>alert('Some Error Occured')</script>";
         exit;
     }
-    $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$name_add','$size_add','$qty_add','$qty_add','Inpass','" . (string) $loggedin_session . "')";
+    $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$name_add','$size_add','$qty_add','$qty_add','$wgs_add','Inpass','" . (string) $loggedin_session . "')";
     $update92 = mysqli_query($conn, $sql92);
     if (!$update92) {
         echo mysqli_error($conn);
@@ -501,6 +554,7 @@ if (isset($_POST['save'])) {
     $design_edit = $_POST['design_edit'];
     $size_edit = $_POST['size_edit'];
     $qty_edit = $_POST['qty_edit'];
+    $wgs_edit = $_POST['wgs_edit'];
     $index_edit = $_POST['index_edit'];
 
     //converting to lowercase
@@ -514,7 +568,7 @@ if (isset($_POST['save'])) {
         echo mysqli_error($conn);
     }
 
-    $sql = "UPDATE `stock` SET `item`='$name_edit',`design`='$design_edit',`size`='$size_edit',`qty`='$qty_edit' WHERE `index` = $index_edit AND `user_id` = '" . (string) $loggedin_session . "'";
+    $sql = "UPDATE `stock` SET `item`='$name_edit',`design`='$design_edit',`size`='$size_edit',`qty`='$qty_edit',`wgs`='$wgs_edit' WHERE `index` = $index_edit AND `user_id` = '" . (string) $loggedin_session . "'";
     $update1 = mysqli_query($conn, $sql);
     if (!$update1) {
         echo mysqli_error($conn);
@@ -526,7 +580,7 @@ if (isset($_POST['save'])) {
         exit;
     }
 
-    $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$name_edit','$size_edit','$qty_edit','$qty_edit','Manual','" . (string) $loggedin_session . "')";
+    $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$name_edit','$size_edit','$qty_edit','$qty_edit','$wgs_edit','Manual','" . (string) $loggedin_session . "')";
     $update92 = mysqli_query($conn, $sql92);
     if (!$update92) {
         echo mysqli_error($conn);
@@ -549,6 +603,7 @@ if (isset($_POST['delete'])) {
     $design_edit = $_POST['design_edit'];
     $size_edit = $_POST['size_edit'];
     $qty_edit = $_POST['qty_edit'];
+    $wgs_edit = $_POST['wgs_edit'];
     $index_edit = $_POST['index_edit'];
 
     //converting to lowercase
@@ -568,7 +623,7 @@ if (isset($_POST['delete'])) {
         exit;
     }
 
-    $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,type,user_id) VALUES ('$name_edit','$size_edit','0','0','Delete','" . (string) $loggedin_session . "')";
+    $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$name_edit','$size_edit','0','0','$wgs_edit','Delete','" . (string) $loggedin_session . "')";
     $update92 = mysqli_query($conn, $sql92);
     if (!$update92) {
         echo mysqli_error($conn);

@@ -510,7 +510,7 @@ if (!$retval) {
                                             </div>
                                             <div class="form-outline mt-4 mb-4 w-50">
                                                 <input type="text" class="form-control" id="extras" name="extras">
-                                                <label for="extras" class='form-label'>Extras</label>
+                                                <label for="extras" class='form-label'>Note</label>
                                             </div>
 
                                             <input type="submit" class="btn btn-success" id='bsave' name="save"
@@ -562,7 +562,7 @@ if (!$retval) {
                                     Product Status
                                 </th>
                                 <th>
-                                    Extras
+                                    Note
                                 </th>
                                 <th>
 

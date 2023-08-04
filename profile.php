@@ -19,11 +19,13 @@ $name = "";
 $wo = "";
 $gstin = '';
 $phoneno = '';
+$address = '';
 while ($row = $retval->fetch_assoc()) {
     $name = $row['name'];
     $wo = $row['wo'];
     $gstin = $row['gstin'];
     $phoneno = $row['phoneno'];
+    $address = $row['address'];
 }
 
 $sql = "SELECT * from vehicles WHERE user_id = '" . (string) $loggedin_session . "'";
@@ -79,10 +81,12 @@ if (!$retval5) {
             var CodeField = $(".editcompanyfields").find(".ccode");
             var GstField = $(".editcompanyfields").find(".cgstin");
             var PhonenoField = $(".editcompanyfields").find(".cphoneno");
+            var AddressField = $(".editcompanyfields").find(".caddress");
             NameField.val('<?php echo $name ?>');
             CodeField.val('<?php echo $wo ?>');
             GstField.val('<?php echo $gstin ?>');
             PhonenoField.val('<?php echo $phoneno ?>');
+            AddressField.val('<?php echo $address ?>');
 
 
             $('#editcompanyPopup').show();
@@ -115,7 +119,7 @@ if (!$retval5) {
                             <div class="col-xl-10">
                                 <form id="editcompany" class="editcompanyfields" method="post">
                                     <h4></h4>
-                                    <div class="row w-75 mb-4">
+                                    <div class="row mb-4">
                                         <div class='col'>
                                             <div class="form-outline">
                                                 <input type="text" id="companyname" class="form-control cname"
@@ -139,12 +143,22 @@ if (!$retval5) {
                                                 <label for="comgstin" class='form-label'>Company GSTIN</label>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row mb-4">
 
-                                        <div class='col'>
+                                        <div class='col-md-3'>
                                             <div class="form-outline">
                                                 <input type="text" id="comphoneno" class="form-control cphoneno"
                                                     required name="company_phoneno">
                                                 <label for="comphoneno" class='form-label'>Phone No.</label>
+                                            </div>
+                                        </div>
+
+                                        <div class='col-md-5'>
+                                            <div class="form-outline">
+                                                <input type="text" id="comaddress" class="form-control caddress"
+                                                    required name="company_address">
+                                                <label for="comaddress" class='form-label'>Address</label>
                                             </div>
                                         </div>
                                     </div>
@@ -255,7 +269,10 @@ if (!$retval5) {
                 <div class="col">
                     <p class='fs-6 fw-light'></p>
                     <h1 class="display-6">
-
+                    <p class='fs-6 fw-light'>Address</p>
+                    <h1 class="display-6">
+                        <?php echo $address ?>
+                    </h1>
                     </h1>
                 </div>
 
@@ -711,7 +728,8 @@ if (isset($_POST['save'])) {
     $ccode = $_POST['company_code'];
     $cgstin = $_POST['company_gstin'];
     $cphoneno = $_POST['company_phoneno'];
-    $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin',phoneno='$cphoneno' WHERE user_id = '" . (string) $loggedin_session . "'";
+    $caddress = $_POST['company_address'];
+    $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin',phoneno='$cphoneno',address='$caddress' WHERE user_id = '" . (string) $loggedin_session . "'";
     $updatedata = mysqli_query($conn, $sqlupdate);
     if (!$updatedata) {
         echo mysqli_error($conn);

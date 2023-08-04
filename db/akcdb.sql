@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 28, 2023 at 05:21 PM
+-- Generation Time: Aug 04, 2023 at 05:26 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -198,9 +198,9 @@ CREATE TABLE IF NOT EXISTS `outpass` (
   `no` int NOT NULL,
   `no_year` varchar(15) NOT NULL,
   `date` date NOT NULL,
+  `woc` varchar(10) NOT NULL DEFAULT ' ',
   `work_order_no` varchar(25) NOT NULL,
   `dest` varchar(125) NOT NULL,
-  `woc` varchar(125) NOT NULL,
   `vehicleno` varchar(50) NOT NULL,
   `extras` varchar(125) NOT NULL,
   `type` varchar(10) NOT NULL DEFAULT 'outpass',
@@ -299,20 +299,13 @@ CREATE TABLE IF NOT EXISTS `profile` (
   `wo` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `gstin` varchar(50) NOT NULL,
   `phoneno` varchar(15) NOT NULL,
+  `address` varchar(50) NOT NULL,
   `inpass_count` int NOT NULL DEFAULT '1',
   `outpass_count` int NOT NULL DEFAULT '1',
   `user_id` varchar(50) NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `profile`
---
-
-INSERT INTO `profile` (`name`, `wo`, `gstin`, `phoneno`, `inpass_count`, `outpass_count`, `user_id`, `password`) VALUES
-('Akshay Coir', 'akc', 'GSTIN0000001', '9000000001', 5, 4, 'akshaycoir', '$2y$10$qHN0ldGy/uQ3yG6MV7RSkuFXtM9W/WwltD1MPWVUS7ykkDgrYkTBC'),
-('New', 'AK123', 'GSTIN2392039', '9000000000', 10, 7, 'new', '$2y$10$dovaSN.Ey8WV7l0gT5Ew4.T0.nvv4PyA2/nCHT5p0.//T2i.owICW');
 
 -- --------------------------------------------------------
 
@@ -327,6 +320,7 @@ CREATE TABLE IF NOT EXISTS `stock` (
   `design` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NULL',
   `size` varchar(25) NOT NULL,
   `qty` int NOT NULL,
+  `wgs` varchar(20) NOT NULL,
   `default` int NOT NULL DEFAULT '1',
   `user_id` varchar(50) NOT NULL,
   PRIMARY KEY (`index`)
@@ -345,6 +339,7 @@ CREATE TABLE IF NOT EXISTS `stock_data` (
   `product_size` varchar(25) NOT NULL,
   `product_qty` int NOT NULL,
   `total_qty` int NOT NULL,
+  `wgs` varchar(20) NOT NULL,
   `type` varchar(15) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

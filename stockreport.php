@@ -156,6 +156,9 @@ if (!$retval) {
                         Modified Date
                     </th>
                     <th>
+                        A/C WGS WO#
+                    </th>
+                    <th>
                         Product Name
                     </th>
                     <th>
@@ -174,6 +177,7 @@ if (!$retval) {
                         echo "
                         <tr>
                         <td>{$row['timestamp']}</td>
+                        <td>{$row['wgs']}</td>
                         <td> " . ucwords($row['product_name']) . "</td>
                         <td>{$row['product_size']}</td>
                          <td>";

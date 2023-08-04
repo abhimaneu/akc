@@ -330,7 +330,7 @@ if (!$retval) {
                             Vehicle No.
                         </th>
                         <th>
-                            Extras
+                            Note
                         </th>
                         <th>
                             Outpass PDF
@@ -372,8 +372,6 @@ if (!$retval) {
                     </td>
                     <td>
                     {$row['dest']}
-                    &nbsp;
-                    {$row['woc']}
                     </td>
                     <td>
                     {$row['work_order']}

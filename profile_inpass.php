@@ -237,7 +237,7 @@ if (!$retval) {
                         Vehicle No.
                     </th>
                     <th>
-                        Extras
+                        Note
                     </th>
                     <th>
                         PDF

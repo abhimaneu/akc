@@ -195,7 +195,7 @@ if (isset($_POST['regfinyear'])) {
     }
 
     //OUTPASS
-    $sql = "INSERT into outpass_old(no,no_year,date,work_order_no,dest,woc,vehicleno,extras,type,timestamp,user_id) select no,CONCAT(no, '/', SUBSTRING(date,3,2),SUBSTRING(date,3,2)+1),date,work_order_no,dest,woc,vehicleno,extras,type,timestamp,user_id from outpass where user_id = '" . $loggedin_session . "'";
+    $sql = "INSERT into outpass_old(no,no_year,date,work_order_no,dest,vehicleno,extras,type,timestamp,user_id) select no,CONCAT(no, '/', SUBSTRING(date,3,2),SUBSTRING(date,3,2)+1),date,work_order_no,dest,vehicleno,extras,type,timestamp,user_id from outpass where user_id = '" . $loggedin_session . "'";
     $insert3 = mysqli_query($conn, $sql);
     if (!$insert3) {
         echo mysqli_error($conn);
