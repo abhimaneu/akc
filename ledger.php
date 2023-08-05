@@ -19,7 +19,7 @@ if ($f != 0) {
     $size = $_GET['s'];
     $type = $_GET['type'];
 }
-$sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_code, product_design,product_size, product_qty, type,timestamp
+$sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_wono, product_design,product_size, product_qty, type,timestamp,product_code
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
 WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
@@ -38,7 +38,7 @@ if ($type != 'All') {
 
 
 $sql .= " UNION
-SELECT no, date, source AS company, woc, product_name, product_code,product_design,product_size, product_qty, type,timestamp
+SELECT no, date, source AS company, woc, product_name, product_wono,product_design,product_size, product_qty, type,timestamp,product_code
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
 WHERE inpass.user_id = '" . (string) $loggedin_session . "' AND inpass_products.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
@@ -282,10 +282,10 @@ $retval3 = mysqli_query($conn, $sql3);
                                 IP/OP (No.)
                             </th>
                             <th>
-                                Source/Destination
+                                Source/Destination - A/C
                             </th>
                             <th>
-                                Pro.#(Inpass)/WO#(Outpass)
+                                WO#(Inpass/Outpass)
                             </th>
                             <th>
                                 Product
@@ -339,9 +339,10 @@ $retval3 = mysqli_query($conn, $sql3);
                 {$row['woc']}
                 </td>
                 <td>
-                {$row['product_code']}
+                {$row['product_wono']}
                 </td>
                 <td>
+                ".$row['product_code']."
                 " . ucwords($row['product_name']) . "
                 &nbsp;
                 " . ucwords($row['product_design']) . "

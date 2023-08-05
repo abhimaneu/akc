@@ -85,13 +85,15 @@ if ($type == 'inpass') {
     $date = $result['date'];
     $company = $result['source'];
     $company_woc = $result['woc'];
+    // $company_wono = $result['product_wono'];
     $source_opno = $result['op'];
     $vehicle_no = $result['vehicleno'];
     $extras = $result['extras'];
     $timestamp = $result['timestamp'];
-    $datetime = explode(" ",$timestamp);
+    $datetime = explode(" ", $timestamp);
     $time = $datetime[1];
     $product_code = array();
+    $product_wono = array();
     $product_name = array();
     $product_design = array();
     $product_size = array();
@@ -100,6 +102,7 @@ if ($type == 'inpass') {
     $i = 0;
     while ($row = mysqli_fetch_assoc($retval2)) {
         $product_code[$i] = $row['product_code'];
+        $product_wono[$i] = $row['product_wono'];
         $product_name[$i] = $row['product_name'];
         $product_design[$i] = $row['product_design'];
         $product_size[$i] = $row['product_size'];
@@ -150,7 +153,7 @@ if ($type == 'outpass') {
     $vehicle_no = $result['vehicleno'];
     $extras = $result['extras'];
     $timestamp = $result['timestamp'];
-    $datetime = explode(" ",$timestamp);
+    $datetime = explode(" ", $timestamp);
     $time = $datetime[1];
     mysqli_data_seek($retval2, 0);
     $i = 0;
@@ -193,40 +196,63 @@ $pdf->Cell(0, 8, "{$SorD}: {$company}", 0, 0);
 $pdf->SetFont('helvetica', '', 10);
 $pdf->Cell(0, 8, "Date:  {$date}", 0, 1, 'R');
 if ($type == 'inpass') {
-    $pdf->Cell(0, 8, "WO#: {$company_woc}", 0, 0, 'L');
+    $pdf->Cell(0, 8, "A/C of {$company_woc}", 0, 0, 'L');
 }
 if ($type == 'outpass') {
     $pdf->Cell(0, 8, "WO#: {$company_woc}", 0, 0, 'L');
 }
-$pdf->Cell(0, 8, "Time: " . date('g:i A' , strtotime($time)), 0, 1, 'R');
-if($type == 'inpass'){
+$pdf->Cell(0, 8, "Time: " . date('g:i A', strtotime($time)), 0, 1, 'R');
+if ($type == 'inpass') {
     $pdf->Cell(0, 8, "OP#: {$source_opno}", 0, 0, 'L');
 }
+// if($type == 'inpass'){
+//     $pdf->Cell(0, 8, "WO#: {$company_wono}", 0, 0, 'L');
+// }
 $pdf->SetFont('helvetica', '', 10);
-$pdf->Cell(0, 8,  ucfirst($type)." No.: {$no}", 0, 1 , 'R');
-
-if (!empty($extras)) {
-    $pdf->Cell(0, 8, "Note: {$extras}", 0, 0);
-}
+$pdf->Cell(0, 8, ucfirst($type) . " No.: {$no}", 0, 1, 'R');
 $pdf->SetFont('helvetica', '', 10);
 // $pdf->Cell(0, 8, "{$SorD}: {$company} {$company_woc}", 0, 1);
 $pdf->Cell(0, 8, "Vehicle No.: {$vehicle_no}", 0, 1, 'R');
+if (!empty($extras)) {
+    $pdf->Cell(0, 8, "Note: {$extras}", 0, 0);
+}
 
-$pdf->Ln(10);
+$pdf->Ln(15);
 
-$pdf->SetFont('helvetica', 'B', 10);
-$pdf->Cell(25, 10, 'Sl No.', 1, 0, 'C');
-$pdf->Cell(90, 10, 'Particulars', 1, 0, 'C');
-$pdf->Cell(45, 10, 'Size/Description', 1, 0, 'C');
-$pdf->Cell(30, 10, 'Pieces', 1, 1, 'C');
+if ($type == 'inpass') {
+    $pdf->SetFont('helvetica', 'B', 10);
+    $pdf->Cell(25, 10, 'Sl No.', 1, 0, 'C');
+    $pdf->Cell(20, 10, 'WO#', 1, 0, 'C');
+    $pdf->Cell(70, 10, 'Particulars', 1, 0, 'C');
+    $pdf->Cell(45, 10, 'Size/Description', 1, 0, 'C');
+    $pdf->Cell(30, 10, 'Pieces', 1, 1, 'C');
+} else if ($type == 'outpass') {
+    $pdf->SetFont('helvetica', 'B', 10);
+    $pdf->Cell(25, 10, 'Sl No.', 1, 0, 'C');
+    $pdf->Cell(90, 10, 'Particulars', 1, 0, 'C');
+    $pdf->Cell(45, 10, 'Size/Description', 1, 0, 'C');
+    $pdf->Cell(30, 10, 'Pieces', 1, 1, 'C');
+}
 
-for ($i = 0; $i < count($product_code); $i++) {
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->Cell(25, 10, $i + 1, 1, 0, 'C');
-    $pdf->Cell(90, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
-    $pdf->Cell(45, 10, $product_size[$i], 1, 0, 'C'); // Placeholder for Size/Description
-    $pdf->Cell(30, 10, $product_qty[$i], 1, 1, 'C');
+if ($type == 'inpass') {
+    for ($i = 0; $i < count($product_code); $i++) {
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->Cell(25, 10, $i + 1, 1, 0, 'C');
+        $pdf->Cell(20, 10, $product_wono[$i], 1, 0, 'C');
+        $pdf->Cell(70, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
+        $pdf->Cell(45, 10, $product_size[$i], 1, 0, 'C'); // Placeholder for Size/Description
+        $pdf->Cell(30, 10, $product_qty[$i], 1, 1, 'C');
 
+    }
+} else if($type == 'outpass'){
+    for ($i = 0; $i < count($product_code); $i++) {
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->Cell(25, 10, $i + 1, 1, 0, 'C');
+        $pdf->Cell(90, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
+        $pdf->Cell(45, 10, $product_size[$i], 1, 0, 'C'); // Placeholder for Size/Description
+        $pdf->Cell(30, 10, $product_qty[$i], 1, 1, 'C');
+
+    }
 }
 
 //---------------- 5 COULOUMNS TEMPLATE --------------------
@@ -271,7 +297,7 @@ $endY = $startY;
 $pdf->Line($startX, $startY, $endX, $endY);
 
 $pdf->SetFont('helvetica', 'B', 8);
-$pdf->Cell(0, 5, 'FOR '.strtoupper($profile_company_name), 0, 1, 'R');
+$pdf->Cell(0, 5, 'FOR ' . strtoupper($profile_company_name), 0, 1, 'R');
 $pdf->SetFont('helvetica', '', 10);
 $pdf->Ln(15);
 $pdf->Cell(0, 5, 'Authorised Signatory', 0, 1, 'R');

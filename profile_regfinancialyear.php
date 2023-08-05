@@ -169,7 +169,7 @@ if (isset($_POST['regfinyear'])) {
         echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
-    $sql = "INSERT into inpass_products_old(inpass_no,no_year,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) select inpass_no,CONCAT(inpass_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id from inpass_products where user_id = '" . $loggedin_session . "'";
+    $sql = "INSERT into inpass_products_old(inpass_no,no_year,date_of_entry,product_wono,product_name,product_code,product_design,product_size,product_qty,user_id) select inpass_no,CONCAT(inpass_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,product_wono,product_name,product_code,product_design,product_size,product_qty,user_id from inpass_products where user_id = '" . $loggedin_session . "'";
     $insert2 = mysqli_query($conn, $sql);
     if (!$insert2) {
         echo mysqli_error($conn);

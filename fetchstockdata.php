@@ -12,7 +12,7 @@ if (!$retval) {
 } else {
     while ($row = $retval->fetch_assoc()) {
         $product_data[] = array(
-            'wgs' => $row['wgs'],
+            'acof' => $row['acof'],
             'name' => $row['item'],
             
             'size' => $row['size'],

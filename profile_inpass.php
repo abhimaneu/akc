@@ -225,13 +225,19 @@ if (!$retval) {
                         Date
                     </th>
                     <th>
-                        Source Company
+                        Source Company - A/C of
+                    </th>
+                    <th>
+                        WO#
                     </th>
                     <th>
                         Product Desc.
                     </th>
                     <th>
-                        Product Desp. Quantity
+                        Product Quantity
+                    </th>
+                    <th>
+                        OP#
                     </th>
                     <th>
                         Vehicle No.
@@ -281,6 +287,9 @@ if (!$retval) {
                     {$row['woc']}
                     </td>
                     <td>
+                    {$row['product_wono']}
+                    </td>
+                    <td>
                     {$row['product_name']}
                     &nbsp;
                     {$row['product_code']}
@@ -291,6 +300,9 @@ if (!$retval) {
                     </td>
                     <td>
                     {$row['product_qty']}
+                    </td>
+                    <td>
+                    {$row['op']}
                     </td>
                     <td>
                     {$row['vehicleno']}

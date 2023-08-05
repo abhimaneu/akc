@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 04, 2023 at 05:26 PM
+-- Generation Time: Aug 05, 2023 at 11:24 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS `inpass_products` (
   `inpass_no` int NOT NULL,
   `no_year` varchar(15) NOT NULL,
   `date_of_entry` date NOT NULL,
+  `product_wono` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `product_name` varchar(50) NOT NULL,
   `product_code` varchar(25) NOT NULL,
   `product_design` varchar(50) NOT NULL,
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `inpass_products_old` (
   `inpass_no` varchar(10) NOT NULL,
   `no_year` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date_of_entry` date NOT NULL,
+  `product_wono` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `product_name` varchar(50) NOT NULL,
   `product_code` varchar(25) NOT NULL,
   `product_design` varchar(50) NOT NULL,
@@ -320,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `stock` (
   `design` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'NULL',
   `size` varchar(25) NOT NULL,
   `qty` int NOT NULL,
-  `wgs` varchar(20) NOT NULL,
+  `acof` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `default` int NOT NULL DEFAULT '1',
   `user_id` varchar(50) NOT NULL,
   PRIMARY KEY (`index`)
@@ -339,7 +341,7 @@ CREATE TABLE IF NOT EXISTS `stock_data` (
   `product_size` varchar(25) NOT NULL,
   `product_qty` int NOT NULL,
   `total_qty` int NOT NULL,
-  `wgs` varchar(20) NOT NULL,
+  `acof` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `type` varchar(15) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -6,19 +6,35 @@ include 'checkuserlogin.php';
 <?php
 $start = '1990-01-31';
 $end = '2099-12-31';
+$acof_fil = 'All';
 
 $f = $_GET['f'];
 if ($f != 0) {
     $start = $_GET['start'];
     $end = $_GET['end'];
+    $acof_fil = $_GET['acof_fil'];
 }
 
-$sql = "SELECT * from stock_data where user_id = '".(string)$loggedin_session."' AND timestamp BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
+$sql = "SELECT * from stock_data where user_id = '" . (string) $loggedin_session . "'";
+
+if ($acof_fil != 'All') {
+    $sql .= " AND acof = '$acof_fil'";
+}
+
+$sql .= " AND timestamp BETWEEN '$start' AND '$end' ORDER BY timestamp DESC";
+
 $retval = mysqli_query($conn, $sql);
 if (!$retval) {
     echo mysqli_error($conn);
 }
 
+//for item filter
+$sql2 = "SELECT acof from stock_data WHERE user_id = '" . (string) $loggedin_session . "'";
+$sql2 .= " GROUP BY acof";
+$retval2 = mysqli_query($conn, $sql2);
+if (!$retval2) {
+    echo mysqli_error($conn);
+}
 
 ?>
 
@@ -123,18 +139,41 @@ if (!$retval) {
                 <form name="filter" class="bg-white rounded-5 shadow-0-strong p-5" method="post">
                     <h4 class='mb-4'>Filter</h4>
 
-                    <div class="row ms-1 justify-content w-50">
-                        <div class="form-outline col">
+                    <div class="row ms-1 pb-4 justify-content w-50">
+                        <div class="col">
+                        <div class="form-outline">
                             <input type="date" value="1990-01-01" class="form-control" id='start' required name="start">
                             <label for="start" class='form-label'>Start</label>
+                        </div>
                         </div>
                         <div class="col col-sm-1">
                             <center>to</center>
                         </div>
-                        <div class="form-outline col">
+                        <div class="col">
+                        <div class="form-outline">
                             <input name="end" value="2099-12-31" class="form-control" id='end' required type="date">
                             <label for="end" class='form-label'>End</label>
                         </div>
+                        </div>
+                    </div>
+
+                    <div class="row ms-1 pb-4 justify-content w-50">
+                        <div class="col">
+                            <label class=''>A/C of</label>
+                            <select name='acof_fil'>
+                                <option selected>All</option>
+                                <?php
+
+                                while ($row = mysqli_fetch_assoc($retval2)) {
+                                    echo "
+            <option>{$row['acof']}</option>
+            ";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row ms-1 justify-content w-50">
                         <div class='col'>
                             <input type="submit" class=" btn btn-outline-primary btn" data-mdb-ripple-color="dark"
                                 name="filter" value="Search">
@@ -156,7 +195,7 @@ if (!$retval) {
                         Modified Date
                     </th>
                     <th>
-                        A/C WGS WO#
+                        A/C of
                     </th>
                     <th>
                         Product Name
@@ -177,16 +216,15 @@ if (!$retval) {
                         echo "
                         <tr>
                         <td>{$row['timestamp']}</td>
-                        <td>{$row['wgs']}</td>
+                        <td>{$row['acof']}</td>
                         <td> " . ucwords($row['product_name']) . "</td>
                         <td>{$row['product_size']}</td>
                          <td>";
                         if ($row['type'] == 'Inpass') {
                             echo "+ ";
-                        } else if($row['type'] == 'Outpass' || $row['type'] == 'Delete') {
+                        } else if ($row['type'] == 'Outpass' || $row['type'] == 'Delete') {
                             echo "- ";
-                        }
-                        else {
+                        } else {
                             echo "";
                         }
                         echo "{$row['product_qty']}</td>
@@ -216,8 +254,9 @@ if (!$retval) {
 if (isset($_POST['filter'])) {
     $start_date = $_POST['start'];
     $end_date = $_POST['end'];
+    $acof_fil = $_POST['acof_fil'];
     echo "<script type='text/javascript'>
-    window.location.href = 'stockreport.php?f=1&start=$start_date&end=$end_date';
+    window.location.href = 'stockreport.php?f=1&start=$start_date&end=$end_date&acof_fil=$acof_fil';
     </script>";
 }
 ?>

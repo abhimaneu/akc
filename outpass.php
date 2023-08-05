@@ -274,7 +274,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             if (l > 0)
                                 for (i = 0; i < l; i++) {
 
-                                    options += '<option selected value="' + productData[i].name + "||" + productData[i].size + "||" + productData[i].wgs + '" data-qty="' + productData[i].qty + '">' + "" + '' + capitalizeWords(productData[i].name) + '&nbsp;' + "" + '' + productData[i].size + '&nbsp;' + "" + '' + productData[i].wgs + '</option>';
+                                    options += '<option selected value="' + productData[i].name + "||" + productData[i].size + "||" + productData[i].acof + '" data-qty="' + productData[i].qty + '">' + "" + '' + capitalizeWords(productData[i].name) + '&nbsp;' + "" + '' + productData[i].size + '&nbsp;' + "" + '' + productData[i].acof + '</option>';
                                 }
                             options += "<option value='custom'>Custom</option>";
                             productStockField.html(options);
@@ -409,7 +409,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             for (var i = 0; i < response.length; i++) {
                                 var row = document.createElement('tr');
                                 var cell1 = document.createElement('td');
-                                cell1.textContent = response[i].wgs;
+                                cell1.textContent = response[i].acof;
                                 var cell2 = document.createElement('td');
                                 cell2.textContent = capitalizeWords(response[i].name);
                                 // var cell3 = document.createElement('td');
@@ -538,8 +538,8 @@ while ($row = mysqli_fetch_assoc($retval5)) {
           <label class='form-label'>Custom Product Size</label>
           </div>
           <div class='form-outline mb-3 col w-50'>
-          <input type='text' hidden class='custom_field w-100 form-control' name='custom_field_wgs[]'>
-          <label class='form-label'>Custom Product A/C WGS WO#</label>
+          <input type='text' hidden class='custom_field w-100 form-control' name='custom_field_acof[]'>
+          <label class='form-label'>Custom Product A/C of</label>
           </div>
           </div>
           
@@ -792,7 +792,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         $productDatas_stock = $_POST['product_stock'];
                         $productCodes_customstockName = $_POST['custom_field_name'];
                         $productCodes_customstockSize = $_POST['custom_field_size'];
-                        $productCodes_customstockWgs = $_POST['custom_field_wgs'];
+                        $productCodes_customstockAcof = $_POST['custom_field_acof'];
                         $reqQtys = $_POST['req_qty'];
 
                         for ($i = 0; $i < count($products); $i++) {
@@ -805,23 +805,23 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $productData_stock = $productDatas_stock[$i];
                             $productCode_customstockName = $productCodes_customstockName[$i];
                             $productCode_customstockSize = $productCodes_customstockSize[$i];
-                            $productCode_customstockWgs = $productCodes_customstockWgs[$i];
+                            $productCode_customstockAcof = $productCodes_customstockAcof[$i];
                             $productName_bill = $productName;
 
                             if ($productData_stock == 'custom') {
                                 //$productData_stock = $productCode_customstock;
                                 $productName_stock = $productCode_customstockName;
                                 $productSize_stock = $productCode_customstockSize;
-                                $productWgs_stock = $productCode_customstockWgs;
+                                $productAcof_stock = $productCode_customstockAcof;
                             } else {
                                 $productName_stock = '';
                                 $productSize_stock = '';
-                                $productWgs_stock = '';
+                                $productAcof_stock = '';
                                 $parts = explode('||', $productData_stock);
                                 if ($parts) {
                                     $productName_stock = $parts[0];
                                     $productSize_stock = $parts[1];
-                                    $productWgs_stock = $parts[2];
+                                    $productAcof_stock = $parts[2];
                                 } else {
                                     // Handle the case when '||' is not found in the string
                                 }
@@ -865,7 +865,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             }
 
                             //updating quantity in stock
-                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock' AND wgs = '$productWgs_stock' AND user_id = '" . (string) $loggedin_session . "'";
+                            $sql8 = "Select qty from stock where item = '$productName_stock' AND size = '$productSize_stock' AND acof = '$productAcof_stock' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo mysqli_error($conn);
@@ -879,7 +879,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $oldqty = $row8[0];
                             $newqty = $oldqty - $productQty;
                             if (!($newqty < 0)) {
-                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock' AND wgs = '$productWgs_stock' AND user_id = '" . (string) $loggedin_session . "'";
+                                $sql9 = "UPDATE stock SET qty = '$newqty' where item = '$productName_stock' AND size = '$productSize_stock' AND acof = '$productAcof_stock' AND user_id = '" . (string) $loggedin_session . "'";
                                 $update = mysqli_query($conn, $sql9);
                                 if (!$update) {
                                     echo mysqli_error($conn);
@@ -888,7 +888,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         window.location.href = 'outpass.php?f=e4';
                         </script>";
                                 }
-                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','$productWgs_stock','Outpass','" . (string) $loggedin_session . "')";
+                                $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,acof,type,user_id) VALUES ('$productName_stock','$productSize_stock','$productQty','$newqty','$productAcof_stock','Outpass','" . (string) $loggedin_session . "')";
                                 $update92 = mysqli_query($conn, $sql92);
                                 if (!$update92) {
                                     echo mysqli_error($conn);
@@ -995,7 +995,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                                 <div class="table-responsive" style="max-height:500px;">
                                     <table class='table table-sm'>
                                         <thead class="table-light">
-                                            <th>A/C WGS WO#</th>
+                                            <th>A/C of</th>
                                             <th>Name</th>
                                             <th>Size</th>
                                             <th>Available. Qty</th>

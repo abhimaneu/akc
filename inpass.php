@@ -218,7 +218,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
             $("#add_product_field").click(function () {
                 var productField = `
         <div class="product_field mb-3">
-        <div class=' d-flex align-items-start bg-light mb-1 w-25'>
+        <div class=' d-flex align-items-start bg-light mb-1 w-50'>
         
         <div class="form-outline mb-1 col " >
           <input type="text" list="supplynolist" id='pcode' required name="product_code[]" class="product_code form-control">
@@ -231,6 +231,14 @@ while ($row = mysqli_fetch_assoc($retval4)) {
             </datalist>
             <label for="productcode" class="form-label">Product Code</label>
             </div>
+
+            &nbsp;
+         <div class="form-outline mb-1 col">
+          <input name="product_wono[]" required class="product_wono form-control">
+          <label for="product_wono" class="form-label">WO#</label>
+        </div>
+        &nbsp;
+
             </div>
             <div class=' d-flex align-items-start bg-light mb-1'>
 
@@ -347,9 +355,15 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="form-outline mb-4">
-                                    <input type="text" class="form-control" required name="wgs" id="company_code">
-                                    <label for="wgs" class="form-label">A/C of WGS WO#</label>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-outline mb-4">
+                                            <input type="text" class="form-control" required name="acof"
+                                                id="company_code">
+                                            <label for="acof" class="form-label">A/C of</label>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -403,7 +417,8 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     $ipno = "";
                     $date = "";
                     $source = "";
-                    $wgs = "";
+                    $acof = "";
+                    
                     $op = "";
                     $vehicle = "";
                     $p_name = "";
@@ -413,7 +428,8 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     $ipno = $_POST['ipno'];
                     $date = $_POST['date'];
                     $source = $_POST['source'];
-                    $wgs = $_POST['wgs'];
+                    $acof = $_POST['acof'];
+                    
                     $op = $_POST['opno'];
                     $vehicle = $_POST['vehicle'];
 
@@ -460,7 +476,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                         $add_extras = 1;
                         $extras_name = $_POST['extras_name_field'];
                         $extras_qty = $_POST['extras_qty_field'];
-                        $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$wgs','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
+                        $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$acof','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
                         $insert9 = mysqli_query($conn, $sql);
                         if (!$insert9) {
                             echo mysqli_error($conn);
@@ -472,7 +488,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             exit;
                         }
 
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date','$extras_name',' ',' ',' ','$extras_qty','" . (string) $loggedin_session . "')";
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_wono,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date',' ','$extras_name',' ',' ',' ','$extras_qty','" . (string) $loggedin_session . "')";
                         $insert10 = mysqli_query($conn, $sql4);
                         if (!$insert10) {
                             echo mysqli_error($conn);
@@ -509,8 +525,8 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     }
 
 
-                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$wgs','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
-                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$wgs','" . (string) $loggedin_session . "')";
+                    $sql = "INSERT INTO inpass(no,date,source,woc,op,vehicleno,extras,user_id) VALUES ('$ipno','$date','$source','$acof','$op','$vehicle','$extras','" . (string) $loggedin_session . "')";
+                    $sql2 = "INSERT INTO company(name,code,user_id) VALUES ('$source','$acof','" . (string) $loggedin_session . "')";
                     $insert = mysqli_query($conn, $sql);
                     if (!$insert) {
                         echo mysqli_error($conn);
@@ -528,6 +544,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     $ino = "";
                     $products = $_POST['products'];
                     $productCodes = $_POST['product_code'];
+                    $productWonos = $_POST['product_wono'];
                     $productDeisgns = $_POST['product_design'];
                     $productSizes = $_POST['product_size'];
                     $productQtys = $_POST['product_qty'];
@@ -535,6 +552,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     for ($i = 0; $i < count($products); $i++) {
                         $productName = $products[$i];
                         $productCode = $productCodes[$i];
+                        $productWono = $productWonos[$i];
                         $productDesign = $productDeisgns[$i];
                         $productSize = $productSizes[$i];
                         $productQty = $productQtys[$i];
@@ -544,8 +562,8 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                         $productDesign = strtolower($productDesign);
                         $productSize = strtolower($productSize);
 
-                        $sql7 = "INSERT INTO stock(item,design,size,qty,wgs,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','$wgs','" . (string) $loggedin_session . "')";
-                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND wgs = '$wgs' AND user_id = '" . (string) $loggedin_session . "'");
+                        $sql7 = "INSERT INTO stock(item,design,size,qty,acof,user_id) VALUES ('$productName','$productDesign','$productSize','$productQty','$acof','" . (string) $loggedin_session . "')";
+                        $result2 = mysqli_query($conn, "SELECT item FROM stock WHERE item = '$productName' AND size = '$productSize' AND acof = '$acof' AND user_id = '" . (string) $loggedin_session . "'");
                         $flag_stock1 = 0;
                         if ($result2->num_rows == 0) {
                             $insert2 = mysqli_query($conn, $sql7);
@@ -559,7 +577,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                                 exit;
                             }
                         } else {
-                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND wgs = '$wgs' AND user_id = '" . (string) $loggedin_session . "'";
+                            $sql8 = "Select qty from stock where item = '$productName' AND size = '$productSize' AND acof = '$acof' AND user_id = '" . (string) $loggedin_session . "'";
                             $retval4 = mysqli_query($conn, $sql8);
                             if (!$retval4) {
                                 echo "Error Occured";
@@ -575,7 +593,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             $newqty = $oldqty + $productQty;
                             echo $oldqty;
                             echo $newqty;
-                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND wgs = '$wgs' AND user_id = '" . (string) $loggedin_session . "'";
+                            $sql9 = "UPDATE stock SET qty = '$newqty' where item='$productName' AND size='$productSize' AND acof = '$acof' AND user_id = '" . (string) $loggedin_session . "'";
                             $update = mysqli_query($conn, $sql9);
                             if (!$update) {
                                 echo mysqli_error($conn);
@@ -586,7 +604,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                                 echo "<script>alert('Some Error Occured')</script>";
                                 exit;
                             }
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','$wgs','Inpass','" . (string) $loggedin_session . "')";
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,acof,type,user_id) VALUES ('$productName','$productSize','$productQty','$newqty','$acof','Inpass','" . (string) $loggedin_session . "')";
                             $update92 = mysqli_query($conn, $sql92);
                             $flag_stock1 = 1;
                             if (!$update92) {
@@ -600,7 +618,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             }
                         }
                         if ($flag_stock1 != 1) {
-                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,wgs,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','$wgs','Inpass','" . (string) $loggedin_session . "')";
+                            $sql92 = "INSERT INTO stock_data(product_name,product_size,product_qty,total_qty,acof,type,user_id) VALUES ('$productName','$productSize','$productQty','$productQty','$acof','Inpass','" . (string) $loggedin_session . "')";
                             $update92 = mysqli_query($conn, $sql92);
                             if (!$update92) {
                                 echo mysqli_error($conn);
@@ -613,7 +631,7 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                             }
                         }
 
-                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date','$productName','$productCode','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                        $sql4 = "INSERT INTO inpass_products(inpass_no,date_of_entry,product_wono,product_name,product_code,product_design,product_size,product_qty,user_id) VALUES ('$ipno','$date','$productWono','$productName','$productCode','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
                         $insert = mysqli_query($conn, $sql4);
                         if (!$insert) {
                             echo mysqli_error($conn);
@@ -686,10 +704,10 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                         Date
                     </th>
                     <th>
-                        Source Company
+                        Source Company - A/C of
                     </th>
                     <th>
-                        A/C WGS WO#
+                        WO#
                     </th>
                     <th>
                         Product Description/Size
@@ -743,9 +761,11 @@ while ($row = mysqli_fetch_assoc($retval4)) {
                     </td>
                     <td>
                     {$row['source']}
+                    &nbsp;
+                    {$row['woc']}
                     </td>
                     <td>
-                    {$row['woc']}
+                    {$row['product_wono']}
                     </td>
                     <td>
                     " . ucwords($row['product_name']) . "
