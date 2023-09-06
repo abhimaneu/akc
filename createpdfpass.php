@@ -145,6 +145,7 @@ if ($type == 'outpass') {
     $product_name = array();
     $product_design = array();
     $product_size = array();
+    $product_bundle = array();
     $product_qty = array();
     $result = mysqli_fetch_assoc($retval);
     $date = $result['date'];
@@ -162,13 +163,24 @@ if ($type == 'outpass') {
         $product_name[$i] = $row['product_name'];
         $product_design[$i] = $row['product_design'];
         $product_size[$i] = $row['product_size'];
+        $product_bundle[$i] = $row['product_bundle'];
         $product_qty[$i] = $row['product_qty'];
         $total_pieces += $product_qty[$i];
         $i = $i + 1;
     }
 }
 
-$pdf = new TCPDF('P', 'mm', 'A4'); // 'P' for portrait, 'mm' for millimeters, 'A4' for page size
+$customWidth = 210;
+$aspect_ratio = 1.414;
+$customHeight = 207;
+
+if(count($product_code)>4){
+for($l = 0;$l < count($product_code);$l++){
+    $customHeight = $customHeight + 10;
+}}
+
+$pdf = new TCPDF('P', 'mm', array($customWidth,$customHeight)); // 'P' for portrait, 'mm' for millimeters, 'A4' for page size
+$pdf->SetAutoPageBreak(false);
 
 //Add Later
 // $pdf->SetCreator('Your Name');
@@ -228,10 +240,11 @@ if ($type == 'inpass') {
     $pdf->Cell(30, 10, 'Pieces', 1, 1, 'C');
 } else if ($type == 'outpass') {
     $pdf->SetFont('helvetica', 'B', 10);
-    $pdf->Cell(25, 10, 'Sl No.', 1, 0, 'C');
-    $pdf->Cell(90, 10, 'Particulars', 1, 0, 'C');
+    $pdf->Cell(15, 10, 'Sl No.', 1, 0, 'C');
+    $pdf->Cell(80, 10, 'Particulars', 1, 0, 'C');
     $pdf->Cell(45, 10, 'Size/Description', 1, 0, 'C');
-    $pdf->Cell(30, 10, 'Pieces', 1, 1, 'C');
+    $pdf->Cell(25, 10, 'Bundle', 1, 0, 'C');
+    $pdf->Cell(20, 10, 'Pieces', 1, 1, 'C');
 }
 
 if ($type == 'inpass') {
@@ -247,10 +260,11 @@ if ($type == 'inpass') {
 } else if($type == 'outpass'){
     for ($i = 0; $i < count($product_code); $i++) {
         $pdf->SetFont('helvetica', '', 8);
-        $pdf->Cell(25, 10, $i + 1, 1, 0, 'C');
-        $pdf->Cell(90, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
+        $pdf->Cell(15, 10, $i + 1, 1, 0, 'C');
+        $pdf->Cell(80, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
         $pdf->Cell(45, 10, $product_size[$i], 1, 0, 'C'); // Placeholder for Size/Description
-        $pdf->Cell(30, 10, $product_qty[$i], 1, 1, 'C');
+        $pdf->Cell(25, 10, $product_bundle[$i], 1, 0, 'C');
+        $pdf->Cell(20, 10, $product_qty[$i], 1, 1, 'C');
 
     }
 }

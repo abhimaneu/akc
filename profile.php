@@ -197,11 +197,11 @@ if (!$retval5) {
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link " href="profile_inpass.php">Inpass</a>
+                                    <a class="nav-link " href="profile_inpass.php">Old Inpass</a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link " href="profile_outpass.php">Outpass</a>
+                                    <a class="nav-link " href="profile_outpass.php">Old Outpass</a>
                                 </li>
 
                                 <li class="nav-item">

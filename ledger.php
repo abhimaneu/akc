@@ -19,7 +19,7 @@ if ($f != 0) {
     $size = $_GET['s'];
     $type = $_GET['type'];
 }
-$sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_wono, product_design,product_size, product_qty, type,timestamp,product_code
+$sql = "SELECT no, date, dest AS company, woc, product_name,work_order as product_wono, product_design,product_size, product_qty, type,timestamp,product_code,product_bundle
 FROM outpass
 INNER JOIN outpass_products ON outpass.no = outpass_products.outpass_no
 WHERE outpass.user_id = '" . (string) $loggedin_session . "' AND outpass_products.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
@@ -38,7 +38,7 @@ if ($type != 'All') {
 
 
 $sql .= " UNION
-SELECT no, date, source AS company, woc, product_name, product_wono,product_design,product_size, product_qty, type,timestamp,product_code
+SELECT no, date, source AS company, woc, product_name, product_wono,product_design,product_size, product_qty, type,timestamp,product_code,NULL as product_bundle
 FROM inpass
 INNER JOIN inpass_products ON inpass.no = inpass_products.inpass_no
 WHERE inpass.user_id = '" . (string) $loggedin_session . "' AND inpass_products.user_id = '" . (string) $loggedin_session . "' AND date BETWEEN '$start' AND '$end'";
@@ -291,6 +291,9 @@ $retval3 = mysqli_query($conn, $sql3);
                                 Product
                             </th>
                             <th>
+                                Bundle(OP)
+                            </th>
+                            <th>
                                 Quantity
                             </th>
                             <th>
@@ -348,6 +351,9 @@ $retval3 = mysqli_query($conn, $sql3);
                 " . ucwords($row['product_design']) . "
                 &nbsp;
                 {$row['product_size']}
+                </td>
+                <td>
+                {$row['product_bundle']}
                 </td>
                 <td>
                 {$row['product_qty']}

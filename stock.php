@@ -177,6 +177,11 @@ if (!$retval) {
             display: none;
         }
 
+        #dontprintadd {
+            display: none;
+            /* Remove padding at the top of the printed content */
+        }
+
         #printbody {
             padding-top: 0;
             /* Remove padding at the top of the printed content */
@@ -265,7 +270,7 @@ if (!$retval) {
     <br>
     <h1 class="mt-2 ms-4">Current Stock</h1>
     <div class="container-fluid">
-        <div class="mt-4 m-2">
+        <div class="mt-4 m-2" id='dontprintadd'>
             <?php
             if (isset($_GET['e']) == 'e1' || isset($_GET['e']) == 'e2') {
                 echo "<center><small class='fs-5 pb-2 text-danger'>Some Error Occured</small></center>";

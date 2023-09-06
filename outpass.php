@@ -250,6 +250,45 @@ while ($row = mysqli_fetch_assoc($retval5)) {
 
 
             //for Product Code
+            $(document).on("change", ".product_size", function () {
+                var productSize = $(this).val();
+                var productName = $(this).closest(".product_field").find(".product_name").val();
+                var productStockField = $(this).closest(".product_field").find(".product_stock");
+                var options = "<option selected value=''>None</option>";
+
+                $.ajax({
+                    method: "POST",
+                    url: "getstockdata.php",
+                    data: {
+                        product_name: productName,
+                        product_size: productSize
+                    },
+                    success: function (response) {
+                        if (response === "FALSE") {
+                            var message = "ERROR: something went wrong on the MYSQL side";
+                            alert(message);
+                        } else {
+                            productData = JSON.parse(response)
+                            var l = productData.length
+                            var i
+                            if (l > 0)
+                                for (i = 0; i < l; i++) {
+
+                                    options += '<option selected value="' + productData[i].name + "||" + productData[i].size + "||" + productData[i].acof + '" data-qty="' + productData[i].qty + '">' + "" + '' + capitalizeWords(productData[i].name) + '&nbsp;' + "" + '' + productData[i].size + '&nbsp;' + "" + '' + productData[i].acof + '</option>';
+                                }
+                            options += "<option value='custom'>Custom</option>";
+                            productStockField.html(options);
+                            initilizebootstrap();
+
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                        alert(message);
+                    }
+                });
+            });
+            ///////////////////////
             $(document).on("change", ".product_name", function () {
                 var productName = $(this).val();
                 var productSize = $(this).closest(".product_field").find(".product_size").val();
@@ -289,9 +328,12 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                 });
             });
 
-            $(document).on("keyup", ".product_size", function () {
-                $(".product_name").trigger("change");
-            });
+            // $(document).on("click", ".refresh_custom", function () {
+            //     $(".product_name").trigger("change");
+            // });
+            // $(document).on("keyup", ".product_size", function () {
+            //     $(".product_name").trigger("change");
+            // });
 
             //for Product Data from work order no
             $(document).on("change", ".work_order", function () {
@@ -306,12 +348,12 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     },
                     success: function (response) {
                         if (response == 'Closed') {
-                            alert("This work Order has already been Completed");
-                            $('.work_order').val('');
+                            //alert("This work Order has already been Completed");
+                           // $('.work_order').val('');
                             stopExecution = true;
                         }
                         if (!response) {
-                            alert("WARNING: This Work Order with this No. has not been generated yet");
+                            //alert("WARNING: This Work Order with this No. has not been generated yet");
                             // $('.work_order').val('');
                             stopExecution = true;
                         }
@@ -506,6 +548,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
           <label for="pdes" class='form-label'>Design</label>
           </div>
           &nbsp;
+          
           <div class='form-outline mb-1 col'>
           <input name="product_size[]"  onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" id='psize' required class="product_size form-control">
           <label for="psize" class='form-label'>Size</label>
@@ -526,6 +569,8 @@ while ($row = mysqli_fetch_assoc($retval5)) {
           <option selected>None</option>
           <option value='custom'>Custom</option>
           </select>
+          &nbsp;
+          
           <br>
 
           <div class='custom_field_row' style='display:none'>
@@ -545,7 +590,12 @@ while ($row = mysqli_fetch_assoc($retval5)) {
           
            <caption name='product_cap' class='product_cap'></caption>
 
-           <div class=' d-flex align-items-start bg-light mb-3 w-25'>
+           <div class=' d-flex align-items-start bg-light mb-3 w-50'>
+           <div class='form-outline mb-1 col'>
+          <input name="product_bundle[]" id='pbun' required class="product_bundle form-control">
+          <label for="pbun" class='form-label'>Bundle</label>
+          </div>
+          &nbsp;
           <div class='form-outline mb-1 col'>
           <input type='number' name="product_qty[]" id='pqty' required class="product_qty form-control">
           <label for="pqty" class='form-label'>Desp. Qty</label>
@@ -788,6 +838,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         $productCodes = $_POST['product_code'];
                         $productDesigns = $_POST['product_design'];
                         $productSizes = $_POST['product_size'];
+                        $productBundles = $_POST['product_bundle'];
                         $productQtys = $_POST['product_qty'];
                         $productDatas_stock = $_POST['product_stock'];
                         $productCodes_customstockName = $_POST['custom_field_name'];
@@ -801,6 +852,7 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             $productType = $productTypes[$i];
                             $productDesign = $productDesigns[$i];
                             $productSize = $productSizes[$i];
+                            $productBundle = $productBundles[$i];
                             $productQty = $productQtys[$i];
                             $productData_stock = $productDatas_stock[$i];
                             $productCode_customstockName = $productCodes_customstockName[$i];
@@ -853,14 +905,14 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                             }
 
 
-                            $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_qty,user_id) VALUES ('$opno','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productQty','" . (string) $loggedin_session . "')";
+                            $sql4 = "INSERT INTO outpass_products(outpass_no,date_of_entry,product_type,product_name,product_code,work_order,product_design,product_size,product_bundle,product_qty,stock_acof,stock_name,stock_size,user_id) VALUES ('$opno','$date','$productType','$productName_bill','$productCode','$wno','$productDesign','$productSize','$productBundle','$productQty','$productAcof_stock','$productName_stock','$productSize_stock','" . (string) $loggedin_session . "')";
                             $insert = mysqli_query($conn, $sql4);
                             if (!$insert) {
                                 echo mysqli_error($conn);
                                 mysqli_rollback($conn);
-                                echo "<script type='text/javascript'>
-                        window.location.href = 'outpass.php?f=e2';
-                        </script>";
+                        //         echo "<script type='text/javascript'>
+                        // window.location.href = 'outpass.php?f=e2';
+                        // </script>";
                                 exit;
                             }
 
@@ -1039,6 +1091,9 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                         Product Desc.
                     </th>
                     <th>
+                        Product Bundle
+                    </th>
+                    <th>
                         Product Desp. Quantity
                     </th>
                     <th>
@@ -1098,6 +1153,9 @@ while ($row = mysqli_fetch_assoc($retval5)) {
                     " . ucwords($row['product_design']) . "
                     &nbsp;
                     {$row['product_size']}
+                    </td>
+                    <td>
+                    {$row['product_bundle']}
                     </td>
                     <td>
                     {$row['product_qty']}

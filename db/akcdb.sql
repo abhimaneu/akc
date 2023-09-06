@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 05, 2023 at 11:24 AM
+-- Generation Time: Sep 06, 2023 at 04:43 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -248,7 +248,11 @@ CREATE TABLE IF NOT EXISTS `outpass_products` (
   `product_code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'AAC(code)',
   `product_design` varchar(50) NOT NULL,
   `product_size` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `product_bundle` int NOT NULL,
   `product_qty` int NOT NULL,
+  `stock_acof` varchar(15) NOT NULL,
+  `stock_name` varchar(50) NOT NULL,
+  `stock_size` varchar(30) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -269,6 +273,7 @@ CREATE TABLE IF NOT EXISTS `outpass_products_old` (
   `product_code` varchar(25) NOT NULL,
   `product_design` varchar(50) NOT NULL,
   `product_size` varchar(25) NOT NULL,
+  `product_bundle` int NOT NULL,
   `product_qty` varchar(15) NOT NULL,
   `user_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

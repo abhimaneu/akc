@@ -124,11 +124,11 @@ if (!$retval) {
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link " href="profile_inpass.php">Inpass</a>
+                                <a class="nav-link " href="profile_inpass.php">Old Inpass</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-black" href="profile_outpass.php">Outpass</a>
+                                <a class="nav-link text-black" href="profile_outpass.php">Old Outpass</a>
                             </li>
 
                             <li class="nav-item">
@@ -234,6 +234,9 @@ if (!$retval) {
                         Product Desc.
                     </th>
                     <th>
+                        Bundle
+                    </th>
+                    <th>
                         Product Desp. Quantity
                     </th>
                     <th>
@@ -297,6 +300,9 @@ if (!$retval) {
                     {$row['product_design']}
                     &nbsp;
                     {$row['product_size']}
+                    </td>
+                    <td>
+                    {$row['product_bundle']}
                     </td>
                     <td>
                     {$row['product_qty']}

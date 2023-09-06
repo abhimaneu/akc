@@ -204,10 +204,10 @@ if (!$retval2) {
                         Product Size
                     </th>
                     <th>
-                        Quantity Arrv./Desp.
+                        Total Quantity
                     </th>
                     <th>
-                        Total Quantity
+                        Remarks
                     </th>
                 </thead>
                 <tbody id="tablebody">
@@ -219,16 +219,8 @@ if (!$retval2) {
                         <td>{$row['acof']}</td>
                         <td> " . ucwords($row['product_name']) . "</td>
                         <td>{$row['product_size']}</td>
-                         <td>";
-                        if ($row['type'] == 'Inpass') {
-                            echo "+ ";
-                        } else if ($row['type'] == 'Outpass' || $row['type'] == 'Delete') {
-                            echo "- ";
-                        } else {
-                            echo "";
-                        }
-                        echo "{$row['product_qty']}</td>
                         <td>{$row['total_qty']}</td>
+                        <td></td>
                         </tr>";
                     }
                     ?>

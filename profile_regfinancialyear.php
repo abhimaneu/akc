@@ -45,11 +45,11 @@ if (isset($_GET['f'])) {
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link " href="profile_inpass.php">Inpass</a>
+                                <a class="nav-link " href="profile_inpass.php">Old Inpass</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link " href="profile_outpass.php">Outpass</a>
+                                <a class="nav-link " href="profile_outpass.php">Old Outpass</a>
                             </li>
 
                             <li class="nav-item">
@@ -211,7 +211,7 @@ if (isset($_POST['regfinyear'])) {
         echo "<h1 class='d-flex p-1 fs-4 text-danger justify-content-center'>Error Occured<h1>";
         exit;
     }
-    $sql = "INSERT into outpass_products_old(outpass_no,no_year,date_of_entry,product_type,product_name,work_order,product_code,product_design,product_size,product_qty,user_id) select outpass_no,CONCAT(outpass_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,product_type,product_name,work_order,product_code,product_design,product_size,product_qty,user_id from outpass_products where user_id = '" . $loggedin_session . "'";
+    $sql = "INSERT into outpass_products_old(outpass_no,no_year,date_of_entry,product_type,product_name,work_order,product_code,product_design,product_size,product_bundle,product_qty,user_id) select outpass_no,CONCAT(outpass_no, '/', SUBSTRING(date_of_entry,3,2),SUBSTRING(date_of_entry,3,2)+1),date_of_entry,product_type,product_name,work_order,product_code,product_design,product_size,product_bundle,product_qty,user_id from outpass_products where user_id = '" . $loggedin_session . "'";
     $insert4 = mysqli_query($conn, $sql);
     if (!$insert4) {
         echo mysqli_error($conn);
