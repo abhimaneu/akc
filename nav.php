@@ -52,9 +52,9 @@ $userName = mysqli_fetch_assoc(mysqli_query($conn,"select name from profile wher
                         <li class="nav-item">
                             <a class="nav-link" href="outpass.php">Outpass</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="workorder.php">Work Order</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="stock.php?f=0">Stock</a>
                         </li>

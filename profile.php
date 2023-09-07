@@ -204,9 +204,9 @@ if (!$retval5) {
                                     <a class="nav-link " href="profile_outpass.php">Old Outpass</a>
                                 </li>
 
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a class="nav-link " href="profile_workorder.php">Work Order</a>
-                                </li>
+                                </li> -->
 
 
 

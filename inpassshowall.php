@@ -107,19 +107,19 @@ if (!$retval) {
 <div class=' d-flex align-items-start bg-light mb-1 mt-4 w-50'>
 
 <div class="form-outline mb-1 col " >
-<input name="product_code[]" id='pcode' required class="product_code form-control">
+<input name="product_code[]" readonly id='pcode' required class="product_code form-control">
 <label for="pcode" class='form-label'>Product Code</label>
 </div>
 &nbsp;
 <div class="form-outline mb-1 col " >
-<input name="product_wono[]" id='pwono' required class="product_wono form-control">
+<input name="product_wono[]" readonly id='pwono' required class="product_wono form-control">
 <label for="pwono" class='form-label'>WO#</label>
 </div>
 &nbsp;
 </div>
 <div class=' d-flex align-items-start bg-light mb-1 mt-4'>
 <div class="form-outline mb-1 col " >
-<input list="productlist" required name="products[]" class="product_name form-control" id='pname'>
+<input list="productlist" readonly required name="products[]" class="product_name form-control" id='pname'>
 <label for='pname' class='form-label'>Product Name</label>
 <datalist id="productlist">
 <?php
@@ -131,13 +131,13 @@ if (!$retval) {
 </div>
 &nbsp;
 <div class="form-outline mb-1 col " >
-<input name="product_design[]" required class="product_design form-control" id='pdes'>
+<input name="product_design[]" readonly required class="product_design form-control" id='pdes'>
 <label for="pdes" class='form-label'>Design</label>
 </div>
 &nbsp;
 
 <div class="form-outline mb-1 col " >
-<input name="product_size[]" onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" required class="product_size form-control" id='psize'>
+<input name="product_size[]" readonly onkeydown="if(['Space'].includes(arguments[0].code)){return false;};" required class="product_size form-control" id='psize'>
 <label for="psize" class='form-label'>Size</label>
 </div>
 &nbsp;

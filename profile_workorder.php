@@ -131,9 +131,9 @@ if (!$retval) {
                                 <a class="nav-link " href="profile_outpass.php">Outpass</a>
                             </li>
 
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link text-black" href="profile_workorder.php">Work Order</a>
-                            </li>
+                            </li> -->
 
 
 
