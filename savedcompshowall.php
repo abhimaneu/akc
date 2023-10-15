@@ -75,7 +75,7 @@ if (!$retval) {
     <main><br>
         <h1 class="mt-2 ms-4">Saved Companies</h1>
         <div class="container-fluid">
-            <div class="mt-4 w-50 ">
+            <div class="mt-4  ">
                 <form method="post" class="bg-white rounded-5 shadow-2-strong ps-5 pb-5 pt-1  pt-2 mb-2">
                     <h4 class='mb-4 mt-4'>Add Product</h4>
                     <div class='row'>
@@ -87,8 +87,20 @@ if (!$retval) {
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" id="codefield" class="form-control" required name="code">
-                                <label for="codefield" class='form-label'>Code</label>
+                                <input type="text" id="codefield" class="form-control" required name="gstin">
+                                <label for="codefield" class='form-label'>GSTIN.</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id="addrfield" class="form-control" required name="addr">
+                                <label for="addrfield" class='form-label'>Adress</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-outline">
+                                <input type="text" id="contactfield" class="form-control" required name="cont">
+                                <label for="contactfield" class='form-label'>Contact No.</label>
                             </div>
                         </div>
                         <div class="col">
@@ -123,7 +135,13 @@ if (!$retval) {
                             Name
                         </th>
                         <th>
-                            Code
+                            GSTIN.
+                        </th>
+                        <th>
+                            Address
+                        </th>
+                        <th>
+                            Contact No.
                         </th>
                         <th>
                             
@@ -142,11 +160,17 @@ if (!$retval) {
                     {$row['name']}
                 </td>
                 <td>
-                    {$row['code']}
+                    {$row['gstin']}
+                </td>
+                <td>
+                    {$row['address']}
+                </td>
+                <td>
+                    {$row['contact']}
                 </td>
                 <td>
                     <form method='post' id='delete_company' name='delete_company'>
-                    <input type='hidden' name='id' value='{$row['code']}'>
+                    <input type='hidden' name='id' value='{$row['name']}'>
                     <input type='submit'  class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' id='delete_company' name='delete_company' value='Delete'>
                     </form>
                     </td>
@@ -181,7 +205,7 @@ if (isset($_POST['delete_company']) && isset($_POST['id'])) {
         echo "Error Occured";
     }
 
-    $sql = "DELETE FROM company where code = '$id' AND user_id = '".(string)$loggedin_session."'";
+    $sql = "DELETE FROM company where name = '$id' AND user_id = '".(string)$loggedin_session."'";
     $delete = mysqli_query($conn, $sql);
     if (!$delete) {
         echo "Delete was not possible";
@@ -199,8 +223,10 @@ if (isset($_POST['add_company'])) {
     $company_name = '';
     $company_code = '';
     $company_name = $_POST['name'];
-    $company_code = $_POST['code'];
-    $sql = "INSERT into company(name,code,user_id) VALUES ('$company_name','$company_code','".(string)$loggedin_session."')";
+    $company_code = $_POST['gstin'];
+    $company_addr = $_POST['addr'];
+    $company_cont = $_POST['cont'];
+    $sql = "INSERT into company(name,gstin,address,contact,user_id) VALUES ('$company_name','$company_code','$company_addr','$company_cont','".(string)$loggedin_session."')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";

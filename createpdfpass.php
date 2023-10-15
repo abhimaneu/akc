@@ -249,19 +249,23 @@ if ($type == 'inpass') {
 
 if ($type == 'inpass') {
     for ($i = 0; $i < count($product_code); $i++) {
-        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(25, 10, $i + 1, 1, 0, 'C');
+        $pdf->SetFont('helvetica', '', 10);
         $pdf->Cell(20, 10, $product_wono[$i], 1, 0, 'C');
         $pdf->Cell(70, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
+        $pdf->SetFont('helvetica', '', 11);
         $pdf->Cell(45, 10, $product_size[$i], 1, 0, 'C'); // Placeholder for Size/Description
         $pdf->Cell(30, 10, $product_qty[$i], 1, 1, 'C');
 
     }
 } else if($type == 'outpass'){
     for ($i = 0; $i < count($product_code); $i++) {
-        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetFont('helvetica', '', 12);
         $pdf->Cell(15, 10, $i + 1, 1, 0, 'C');
+        $pdf->SetFont('helvetica', '', 10);
         $pdf->Cell(80, 10, ucwords($product_name[$i]) . ' ' . ucwords($product_design[$i]), 1, 0, 'C');
+        $pdf->SetFont('helvetica', '', 11);
         $pdf->Cell(45, 10, $product_size[$i], 1, 0, 'C'); // Placeholder for Size/Description
         $pdf->Cell(25, 10, $product_bundle[$i], 1, 0, 'C');
         $pdf->Cell(20, 10, $product_qty[$i], 1, 1, 'C');
@@ -299,7 +303,7 @@ if ($type == 'inpass') {
 
 $pdf->Ln(5);
 
-$pdf->SetFont('helvetica', '', 10);
+$pdf->SetFont('helvetica', '', 11);
 $pdf->Cell(0, 10, 'Total Pieces: ' . $total_pieces, 0, 1, 'R');
 $pdf->Ln(5);
 

@@ -73,6 +73,14 @@ if (!$retval) {
     echo "Error Occred";
 }
 
+$sql10 = "SELECT * from profile WHERE user_id = '" . (string) $loggedin_session . "'";
+$retval10 = mysqli_query($conn, $sql10);
+if (!$retval10) {
+    echo mysqli_error($conn);
+}
+
+$profile_data = mysqli_fetch_assoc($retval10);
+
 ?>
 
 <html>
@@ -151,10 +159,17 @@ if (!$retval) {
 </script>
 
 <style>
+    #printonly {
+            display: none;
+        }
     @media print {
         body {
             padding: 20px;
             /* Add padding to provide margin around the content */
+        }
+
+        #printonly {
+            display: block;
         }
 
         #dontprint {
@@ -268,7 +283,27 @@ if (!$retval) {
     </div>
 
     <br>
-    <h1 class="mt-2 ms-4">Current Stock</h1>
+    <div class="container" id='printonly'>
+    <div class='row d-flex justify-content-center align-items-center'>
+        <div class='row d-flex justify-content-center'>
+            <h2 class='fs-2 mt-0 d-flex justify-content-center'><?php echo $profile_data['name'] ?></h2>
+            <lead class="fs-6 d-flex justify-content-center"><?php echo $profile_data['address'] ?></lead>
+            <lead class="fs-6 d-flex justify-content-center"><?php echo $profile_data['phoneno'] ?></lead>
+            <br>
+            <br>
+        </div>
+        <div class="col d-flex justify-content-between">
+            <lead>GSTIN: 00000000001</lead>
+            <lead>State Code: 32</lead>
+        </div>
+        <div class="d-flex justify-content-center">
+            ________________________________________________________________________________________________________________________________________________________________________________________________
+        </div>
+        <br>
+        <br>
+    </div>
+    </div>
+    <h3 class="mt-2 ms-4 d-flex justify-content-center">Current Stock</h3>
     <div class="container-fluid">
         <div class="mt-4 m-2" id='dontprintadd'>
             <?php
@@ -424,6 +459,9 @@ if (!$retval) {
                         Quantity Available
                     </th>
                     <th>
+                        Remarks
+                    </th>
+                    <th>
 
                     </th>
                 </thead>
@@ -453,6 +491,8 @@ if (!$retval) {
                 </td>
                 <td style='display:none;'>
                 {$row['index']}
+                </td>
+                <td>
                 </td>
                 <td>
                      <input type='button' data-mdb-toggle='modal' id='dontprintbtn3' data-mdb-target='#editPopup' class='edit-btn btn btn-outline-primary' value='Edit'>

@@ -38,7 +38,7 @@ while($row2 = mysqli_fetch_assoc($retval2)) {
             var input = searchInput.value.toLowerCase();
 
             for (var i = 0; i < rows.length; i++) {
-                var rowData = rows[i].getElementsByTagName("h1");
+                var rowData = rows[i].getElementsByClassName('databox');
                 var found = false;
 
                 for (var j = 0; j < rowData.length; j++) {
@@ -95,11 +95,11 @@ while($row2 = mysqli_fetch_assoc($retval2)) {
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                         <li class="nav-item">
-                            <a class="nav-link " href="billing_workorder.php">Work Order</a>
+                            <a class="nav-link " href="billing_generate.php">Generate</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-black" href="billing_invoices.php">Invoice</a>
+                            <a class="nav-link text-black" href="billing_invoices.php">History</a>
                         </li>
 
                     </ul>
@@ -113,11 +113,11 @@ while($row2 = mysqli_fetch_assoc($retval2)) {
     <h2 class="mt-2 ms-4">Invoices</h2>
     <div class="container-fluid"> <br>
         <div class=''>
-            <div class="mt-2 ms-4 pb-2 d-flex justify-content-between">
+            <!-- <div class="mt-2 ms-4 pb-2 d-flex justify-content-between">
                 <p class="d-flex justify-content-start fs-4">Generated Invoices</p>
                 <button onclick="generate_invoice('-1')" class='btn btn-primary fs-7 fw-bold' mdbRipple
                     rippleColor="dark">Create Custom Invoice</button>
-            </div>
+            </div> -->
         </div>
         <div class="row justify-content-end">
 
@@ -140,7 +140,7 @@ while($row2 = mysqli_fetch_assoc($retval2)) {
                     }
                     echo "
                     <div class='col-3'>
-                    <div class='border border-white shadow-2-strong border-1 rounded p-3'>
+                    <div class='databox border border-white shadow-2-strong border-1 rounded p-3'>
                         <div class='row'>
                         <h1 class='fs-5'>{$row['invoice_no']}</h1>
                         </div>
@@ -162,11 +162,11 @@ while($row2 = mysqli_fetch_assoc($retval2)) {
                         </form>
                         </div>
                         </div>";
-                        if(in_array($row['work_order_no'] , $all_work_orders)){
+                        if(1==0){
                         echo "<small><button onclick=\"generate_invoice_2('{$row['work_order_no']}','{$row['invoice_no']}')\" type='button' class='btn btn-success btn-sm shadow-2'>Generate New Invoice</button></small>";
                         }
                         else {
-                            echo "<small>Custom Generated</small>";
+                            echo "";
                         }
                         echo "</div>
                     </div>";

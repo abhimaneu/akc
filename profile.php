@@ -20,12 +20,18 @@ $wo = "";
 $gstin = '';
 $phoneno = '';
 $address = '';
+$bank_name = '';
+$acc_no = '';
+$ifsc = '';
 while ($row = $retval->fetch_assoc()) {
     $name = $row['name'];
     $wo = $row['wo'];
     $gstin = $row['gstin'];
     $phoneno = $row['phoneno'];
     $address = $row['address'];
+    $bank_name = $row['bank_name'];
+    $acc_no = $row['acc_no'];
+    $ifsc = $row['ifsc'];
 }
 
 $sql = "SELECT * from vehicles WHERE user_id = '" . (string) $loggedin_session . "'";
@@ -82,11 +88,17 @@ if (!$retval5) {
             var GstField = $(".editcompanyfields").find(".cgstin");
             var PhonenoField = $(".editcompanyfields").find(".cphoneno");
             var AddressField = $(".editcompanyfields").find(".caddress");
+            var BanknameField = $(".editcompanyfields").find(".bname");
+            var AccnoField = $(".editcompanyfields").find(".baccno");
+            var IfscField = $(".editcompanyfields").find(".bifsc");
             NameField.val('<?php echo $name ?>');
             CodeField.val('<?php echo $wo ?>');
             GstField.val('<?php echo $gstin ?>');
             PhonenoField.val('<?php echo $phoneno ?>');
             AddressField.val('<?php echo $address ?>');
+            BanknameField.val('<?php echo $bank_name ?>');
+            AccnoField.val('<?php echo $acc_no ?>');
+            IfscField.val('<?php echo $ifsc ?>');
 
 
             $('#editcompanyPopup').show();
@@ -163,7 +175,32 @@ if (!$retval5) {
                                         </div>
                                     </div>
 
+                                    <div class="row mb-4">
+                                        <h5 class="mb-3">Bank Details</h5>
+                                        <div class='col'>
+                                            <div class="form-outline">
+                                                <input type="text" id="bankname" class="form-control bname"
+                                                    name="bank_name">
+                                                <label for="companyname" class='form-label'>Bank Name</label>
+                                            </div>
+                                        </div>
 
+                                        <div class='col'>
+                                            <div class="form-outline">
+                                                <input type="text" id="accno" class="form-control baccno"
+                                                    name="accno">
+                                                <label for="companycode" class='form-label'>Account No.</label>
+                                            </div>
+                                        </div>
+
+                                        <div class='col'>
+                                            <div class="form-outline">
+                                                <input type="text" id="ifsccode" class="form-control bifsc"
+                                                    name="ifsccode">
+                                                <label for="comgstin" class='form-label'>IFSC Code</label>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <input type="submit" class="btn btn-success" id='bsave' name="save" value="Save">
                                 </form>
@@ -282,6 +319,31 @@ if (!$retval5) {
 
                     </h1>
                 </div>
+
+                <div class="row mt-5">
+                    
+                <div class="col">
+                    <p class='fs-6 fw-light'>Bank Name</p>
+
+                    <h1 class="display-6">
+                        <?php echo $bank_name ?>
+                    </h1>
+                </div>
+
+                <div class="col">
+                    <p class='fs-6 fw-light'>Account No.</p>
+                    <h1 class="display-6">
+                        <?php echo $acc_no ?>
+                    </h1>
+                </div>
+
+                <div class="col">
+                    <p class='fs-6 fw-light'>IFSC Code</p>
+                    <h1 class="display-6">
+                        <?php echo $ifsc ?>
+                    </h1>
+                </div>
+            </div>
             </div>
         </div>
         <div class="container m-5 bg-white rounded-5 shadow-4-strong p-5">
@@ -575,8 +637,10 @@ if (!$retval5) {
             <table class="table table-sm">
                 <thead class='table-light'>
                     <th>No.</th>
-                    <th>Company Name</th>
-                    <th>WO#</th>
+                    <th>Name</th>
+                    <th>GSTIN.</th>
+                    <th>Address</th>
+                    <th>Contact No.</th>
                     <th></th>
                 </thead>
                 <tbody>
@@ -593,11 +657,17 @@ if (!$retval5) {
                     {$row['name']}
                     </td>
                     <td>
-                    {$row['code']}
+                    {$row['gstin']}
+                    </td>
+                    <td>
+                    {$row['address']}
+                    </td>
+                    <td>
+                    {$row['contact']}
                     </td>
                     <td>
                     <form method='post' id='delete_company' name='delete_company'>
-                    <input type='hidden' name='id' value='{$row['code']}'>
+                    <input type='hidden' name='id' value='{$row['name']}'>
                     <button type='submit' id='delete_company' class='btn btn-outline-danger btn-sm' data-mdb-ripple-color='dark' name='delete_company' >Delete</button>
                     </form>
                     </td>
@@ -618,7 +688,15 @@ if (!$retval5) {
                             </td>
                             <td>
                                 <div class='form-outline'><input type="text" id='ccodef' class="form-control" required
-                                        name="code"><label for='ccodef' class='form-label'>Code</label>
+                                        name="gstin"><label for='ccodef' class='form-label'>GSTIN</label>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" id='ccodef' class="form-control" required
+                                        name="addr"><label for='ccodef' class='form-label'>Address</label>
+                            </td>
+                            <td>
+                                <div class='form-outline'><input type="text" id='ccodef' class="form-control" required
+                                        name="cont"><label for='ccodef' class='form-label'>Contact No.</label>
                             </td>
                             <td><button name="add_company" class="btn btn-outline-secondary text-nowrap"
                                     data-mdb-ripple-color="dark">Add Company</button></td>
@@ -687,7 +765,7 @@ if (isset($_POST['delete_company']) && isset($_POST['id'])) {
         echo "Error Occured";
     }
 
-    $sql = "DELETE FROM company where code = '$id' AND user_id = '" . (string) $loggedin_session . "'";
+    $sql = "DELETE FROM company where name = '$id' AND user_id = '" . (string) $loggedin_session . "'";
     $delete = mysqli_query($conn, $sql);
     if (!$delete) {
         echo "Delete was not possible";
@@ -705,8 +783,10 @@ if (isset($_POST['add_company'])) {
     $company_name = '';
     $company_code = '';
     $company_name = $_POST['name'];
-    $company_code = $_POST['code'];
-    $sql = "INSERT into company(name,code,user_id) VALUES ('$company_name','$company_code','" . (string) $loggedin_session . "')";
+    $company_code = $_POST['gstin'];
+    $company_addr = $_POST['addr'];
+    $company_cont = $_POST['cont'];
+    $sql = "INSERT into company(name,gstin,address,contact,user_id) VALUES ('$company_name','$company_code','$company_addr','$company_cont','" . (string) $loggedin_session . "')";
     $insert = mysqli_query($conn, $sql);
     if (!$insert) {
         echo "Error";
@@ -724,12 +804,20 @@ if (isset($_POST['save'])) {
     $cname = '';
     $ccode = '';
     $cgstin = '';
+    $cphoneno = '';
+    $caddress = '';
+    $bname = '';
+    $accno = '';
+    $ifsc = '';
     $cname = $_POST['company_name'];
     $ccode = $_POST['company_code'];
     $cgstin = $_POST['company_gstin'];
     $cphoneno = $_POST['company_phoneno'];
     $caddress = $_POST['company_address'];
-    $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin',phoneno='$cphoneno',address='$caddress' WHERE user_id = '" . (string) $loggedin_session . "'";
+    $bname = $_POST['bank_name'];
+    $accno = $_POST['accno'];
+    $ifsc = $_POST['ifsccode'];
+    $sqlupdate = "UPDATE profile SET name='$cname',wo='$ccode',gstin='$cgstin',phoneno='$cphoneno',address='$caddress',bank_name='$bname',acc_no='$accno',ifsc='$ifsc' WHERE user_id = '" . (string) $loggedin_session . "'";
     $updatedata = mysqli_query($conn, $sqlupdate);
     if (!$updatedata) {
         echo mysqli_error($conn);

@@ -1,9 +1,4 @@
 <?php
-include 'conn.php';
-include 'checkuserlogin.php';
-?>
-
-<?php
 $workOrderNo = '000000';
 
 
@@ -30,6 +25,9 @@ $workOrderNo = '000000';
 // $rates = ['1.50', '2.00', '5.75', '0.16'];
 // $descTypesJson = json_encode($descTypes);
 // $ratesJson = json_encode($rates);
+
+
+
 ?>
 
 <html>
@@ -65,6 +63,37 @@ $workOrderNo = '000000';
             $("#add_data_type").click();
         });
 
+        //fill company data
+        $("#companyfield").on("change", function () { //use an appropriate event handler here
+            $.ajax({
+                method: "POST",
+                url: "getcompanydata.php",
+                data: {
+                    company_name: $("#companyfield").val(),
+                },
+                success: function (response) {
+                    if (response == "FALSE") {
+                        var message = "ERROR: something went wrong on the MYSQL side";
+                        alert(message);
+                    } else {
+                        var companyData = JSON.parse(response);
+
+                        if (companyData) {
+                            $("#comgstfield").val(companyData[0].gstin);
+                            $("#confield").val(companyData[0].contact);
+                            $("#posfield").val(companyData[0].address);
+                            initilizebootstrap();
+                        }
+
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var message = "ERROR: something went wrong with the AJAX call - " + textStatus + " - " + errorThrown;
+                    alert(message);
+                }
+            });
+        });
+
         // Add product field
         $("#add_data").click(function () {
             var dataproductField = `
@@ -79,16 +108,61 @@ $workOrderNo = '000000';
         
                     <div class ='data_fields1 row p-1' style="display:none">
                     
-                    <div class='col'><div class='form-outline'> <input type='text' name='type[]' value='-12345' id='tfield' class='type form-control' placeholder='Type'><label for='tfield' class='form-label'>Type</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='size[]' value=' ' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='unit[]' value=' ' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='nopcs[]' value=' ' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='rm[]' value=' ' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' data-id="field" value=' ' id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='number' step='0.01' data-id="field" value=' ' id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='number' data-id="field" value=' ' id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' name='amount[]' value=' ' id='afield' readonly class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
-                </div>
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' name='type[]' required id='tfield' value='-12345' class='type form-control' placeholder='Desc.'>
+                    <label for='tfield' class='form-label'>Work Description</label>
+                </div></div>
+                <div class='col'><div class='form-outline'> 
+                    <input type='number' step='0.01' required data-id="field" value='-1' id='rafield' name='rate[]' class='rate form-control'>
+                    <label for='rafield' class='form-label'>Rate</label>
+                </div></div>  
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='size_d1[]' value='-1' data-id="field" id='d1field' class='sized1 form-control'>
+                    <label for='d1field' class='form-label'>D1</label>
+                </div></div>
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='size_d2[]' value='-1' data-id="field" id='d2field' class='sized2 form-control'>
+                    <label for='d1field' class='form-label'>D2</label>
+                </div></div>
+                    <div class='col'><div class='form-outline'>
+                     <input type='text' list='sizeunitfield' name='sizeunit[]' data-id='field' value='-1' id='sizefield' class='sizeunit form-control'>
+                     <label for='sizefield' class='form-label'>M Unit</label>
+
+                     <datalist id="sizeunitfield">
+                        <option>Inch</option>
+                        <option>Cm</option>
+                    </datalist>
+                </div></div>
+
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='nopcs[]' value='-1' data-id="nopcsfield" id='nopcsfield' class='nopcs form-control'>
+                    <label for='nopcsfield' class='form-label'>No Pcs.</label>
+                </div></div>
+
+                <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='initqty[]' value='-1' data-id="field" id='initqtyfield' class='initqty form-control'>
+                    <label for='initqtyfield' class='form-label'>Init. Qty</label>
+                </div></div>
+                    
+                <div class='col'><div class='form-outline'> 
+                    <input type='text' required data-id="field" value='-1' id='qtyfield' name='total_qty[]' class='total_qty form-control'>
+                    <label for='tofield' class='form-label'>Qty</label>
+                </div></div>
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' list='unitfield' name='total_unit[]' value='-1' id='ufield' class='total_unit form-control'>
+                    <label for='ufield' class='form-label'>Unit</label>
+
+                    <datalist id="unitfield">
+                        <option>Sqft</option>
+                        <option>Dozen</option>
+                        <option>Nos</option>
+                    </datalist>
+                </div></div>
+
+                <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='amount[]' value='-1' id='afield' class='amount form-control'>
+                    <label for='afield' class='form-label'>Amount</label>
+                </div></div></div>
                 
       `;
             // var type_limit = 1;
@@ -107,15 +181,61 @@ $workOrderNo = '000000';
             // var datatypeField = $(this).parent(".data_fields1");
             var datatypeField_val = `<div class ='data_fields1 row p-1'>
             <button class='btn text-danger btn-floating shadow-0 remove_data_type' id='remove_data_type'>X</button>
-            <div class='col'><div class='form-outline'> <input type='text' name='type[]' required id='tfield' class='type form-control' placeholder='Type'><label for='tfield' class='form-label'>Type</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' required name='size[]' id='sfield' class='size form-control'><label for='sfield' class='form-label'>Size</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' required name='unit[]' id='ufield' class='unit form-control'><label for='ufield' class='form-label'>Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' required name='nopcs[]' id='nopcsfield' class='nopcs form-control'><label for='nopcsfield' class='form-label'>No Pcs.</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' required name='rm[]' id='rfield' class='rm form-control'><label for='rfield' class='form-label'>RM/Sqf/Sam</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' required data-id="field" id='tofield' name='total_unit[]' class='total_unit form-control'><label for='tofield' class='form-label'>Total Unit</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='number' step='0.01' required data-id="field" id='rafield' name='rate[]' class='rate form-control'><label for='rafield' class='form-label'>Rate</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='number' required data-id="field" value='18' id='gfield' name='gst_per[]' class='gst_per form-control'><label for='gfield' class='form-label'>GST%</label></div></div>
-                    <div class='col'><div class='form-outline'> <input type='text' required name='amount[]' id='afield' class='amount form-control'><label for='afield' class='form-label'>Amount</label></div></div>
+                <div class='w-25'><div class='col'><div class='form-outline'> 
+                    <input type='text' name='type[]' required id='tfield' class='type form-control' placeholder='Desc.'>
+                    <label for='tfield' class='form-label'>Description</label>
+                </div></div></div>
+                <div class='col'><div class='form-outline'> 
+                    <input type='number' step='0.01' required data-id="field" id='rafield' name='rate[]' class='rate form-control'>
+                    <label for='rafield' class='form-label'>Rate</label>
+                </div></div> 
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='size_d1[]' value='' data-id="field" id='d1field' class='sized1 form-control'>
+                    <label for='d1field' class='form-label'>D1</label>
+                </div></div>
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='size_d2[]' value='' data-id="field" id='d2field' class='sized2 form-control'>
+                    <label for='d1field' class='form-label'>D2</label>
+                </div></div>
+                    <div class='col'><div class='form-outline'>
+                     <input type='text' list='sizeunitfield' name='sizeunit[]' data-id='field' value='' id='sizefield' class='sizeunit form-control'>
+                     <label for='sizefield' class='form-label'>M Unit</label>
+
+                     <datalist id="sizeunitfield">
+                        <option>Inch</option>
+                        <option>Cm</option>
+                    </datalist>
+                </div></div>
+
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' required name='nopcs[]' data-id="nopcsfield" id='nopcsfield' class='nopcs form-control'>
+                    <label for='nopcsfield' class='form-label'>No Pcs.</label>
+                </div></div>
+
+                <div class='col'><div class='form-outline'> 
+                    <input type='text' readonly required name='initqty[]' data-id="field" id='initqtyfield' class='initqty form-control'>
+                    <label for='initqtyfield' class='form-label'>Init. Qty</label>
+                </div></div>
+                    
+                <div class='col'><div class='form-outline'> 
+                    <input type='text' required data-id="field" id='qtyfield' name='total_qty[]' class='total_qty form-control'>
+                    <label for='tofield' class='form-label'>Qty</label>
+                </div></div>
+                    <div class='col'><div class='form-outline'> 
+                    <input type='text' list='unitfield' name='total_unit[]' value='' id='ufield' class='total_unit form-control'>
+                    <label for='ufield' class='form-label'>Unit</label>
+
+                    <datalist id="unitfield">
+                        <option>Sqft</option>
+                        <option>Dozen</option>
+                        <option>Nos</option>
+                    </datalist>
+                </div></div>
+
+                <div class='col'><div class='form-outline'> 
+                    <input type='text' readonly required name='amount[]' id='afield' class='amount form-control'>
+                    <label for='afield' class='form-label'>Amount</label>
+                </div></div>
                     </div>`;
             $(this).closest(".data_fields").find("#data_types1").append(datatypeField_val);
             initilizebootstrap();
@@ -146,17 +266,86 @@ $workOrderNo = '000000';
     });
 
     $(document).ready(function () {
+        $('.sized2').on('change', function () {
+            $(this).closest(".data_fields1").find(".sizeunit").val('Inch');
+            initilizebootstrap();
+        });
+
         $('.gst_per').on('keyup', function () {
             var newValue = $(this).val(); // Get the new value entered in the changed input field
             $('.gst_per').not(this).val(newValue); // Set the new value to all other input fields except the changed one
             initilizebootstrap();
         });
 
+        //set state code
+        $(document).on('change', '#posfield', function () {
+            var posval = ($(this).val()).toLowerCase();
+            if (posval == 'alapuzha') {
+                $("#scfield").val('32');
+            }
+            initilizebootstrap();
+        });
+
+        //set gstin no
+        $(document).on('change', '#companyfield', function () {
+            var comval = ($(this).val()).toLowerCase();
+
+            initilizebootstrap();
+        });
+
+        //get qty before amount
         $(document).on('keyup', 'input[data-id="field"]', function () {
-            var newValue = $(this).val()
-            //for display
+            var munit = $(this).closest(".data_fields1").find(".sizeunit").val()
+            var rate = $(this).closest(".data_fields1").find(".rate").val();
+            var sized1 = $(this).closest(".data_fields1").find(".sized1").val();
+            var sized2 = $(this).closest(".data_fields1").find(".sized2").val();
+            var nopcs = $(this).closest(".data_fields1").find(".nopcs").val();
+            var initqtyfield = $(this).closest(".data_fields1").find(".initqty");
+            var qtyfield = $(this).closest(".data_fields1").find(".total_qty");
+            var qtyunitfield = $(this).closest(".data_fields1").find(".total_unit");
+            var nopcsfield = $(this).closest(".data_fields1").find(".nopcs");
+            var amountfield = $(this).closest(".data_fields1").find(".amount");
+
+            munit = munit.toLowerCase();
+            if (munit == "inch") {
+                qtyunitfield.val("Sqft");
+                nopcsfield.val("");
+                var q = (sized1 * sized2) / 144;
+                initqtyfield.val(((sized1 * sized2) / 144).toFixed(3));
+                qtyfield.val(q.toFixed(3));
+            }
+            if (munit == "cm") {
+                qtyunitfield.val("Sqft");
+                nopcsfield.val("");
+                initqtyfield.val(((sized1 * sized2) / 929).toFixed(3));
+                var q = (sized1 * sized2) / 929;
+
+                qtyfield.val(q.toFixed(3));
+            }
+            initilizebootstrap();
+        });
+
+        //get qty with rate before amount
+        $(document).on('keyup', 'input[data-id="nopcsfield"]', function () {
+            var nopcs = $(this).val()
+            var rate = $(this).closest(".data_fields1").find(".rate").val();
+            var sized1 = $(this).closest(".data_fields1").find(".sized1").val();
+            var sized2 = $(this).closest(".data_fields1").find(".sized2").val();
+            var initqtyfield = $(this).closest(".data_fields1").find(".initqty");
+            var qtyfield = $(this).closest(".data_fields1").find(".total_qty");
+            var qtyunitfield = $(this).closest(".data_fields1").find(".total_unit");
+            var amountfield = $(this).closest(".data_fields1").find(".amount");
+
+            //qtyunitfield.val("Sqft");
+            var q = nopcs * initqtyfield.val();
+            qtyfield.val(q.toFixed(3));
+
+            amountfield.val((rate * (q.toFixed(3))).toFixed(2))
+
+            initilizebootstrap();
+            //final amount
+
             var grand_total = $('.grand_total')
-            // *_input for php
             var grand_total_input = $('#grand_total_input')
             var cgst = $('.cgst')
             var cgst_input = $('#cgst_input')
@@ -180,29 +369,29 @@ $workOrderNo = '000000';
             var sgst_value = 0;
             var lro_value = 0;
             var k2 = 0;
+
             for (var j = 0; j < l; j++) {
                 m = $(".data_fields").eq(j).find(".data_fields1").length;
 
                 for (var k = 0; k < m; k++, k2++) {
                     cur_amt = 0;
                     var skip = $(".data_fields1").eq(k2).find(".type").val();
+
                     if (skip == '-12345') {
                         continue;
                     }
-                    var totalunitField = $(".data_fields1").eq(k2).find(".total_unit").val();
-                    var rateField = $(".data_fields1").eq(k2).find(".rate").val();
-                    var gstField = $(".data_fields1").eq(k2).find(".gst_per").val();
-                    var amountField = $(".data_fields1").eq(k2).find(".amount");
+
+                    var amountField = $(".data_fields1").eq(k2).find(".amount").val();
+                    gt = gt + parseFloat(amountField)
                     //takes only numbers
-                    var digits = totalunitField.match(/\d+(\.\d+)?/g);
+                    //var digits = totalunitField.match(/\d+(\.\d+)?/g);
                     // Join the extracted digits into a single string
-                    var extractedDigits = digits ? digits.join('') : '';
-                    cur_amt += (extractedDigits * rateField);
-                    amountField.val(cur_amt.toFixed(2));
-                    gt += parseFloat(cur_amt.toFixed(2));
+                    //var extractedDigits = digits ? digits.join('') : '';
+                    // cur_amt += (extractedDigits * rateField);
+                    // amountField.val(cur_amt.toFixed(2));
+                    // gt += parseFloat(cur_amt.toFixed(2));
                 }
             }
-            initilizebootstrap();
 
             grand_total.text(gt.toFixed(2));
             grand_total_input.val(gt.toFixed(2));
@@ -213,15 +402,133 @@ $workOrderNo = '000000';
             sgst.text(sgst_value.toFixed(2));
             sgst_input.val(sgst_value.toFixed(2));
             cur_total = (parseFloat(gt.toFixed(2)) + parseFloat(cgst_value.toFixed(2)) + parseFloat(sgst_value.toFixed(2)));
-            lro_value = (parseFloat(cur_total) - parseFloat(Math.floor(cur_total)));
-            less_ro.text(lro_value.toFixed(2));
+
+            var laddorless = 0;
+            var lro_1 = (parseFloat(cur_total) - parseFloat(Math.round(cur_total)))
+            //var lro_2 = (parseFloat(cur_total) - parseFloat(Math.ceil(cur_total)))
+            if (lro_1 < 0) {
+                lro_value = lro_1;
+                laddorless = 0
+            }
+            else {
+                lro_value = lro_1
+                laddorless = 1;
+            }
+
+
+            //lro_value = (parseFloat(cur_total) - parseFloat(Math.floor(cur_total)));
+            less_ro.text(Math.abs(lro_value.toFixed(2)));
             less_ro_input.val(lro_value.toFixed(2));
-            total_amount.text(Math.floor(cur_total) + '.00');
-            total_amount_input.val(Math.floor(cur_total) + '.00');
+            total_amount.text(Math.round(cur_total) + '.00');
+            total_amount_input.val(Math.round(cur_total) + '.00');
             initilizebootstrap();
 
+            initilizebootstrap();
         });
 
+        $(document).on('keyup', '.amount', function () {
+            // var totalqty = $(this).val()
+            // var rate = $(this).closest(".data_fields1").find(".rate").val();
+            // var sized1 = $(this).closest(".data_fields1").find(".sized1").val();
+            // var sized2 = $(this).closest(".data_fields1").find(".sized2").val();
+            // var initqtyfield = $(this).closest(".data_fields1").find(".initqty");
+            // var qtyfield = $(this).closest(".data_fields1").find(".total_qty");
+            // var amountfield = $(this).closest(".data_fields1").find(".amount");
+
+            // amountfield.val((rate*initqtyfield.val()).toFixed(2))
+
+            //for display
+            //     var grand_total = $('.grand_total')
+            //     // *_input for php
+            //     var grand_total_input = $('#grand_total_input')
+            //     var cgst = $('.cgst')
+            //     var cgst_input = $('#cgst_input')
+            //     var sgst = $('.sgst')
+            //     var sgst_input = $('#sgst_input')
+            //     var less_ro = $('.less_ro')
+            //     var less_ro_input = $('#less_ro_input')
+            //     var total_amount = $('.total_amount')
+            //     var total_amount_input = $('#total_amount_input')
+            //     // alert($(".data_fields").eq(1).find(".data_fields1").length);
+            //     var l = $(".data_fields").length;
+            //     var m = 0;
+            //     var k = 0;
+            //     var i = 0;
+            //     var cur_amt = 0;
+            //     var cur_total;
+            //     var gt = 0;
+            //     var cgst_def = 9;
+            //     var cgst_value = 0;
+            //     var sgst_def = 9;
+            //     var sgst_value = 0;
+            //     var lro_value = 0;
+            //     var k2 = 0;
+            //     for (var j = 0; j < l; j++) {
+            //         m = $(".data_fields").eq(j).find(".data_fields1").length;
+
+            //         for (var k = 0; k < m; k++, k2++) {
+            //             cur_amt = 0;
+            //             var skip = $(".data_fields1").eq(k2).find(".type").val();
+            //             if (skip == '-12345') {
+            //                 continue;
+            //             }
+            //             var totalunitField = $(".data_fields1").eq(k2).find(".total_unit").val();
+            //             var rateField = $(".data_fields1").eq(k2).find(".rate").val();
+            //             var gstField = $(".data_fields1").eq(k2).find(".gst_per").val();
+            //             var amountField = $(".data_fields1").eq(k2).find(".amount");
+            //             //takes only numbers
+            //             var digits = totalunitField.match(/\d+(\.\d+)?/g);
+            //             // Join the extracted digits into a single string
+            //             var extractedDigits = digits ? digits.join('') : '';
+            //             cur_amt += (extractedDigits * rateField);
+            //             amountField.val(cur_amt.toFixed(2));
+            //             gt += parseFloat(cur_amt.toFixed(2));
+            //         }
+            //     }
+            //     initilizebootstrap();
+
+            //     grand_total.text(gt.toFixed(2));
+            //     grand_total_input.val(gt.toFixed(2));
+            //     cgst_value = gt.toFixed(2) * (cgst_def / 100);
+            //     sgst_value = gt.toFixed(2) * (sgst_def / 100);
+            //     cgst.text(cgst_value.toFixed(2));
+            //     cgst_input.val(cgst_value.toFixed(2));
+            //     sgst.text(sgst_value.toFixed(2));
+            //     sgst_input.val(sgst_value.toFixed(2));
+            //     cur_total = (parseFloat(gt.toFixed(2)) + parseFloat(cgst_value.toFixed(2)) + parseFloat(sgst_value.toFixed(2)));
+            //     lro_value = (parseFloat(cur_total) - parseFloat(Math.floor(cur_total)));
+            //     less_ro.text(lro_value.toFixed(2));
+            //     less_ro_input.val(lro_value.toFixed(2));
+            //     total_amount.text(Math.floor(cur_total) + '.00');
+            //     total_amount_input.val(Math.floor(cur_total) + '.00');
+            //     initilizebootstrap();
+
+            // });
+
+            // //set state code
+            // $('#posfield').on('change', function () {
+            //     var newValue = $(this).val(); // Get the new value entered in the changed input field
+            //     if( newValue == 'Alapuzha') {
+            //         $('#scfield').val = 32;
+            //     }
+            //     initilizebootstrap();
+        });
+
+
+    });
+
+    //Set Today Date
+    $(document).ready(function () {
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        $('#datefield').val(today);
+        initilizebootstrap();
     });
 
 </script>
@@ -236,8 +543,11 @@ $workOrderNo = '000000';
                     <div class="row mb-4">
                         <div class="col">
                             <div class="form-outline">
-                                <input type="text" required id='invnofield' class="form-control" name='invoice_no'>
+                                <input type="text" id='invnofield' class="form-control" name='invoice_no'>
                                 <label for='invnofield' class='form-label'>Invoice No</label>
+                            </div>
+                            <div id="textExample1" class="form-text">
+                                &nbsp;Leave Empty for Auto-Generation
                             </div>
                         </div>
                         <div class="col">
@@ -320,34 +630,38 @@ $workOrderNo = '000000';
                 <div class="container-fluid mt-2 mb-4 p-2 bg-white rounded-5 shadow-1-strong">
                     <h4 class='mb-4 fw-bold ps-4 pt-4'>Product Detials</h4>
                     <div class="row mb-1 ms-2">
-
-                        <div class="col">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="col-3">
                             DESCRIPTION
                         </div>
                         <div class="col">
-                            SIZE
+                            RATE
                         </div>
                         <div class="col">
-                            Unit
+                            SIZE - D1
                         </div>
                         <div class="col">
-                            NO: PICS
+                            SIZE - D2
+                        </div>
+                        <div class="col">
+                            M Unit
+                        </div>
+                        <div class="col">
+                            No. PCS
                         </div>
                         <div class="col">
                             RM/Sqf/Sam
                         </div>
                         <div class="col">
-                            Total Unit
+                            Qty
                         </div>
                         <div class="col">
-                            Rate
-                        </div>
-                        <div class="col">
-                            GST
+                            Unit
                         </div>
                         <div class="col">
                             Amount
                         </div>
+
                     </div>
                     <div id='data_body'>
 
@@ -385,13 +699,15 @@ $workOrderNo = '000000';
                     </div>
                 </div>
                 <center>
-                    <label class="mb-2">Please Note that Old Invoice of this Work Order will be deleted if New Invoice
+                    <label class="mb-2">Please Note that Old Invoice of this Invoice No. will be deleted if New Invoice
                         is
                         Generated</label>
                     <br>
-                    <input type="submit" name='generate' class="btn btn-success" value="Generate Invoice">
+                    <input type="submit" name='generate' class="btn btn-success btn-lg shadow-2-strong"
+                        value="Generate Invoice">
                 </center>
             </form>
+            <br>
         </div>
         <script>
             function initilizebootstrap() {
@@ -413,14 +729,18 @@ $workOrderNo = '000000';
 if (isset($_POST['generate'])) {
     $productNames = $_POST['product_name'];
     $types = $_POST['type'];
-    $sizes = $_POST['size'];
-    $units = $_POST['unit'];
-    $nopcses = $_POST['nopcs'];
-    $rms = $_POST['rm'];
-    $total_units = $_POST['total_unit'];
     $rates = $_POST['rate'];
-    $gst_pers = $_POST['gst_per'];
+    $sizesd1 = $_POST['size_d1'];
+    $sizesd2 = $_POST['size_d2'];
+    $sizeunits = $_POST['sizeunit'];
+    $nopcses = $_POST['nopcs'];
+    $initqtys = $_POST['initqty'];
+    $total_qtys = $_POST['total_qty'];
+    $total_units = $_POST['total_unit'];
     $amounts = $_POST['amount'];
+    //$rates = $_POST['rate'];
+    //$gst_pers = $_POST['gst_per'];
+    //$amounts = $_POST['amount'];
     $grand_total = $_POST['grand_total'];
     $cgst = $_POST['cgst'];
     $sgst = $_POST['sgst'];
@@ -448,21 +768,49 @@ if (isset($_POST['generate'])) {
         exit;
     }
 
+    $invoice_flag = 0;
+    if (!$invoice_no) {
+        $sql00 = "SELECT invoice_count FROM profile WHERE user_id='" . (string) $loggedin_session . "'";
+        $result = mysqli_query($conn, $sql00);
+        if (!$result) {
+            echo mysqli_error($conn);
+            mysqli_rollback($conn);
+            echo "<script type='text/javascript'>
+                        window.location.href = 'createpdfgstinvoice.php';
+                        </script>";
+            echo "<script>alert('Some Error Occured')</script>";
+            exit;
+        }
+        $retipno = mysqli_fetch_assoc($result);
+        $invoice_no = $retipno['invoice_count'];
+        $invoice_no = "A" . $invoice_no;
+        $invoice_flag = 1;
+    }
+
+
     //delete existing if new invoice is being generated
-    $sql4 = "DELETE FROM invoice where invoice_no = '$invoice_no' AND user_id = '".(string)$loggedin_session."'";
+    $sql4 = "DELETE FROM invoice where invoice_no = '$invoice_no' AND user_id = '" . (string) $loggedin_session . "'";
     $delete1 = mysqli_query($conn, $sql4);
     if (!$delete1) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
     }
-    $sql5 = "DELETE FROM invoice_data where invoice_no = '$invoice_no' AND user_id = '".(string)$loggedin_session."'";
+    $sql5 = "DELETE FROM invoice_data where invoice_no = '$invoice_no' AND user_id = '" . (string) $loggedin_session . "'";
     $delete2 = mysqli_query($conn, $sql5);
     if (!$delete2) {
         echo mysqli_error($conn);
         mysqli_rollback($conn);
     }
 
-    $sql = "INSERT INTO invoice(invoice_no,date,company,company_gstin,work_order_no,place_of_supply,type_of_payment,contact,statecode,note,gst_percentage,grand_total,cgst,sgst,less_ro,total_amount,mode_of_transport,user_id) VALUES ('$invoice_no','$date','$company','$company_gstin','$workOrderNo','$place_of_supply','$type_of_payment','$contact','$statecode','$note','$gst_per_all','$grand_total','$cgst','$sgst','$less_ro','$total_amount','$mode_of_transport','".(string)$loggedin_session."')";
+    //store company data
+    $sql2 = "INSERT INTO company(name,gstin,address,contact,user_id) VALUES ('$company','$company_gstin','$place_of_supply','$contact','" . (string) $loggedin_session . "')";
+    $result = mysqli_query($conn, "SELECT name FROM company WHERE name = '$company' AND user_id = '" . (string) $loggedin_session . "'");
+    if ($result->num_rows == 0) {
+        $insert2 = mysqli_query($conn, $sql2);
+    }
+
+
+    $sql = "INSERT INTO invoice(invoice_no,date,company,company_gstin,work_order_no,place_of_supply,type_of_payment,contact,statecode,note,gst_percentage,grand_total,cgst,sgst,less_ro,total_amount,mode_of_transport,user_id) VALUES ('$invoice_no','$date','$company','$company_gstin','$workOrderNo','$place_of_supply','$type_of_payment','$contact','$statecode','$note','$gst_per_all','$grand_total','$cgst','$sgst','$less_ro','$total_amount','$mode_of_transport','" . (string) $loggedin_session . "')";
     $insert1 = mysqli_query($conn, $sql);
     if (!$insert1) {
         echo mysqli_error($conn);
@@ -472,20 +820,21 @@ if (isset($_POST['generate'])) {
     $j = 0;
     for ($i = 0; $i < count($types); $i++) {
         $type = $types[$i];
-        $size = $sizes[$i];
-        $unit = $units[$i];
+        $size_d1 = $sizesd1[$i];
+        $size_d2 = $sizesd2[$i];
+        $size_unit = $sizeunits[$i];
         $nopcs = $nopcses[$i];
-        $rm = $rms[$i];
+        $initqty = $initqtys[$i];
+        $total_qty = $total_qtys[$i];
         $total_unit = $total_units[$i];
         $rate = $rates[$i];
-        $gst_per = $gst_pers[$i];
         $amount = $amounts[$i];
 
         if ($type == '-12345') {
             continue;
         }
 
-        $sql2 = "INSERT INTO invoice_data(invoice_no,work_order_no,product_slno,product_name,type,size,unit,nopcs,rm,total_unit,rate,gst,amount,user_id) VALUES ('$invoice_no','$workOrderNo','$j','$productNames[$j]','$type','$size','$unit','$nopcs','$rm','$total_unit','$rate','$gst_per','$amount','".(string)$loggedin_session."')";
+        $sql2 = "INSERT INTO invoice_data(invoice_no,work_order_no,product_slno,product_name,type,rate,size_d1,size_d2,size_unit,nopcs,initqty,total_qty,total_unit,amount,user_id) VALUES ('$invoice_no','$workOrderNo','$j','$productNames[$j]','$type','$rate','$size_d1','$size_d2','$size_unit','$nopcs','$initqty','$total_qty','$total_unit','$amount','" . (string) $loggedin_session . "')";
         $insert2 = mysqli_query($conn, $sql2);
         if (!$insert2) {
             echo mysqli_error($conn);
@@ -502,6 +851,20 @@ if (isset($_POST['generate'])) {
     //     echo mysqli_error($conn);
     //     mysqli_rollback($conn);
     // }
+
+    if ($invoice_flag == 1) {
+        $sql01 = "UPDATE profile SET invoice_count = invoice_count + 1 where user_id='" . (string) $loggedin_session . "'";
+        $updinvno = mysqli_query($conn, $sql01);
+        if (!$updinvno) {
+            echo mysqli_error($conn);
+            mysqli_rollback($conn);
+            echo "<script type='text/javascript'>
+            window.location.href = 'createpdfgstinvoice.php';
+            </script>";
+            echo "<script>alert('Some Error Occured')</script>";
+            exit;
+        }
+    }
     mysqli_commit($conn);
     echo "<script type='text/javascript'>
             window.location.href = 'createpdfgstinvoice.php?wo=$workOrderNo&in=$invoice_no';

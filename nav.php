@@ -62,7 +62,7 @@ $userName = mysqli_fetch_assoc(mysqli_query($conn,"select name from profile wher
                             <a class="nav-link" href="ledger.php?f=0">Ledger</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="billing_workorder.php">Billing</a>
+                            <a class="nav-link" href="billing_generate.php">Billing</a>
                         </li>
                     </ul>
                 </div>
